@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SearchBar from '../../components/SearchBar.svelte';
+import DeviceCard from '../../components/DeviceCard.svelte';
+import { t } from '../../lib/i18n';
+
+const locale = 'en';
+
+const devices = [
+  { title: 'Defibrillator', href: '/en/devices/defibrillator/', icon: '⚡', color: '#e53e3e' },
+  { title: 'Ventilator', href: '/en/devices/ventilator/', icon: '🫁', color: '#3182ce' },
+  { title: 'Infusion', href: '/en/devices/infusion/', icon: '💉', color: '#38a169' },
+  { title: 'ECG', href: '/en/devices/ecg/', icon: '🫀', color: '#d69e2e' },
+  { title: 'Electrosurgery', href: '/en/devices/electrosurgery/', icon: '🔪', color: '#805ad5' },
+  { title: 'Ultrasound', href: '/en/devices/ultrasound/', icon: '🔊', color: '#319795' },
+];
+---
+
+<BaseLayout title="Home">
+  <div class="flex flex-col items-center justify-center px-4 pt-20 pb-16">
+    <!-- Logo -->
+    <div class="mb-6 text-3xl font-bold">
+      <span class="text-gray-900">medtek</span><span class="text-blue-600">.tools</span>
+    </div>
+
+    <!-- Tagline -->
+    <p class="text-gray-500 text-base mb-8">{t(locale, 'site.tagline')}</p>
+
+    <!-- Search prompt -->
+    <h1 class="text-2xl font-semibold text-gray-900 mb-6">{t(locale, 'search.prompt')}</h1>
+
+    <!-- Search bar -->
+    <div class="w-full max-w-2xl mb-10">
+      <SearchBar placeholder={t(locale, 'search.placeholder')} locale={locale} client:load />
+    </div>
+
+    <!-- Device category chips -->
+    <div class="flex flex-wrap justify-center gap-3 max-w-2xl mb-16">
+      {devices.map((device) => (
+        <DeviceCard
+          title={device.title}
+          href={device.href}
+          icon={device.icon}
+          color={device.color}
+          client:load
+        />
+      ))}
+    </div>
+
+    <!-- Latest scenarios section -->
+    <div class="w-full max-w-2xl">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">Latest scenarios</h2>
+      <div class="rounded-xl border border-gray-200 bg-gray-50 px-6 py-8 text-center text-gray-400 text-sm">
+        No scenarios yet — check back soon.
+      </div>
+    </div>
+  </div>
+</BaseLayout>
