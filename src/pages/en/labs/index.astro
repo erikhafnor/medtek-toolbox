@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allLabs = await getCollection('labs');
+const labs = allLabs.filter((entry) => entry.id.startsWith('en/'));
+
+const courses = ['MTE200', 'MTE210'] as const;
+const labsByCourse = courses.reduce<Record<string, typeof labs>>((acc, course) => {
+  acc[course] = labs.filter((entry) => entry.data.course === course);
+  return acc;
+}, {});
+---
+
+<BaseLayout title="Lab Assignments">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Lab Assignments</h1>
+    <p class="text-gray-500 mb-10">Hands-on laboratory exercises for clinical engineering courses.</p>
+
+    {courses.map((course) => {
+      const courseLabs = labsByCourse[course];
+      if (!courseLabs || courseLabs.length === 0) return null;
+      return (
+        <section class="mb-10">
+          <h2 class="text-xl font-semibold text-gray-700 mb-4 border-b border-gray-200 pb-2">{course}</h2>
+          <div class="grid gap-4 sm:grid-cols-2">
+            {courseLabs.map((entry) => {
+              const slug = entry.id.replace(/^en\//, '');
+              return (
+                <a
+                  href={`/en/labs/${slug}`}
+                  class="block bg-white rounded-lg border border-gray-200 p-5 hover:border-blue-400 hover:shadow-md transition-all"
+                >
+                  <div class="flex items-start justify-between mb-1 gap-2">
+                    <h3 class="text-lg font-semibold text-gray-900">{entry.data.title}</h3>
+                    {entry.data.duration && (
+                      <span class="shrink-0 text-xs text-gray-400 bg-gray-100 rounded px-2 py-0.5 mt-0.5">
+                        {entry.data.duration}
+                      </span>
+                    )}
+                  </div>
+                  <p class="text-sm text-gray-500 mb-4">{entry.data.description}</p>
+                  <div class="flex flex-wrap gap-2">
+                    {entry.data.equipment.map((item) => (
+                      <span class="text-xs bg-blue-50 text-blue-700 rounded px-2 py-0.5 border border-blue-100">
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </section>
+      );
+    })}
+
+    {labs.length === 0 && (
+      <div class="rounded-xl border border-gray-200 bg-gray-50 px-6 py-8 text-center text-gray-400 text-sm">
+        No lab assignments yet — check back soon.
+      </div>
+    )}
+  </div>
+</BaseLayout>
