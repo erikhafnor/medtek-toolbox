@@ -1,0 +1,103 @@
+id: monitor-alarm-fatigue
+title: Alarmtretthet-undersøkelse
+device: Philips IntelliVue MX800
+category: patient-monitor
+level: 2
+estimated_time: 20min
+has_lab_handoff: false
+briefing:
+  caller: Avdelingssykepleier Marit, medisinsk avdeling 4A
+  location: Avdeling 4A vaktrom
+  facility: Stavanger universitetssjukehus
+  time: "Mandag 09:00"
+  message: "Vi har et alvorlig alarmtretthets-problem på avdelingen vår. Sykepleierne rapporterer over 200 alarmer per vakt, og de fleste er meningsløse — monitorene piper konstant for hjertefrekvens på 58 eller SpO₂ på 93 %, som er helt normalt for vår pasientgruppe. Forrige uke ble en reell bradykardialarm oversett fordi sykepleieren antok at det var nok en falsk alarm. Vi trenger hjelp til å konfigurere disse monitorene riktig."
+  urgency: medium
+  context:
+    - "Medisinsk avdeling — generelle indremedisinske pasienter"
+    - "12 Philips IntelliVue MX800 sengemonitorer"
+    - "Sykepleierne rapporterer ~200+ alarmer per vakt"
+    - "De fleste alarmer er ikke-handlingsbare (parametere innenfor normalt klinisk område)"
+    - "Reell bradykardialarm oversett forrige uke"
+    - "Nåværende alarmterskler ser ut til å være intensivavdelingens standardinnstillinger"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "Sykepleierne er overveldet av alarmer og en reell hendelse ble oversett. Dette er et systemnivå-problem. Hva er ditt første steg?"
+    hint: "Før du endrer noen innstillinger, trenger du data. Hvilken informasjon trenger du for å forstå omfanget av problemet?"
+    choices:
+      - text: "Hent alarmloggdata fra alle 12 monitorer for den siste uka — analyser alarmfrekvens, typer, og hvilke terskler som oftest overskrides"
+        correct: true
+        feedback: "Riktig — datadrevet alarmhåndtering. Alarmloggene vil fortelle deg nøyaktig hvilke parametere som genererer flest alarmer, hvilke terskler som krysses, og tidsmønsteret. Denne dokumentasjonen styrer målrettede endringer i stedet for gjetting."
+      - text: "Utvid umiddelbart alle alarmterskler for å redusere alarmvolumet"
+        correct: false
+        feedback: "Å endre terskler uten data er farlig — du kan utvide grenser som allerede er passende, eller overse parametere som trenger justering. Data først."
+      - text: "Bytt alle monitorer fra intensivmodus til en generell avdelingsprofil"
+        correct: false
+        feedback: "En avdelingsprofil kan finnes, men du må verifisere at den passer denne avdelingens pasientgruppe. Dataanalyse først, deretter målrettet konfigurasjon."
+      - text: "Deaktiver rådgivende (gule) alarmer og behold kun kritiske (røde) alarmer"
+        correct: false
+        feedback: "Å deaktivere alle rådgivende alarmer fjerner tidlig varslingskapasitet. Mange gule alarmer er klinisk relevante — spørsmålet er hvilke, ikke kategorien."
+  - type: multiple-choice
+    id: data-analysis
+    question: "Du henter alarmdataene. Den siste uka: 8 400 totale alarmer på tvers av 12 monitorer. De største alarmkildene er: HR lav (35 % — terskel 50 bpm), SpO₂ lav (28 % — terskel 95 %), NIBP høy (15 % — terskel 140/90), og arytmi (12 % — hovedsakelig PVC-er). Avdelingens typiske pasienter er eldre med baseline HR 55–65 og SpO₂ 91–94 %. Hva forteller dette deg?"
+    hint: "Sammenlign alarmtersklene med avdelingens faktiske pasientgruppe. Hvor er misforholdet?"
+    choices:
+      - text: "Alarmtersklene er satt for intensiv-/hjertepasienter, ikke for en eldre medisinsk avdeling. HR 50 og SpO₂ 95 % er for stramme for denne pasientgruppen."
+        correct: true
+        feedback: "Riktig — standardtersklene er passende for en intensivavdeling der pasienter trenger tett overvåking, men ikke for en generell medisinsk avdeling der eldre pasienter normalt har lavere hjertefrekvens og marginalt lavere SpO₂. Tersklene må justeres for å matche den kliniske konteksten — videre grenser for parametere som normalt varierer i denne populasjonen."
+      - text: "Pasientene er sykere enn sykepleierne innser — disse alarmene kan være klinisk signifikante"
+        correct: false
+        feedback: "Avdelingssykepleieren har eksplisitt uttalt at HR 58 og SpO₂ 93 % er normalt for deres populasjon. Med 200+ alarmer per vakt og en 85 %+ ikke-handlingsbar rate er dette tydelig et alarmkonfigurasjonsproblem."
+      - text: "Monitorene har blitt tilbakestilt til fabrikkinnstillinger etter en programvareoppdatering"
+        correct: false
+        feedback: "Dette kan forklare hvordan intensivnivå-terskler havnet på en medisinsk avdeling, men årsaken endrer ikke løsningen — tersklene må justeres."
+      - text: "Arytmialgoritmen er for følsom og bør slås av"
+        correct: false
+        feedback: "Arytmideteksjon utgjør bare 12 % av alarmene og kan inkludere klinisk relevante hendelser. Ikke deaktiver den — gjennomgå følsomhetsinnstillingene."
+  - type: multiple-choice
+    id: solution-design
+    question: "Du må opprette en tilpasset alarmprofil for avdeling 4A. I samarbeid med avdelingssykepleier og ansvarlig lege, hvilke terskelendringer er passende?"
+    hint: "Alarmterskler bør reflektere kliniske beslutningspunkter — verdiene der sykepleieren må iverksette tiltak — ikke normal fysiologisk variasjon."
+    choices:
+      - text: "HR lav: 50 → 45 bpm, SpO₂ lav: 95 % → 88 %, NIBP høy: 140/90 → 160/100, PVC-alarm: reduser til > 10/min. Dokumenter begrunnelsen og få legesignatur."
+        correct: true
+        feedback: "Riktig — disse tersklene reflekterer kliniske beslutningspunkter for en eldre medisinsk avdeling: HR < 45 krever vurdering, SpO₂ < 88 % krever intervensjon, BT > 160/100 krever oppmerksomhet, og isolerte PVC-er er ikke handlingsbare. Avgjørende er at endringene dokumenteres med klinisk begrunnelse og godkjennes av ansvarlig lege."
+      - text: "Deaktiver alle gule alarmer og behold røde alarmer med nåværende terskler"
+        correct: false
+        feedback: "Dette er et grovt virkemiddel — noen gule alarmer er viktige (f.eks. fallende SpO₂-trend). Å justere terskler er mer presist enn å deaktivere kategorier."
+      - text: "Sett alle terskler til videst mulige verdier for å eliminere falske alarmer"
+        correct: false
+        feedback: "De videste verdiene eliminerer falske alarmer, men overser også reelle hendelser. Terskler bør matche kliniske beslutningspunkter, ikke være maksimalt tillatende."
+      - text: "Behold nåværende terskler, men legg inn 2 minutters forsinkelse før alarmering"
+        correct: false
+        feedback: "En forsinkelse på kritiske alarmer (som ekte asystoli) er farlig. Problemet er tersklene, ikke responstiden."
+  - type: multiple-choice
+    id: implementation
+    question: "Dere er blitt enige om nye terskler med det kliniske teamet. Hvordan implementerer du endringene på alle 12 monitorer på en trygg måte?"
+    choices:
+      - text: "Opprett en navngitt alarmprofil i Philips-systemet (f.eks. 'Avd 4A Medisin'), distribuer den til alle 12 monitorer via sentralstasjonen, verifiser hver monitor, og dokumenter profilen i avdelingens utstyrsprosedyre"
+        correct: true
+        feedback: "Riktig — en navngitt profil sikrer konsistens og gjør det enkelt å tilbakestille hvis en pasient trenger tettere overvåking (f.eks. bytt til intensivprofilen for en forverret pasient, deretter tilbake). Distribusjon via sentralstasjonen sikrer at alle monitorer får samme innstillinger. Dokumentasjon sikrer at begrunnelsen bevares."
+      - text: "Juster hver monitors terskler manuelt, én om gangen"
+        correct: false
+        feedback: "Manuell justering av 12 monitorer er feilutsatt og tidkrevende. Hvis en monitor byttes ut eller tilbakestilles, går de tilpassede tersklene tapt. En profilbasert tilnærming er langt mer pålitelig."
+      - text: "Konfigurer de nye tersklene på én monitor og la sykepleierne kopiere innstillingene til de andre"
+        correct: false
+        feedback: "Medisinsk-teknisk avdeling bør opprettholde kontroll over alarmkonfigurasjon. Å delegere til sykepleierne risikerer inkonsistens og konfigurasjonsfeil."
+      - text: "Rull ut endringene over natten for å minimere forstyrrelser"
+        correct: false
+        feedback: "Alarmendringer bør rulles ut på dagtid når erfarent klinisk personale kan observere effekten. Utrulling over natten betyr at uerfarne vakter håndterer eventuelle utilsiktede konsekvenser."
+learning_points:
+  - text: "Alarmtretthet er en pasientsikkerhetsrisiko på systemnivå. Når de fleste alarmer er ikke-handlingsbare, venner personalet seg til dem og kan overse eller forsinke respons på reelle hendelser. Medisinsk-teknisk avdeling har en nøkkelrolle i alarmkonfigurasjon og -optimalisering."
+  - text: "Alarmterskler bør matche kliniske beslutningspunkter for den spesifikke pasientgruppen, ikke fabrikkinnstillinger. Intensivterskler på en generell avdeling genererer massive mengder ikke-handlingsbare alarmer."
+    source: "The Joint Commission — National Patient Safety Goal om alarmhåndtering"
+    source_type: best-practice
+  - text: "Datadrevet alarmhåndtering: analyser alarmlogger før du gjør endringer. Identifiser de største alarmkildene, sammenlign terskler med populasjonens baseline, og målrett endringer der de har størst effekt."
+    source_type: best-practice
+  - text: "Alle endringer i alarmterskler må dokumenteres med klinisk begrunnelse og godkjennes av ansvarlig lege. Medisinsk-teknisk avdeling implementerer og distribuerer; klinisk personale definerer den kliniske hensiktsmessigheten."
+    source_type: best-practice
+  - text: "ECRI Institute identifiserer alarmfarer som den fremste helseteknologiske faren. Studier viser at 72–99 % av kliniske alarmer er ikke-handlingsbare, og alarmtretthet bidrar til overseelser og pasientdødsfall."
+    source: "ECRI Institute — Top 10 Health Technology Hazards; Sendelbach & Funk (2013) alarmtretthet litteraturgjennomgang"
+    source_type: incident-data
+  - text: "Navngitte alarmprofiler (per avdeling) er mer vedlikeholdbare enn per-monitor-konfigurasjon. De overlever monitorbytter, tilbakestillinger og programvareoppdateringer."
+    source_type: best-practice

@@ -1,0 +1,105 @@
+id: ecg-noise-defib
+title: ECG Noise During Monitoring
+device: LIFEPAK 15
+category: defibrillator
+level: 1
+estimated_time: 15min
+has_lab_handoff: true
+briefing:
+  caller: Nurse Inger, Telemetry Ward 4B
+  location: Ward 4B, Room 412
+  facility: Stavanger University Hospital
+  time: "Monday 10:15"
+  message: "The LIFEPAK 15 in room 412 is showing a really noisy ECG — so much fuzz on the trace that we can't tell if the patient's rhythm is changing. We've tried different leads on the patient and it still looks the same. The patient is post-MI and we need reliable monitoring. Can you come take a look?"
+  urgency: medium
+  context:
+    - "Post-MI patient requiring continuous ECG monitoring"
+    - "Device serial: 45892315"
+    - "Noise present on all leads"
+    - "Staff has already tried repositioning electrodes"
+    - "Room 412 is near the service elevator"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "You arrive at the ward and see a broad-band fuzzy baseline on the ECG display. The nurse says they've already replaced the electrodes. What's your systematic approach?"
+    hint: "ECG noise has three main sources: patient/electrode interface, cable/device, and environment. Work from the patient outward."
+    choices:
+      - text: "Replace the LIFEPAK 15 with a spare unit to see if the noise follows the device"
+        correct: false
+        feedback: "Swapping the whole device is a valid troubleshooting step, but it's not systematic — you won't learn what's causing the noise."
+      - text: "Check electrode skin prep, then swap the ECG cable, then test with an ECG simulator to isolate patient vs device vs environment"
+        correct: true
+        feedback: "Correct — systematic isolation: (1) patient interface, (2) cable, (3) device input, (4) environment. Each swap narrows the source."
+      - text: "Turn off nearby equipment to check for electromagnetic interference"
+        correct: false
+        feedback: "EMI is worth investigating, but jumping straight to environment skips more common causes — cable faults are far more frequent than environmental interference."
+      - text: "Access the device's notch filter settings and enable 50 Hz rejection"
+        correct: false
+        feedback: "The notch filter removes mains-frequency interference but the nurse described broad-band noise. A filter won't fix a cable fault, and it hides diagnostic information."
+  - type: multiple-choice
+    id: investigation
+    question: "You check the skin prep (clean, good contact), and swap the 5-lead ECG cable with a known-good cable from the store. The noise disappears completely. What should you do next?"
+    hint: "You've isolated the fault to the cable. But which part of the cable is faulty, and how do you verify?"
+    choices:
+      - text: "Discard the faulty cable and close the call"
+        correct: false
+        feedback: "Don't discard yet — document the fault and test it properly. You need to confirm the failure mode and decide if it's a one-off or a batch issue."
+      - text: "Label the faulty cable, take it to the workshop, and test continuity of each lead wire"
+        correct: true
+        feedback: "Correct — a continuity test will identify which wire is broken and whether the break is intermittent (flexion-dependent). This informs whether other cables of the same age/type should be inspected."
+      - text: "Send the cable to the manufacturer for analysis"
+        correct: false
+        feedback: "Manufacturer analysis takes weeks. You can diagnose a cable fault in-house in minutes."
+      - text: "Check if the cable is within its replacement interval and order a new one"
+        correct: false
+        feedback: "Cables fail from use, not age. A replacement interval doesn't explain this failure. Test first, then decide."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Connect the faulty ECG cable to a multimeter. Test continuity of each lead wire by measuring resistance from the cable connector pin to the corresponding electrode clip. Flex the cable at stress points (connector junction, cable branching point) during measurement."
+    simulated_data:
+      tool: "Multimeter — ECG Cable Continuity Test"
+      readings:
+        - setting: "Lead I (RA pin → RA clip)"
+          delivered: "1.2 Ω"
+          status: pass
+        - setting: "Lead II (LA pin → LA clip)"
+          delivered: "1.1 Ω"
+          status: pass
+        - setting: "Lead III (LL pin → LL clip)"
+          delivered: "∞ (open) during flexion at branch point"
+          status: fail
+          error: "Intermittent open circuit when flexed"
+        - setting: "Lead V (V pin → V clip)"
+          delivered: "1.3 Ω"
+          status: pass
+        - setting: "Lead RL (RL pin → RL clip)"
+          delivered: "0.9 Ω"
+          status: pass
+  - type: multiple-choice
+    id: diagnosis
+    question: "The LL (left leg) lead wire has an intermittent open circuit at the cable branch point. This single broken wire caused noise on ALL displayed leads. Why?"
+    choices:
+      - text: "The LL electrode is the reference ground for Einthoven's triangle — if it's open, all lead calculations (I, II, III, aVR, aVL, aVF) lose their common reference"
+        correct: true
+        feedback: "Correct — the LL electrode is part of Wilson's Central Terminal and is used as a reference in most lead derivations. When it goes open-circuit, the common-mode rejection ratio (CMRR) collapses, and environmental noise overwhelms the differential ECG signal on all leads."
+      - text: "The broken wire creates a short circuit that injects current into all other leads"
+        correct: false
+        feedback: "An open circuit doesn't create a short — it removes a reference, which is why noise appears on all leads rather than on just one."
+      - text: "The LL wire carries the driven-right-leg signal that cancels common-mode noise"
+        correct: false
+        feedback: "Close — but the driven-right-leg (DRL) signal is typically carried by the RL electrode, not LL. The LL issue is about losing the measurement reference."
+      - text: "The device detects the fault and disables its input filters as a safety measure"
+        correct: false
+        feedback: "The device doesn't intentionally disable filters. The noise appears because the reference electrode is lost, destroying the CMRR."
+learning_points:
+  - text: "A single broken ECG lead wire can cause noise on ALL displayed leads, not just the lead that uses that electrode. This is because ECG leads are derived from combinations of electrodes — losing one reference affects all calculations."
+  - text: "ECG cables are the most frequently replaced consumable in patient monitoring. Intermittent breaks at flex points (connector junction, branch point) are the most common failure mode."
+    source: "ECRI Institute — ECG cable and lead wire problems"
+    source_type: incident-data
+  - text: "IEC 60601-2-27 requires a CMRR of at least 89 dB at 50/60 Hz. An open electrode can reduce effective CMRR to near zero, making the device unable to meet this spec even though the device itself is not faulty."
+    source: "IEC 60601-2-27 §201.12.1.101.3"
+    source_type: standard
+  - text: "Always test cable continuity WHILE FLEXING the cable at known stress points. A static resistance measurement may show normal values while an intermittent break only appears under movement."
+    source_type: best-practice
+  - text: "When investigating ECG noise, systematic isolation (patient → cable → device → environment) prevents unnecessary device replacements. Most ECG noise complaints are cable or electrode issues, not device faults."
+    source_type: best-practice

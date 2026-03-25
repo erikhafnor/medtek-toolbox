@@ -1,0 +1,107 @@
+id: ecg-false-asystole
+title: Falsk asystolialarm
+device: Philips IntelliVue MX800
+category: patient-monitor
+level: 1
+estimated_time: 12min
+has_lab_handoff: true
+briefing:
+  caller: Sykepleier Ragnhild, hjerteovervåking 2B
+  location: Avdeling 2B, rom 204
+  facility: Stavanger universitetssjukehus
+  time: "Onsdag 06:30"
+  message: "Pasientmonitoren i rom 204 alarmerte for asystoli klokka 06:15 — sykepleierne løp inn og pasienten satt oppe og spiste frokost. Dette er den tredje falske asystolialarmen denne uka på denne monitoren. Nattevaktene mister tilliten til alarmene. Kan du komme og sjekke monitoren før dagvakten starter?"
+  urgency: high
+  context:
+    - "Tredje falske asystolialarm denne uka på samme monitor"
+    - "Pasienten var våken og stabil under alarmen"
+    - "Philips IntelliVue MX800, serienummer: MX-44721"
+    - "5-avlednings EKG-overvåking"
+    - "Personalet mister tillit til alarmsystemet"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "Falske asystolialarmer er et kritisk pasientsikkerhetsproblem — de undergraver tilliten til alarmsystemet, noe som fører til at personalet utsetter respons på ekte alarmer. Hva er den vanligste årsaken til falsk asystoli?"
+    hint: "Asystoli betyr at monitoren ikke oppdaget noen QRS-komplekser i en definert periode. Hva kan få QRS til å forsvinne kort?"
+    choices:
+      - text: "EKG-ledningsfrakobling — en løs eller intermitterende elektrodetilkobling forårsaker kortvarig signaltap som monitoren tolker som asystoli"
+        correct: true
+        feedback: "Riktig — intermitterende ledningsfrakobling er den klart vanligste årsaken til falske asystolialarmer. Når en elektrode mister kontakt kort (pasientbevegelse, inntørket gel, dårlig feste), faller EKG-signalet til nulllinje. Hvis dette varer lenger enn asystolideteksjonsvinduet (typisk 4–8 sekunder), alarmerer monitoren."
+      - text: "Monitorens arytmialgoritme er feiljustert"
+        correct: false
+        feedback: "Algoritmefeiljustering er sjeldent. Algoritmen oppdaget korrekt 'ingen QRS' — problemet er at signalet gikk tapt, ikke at algoritmen feilidentifiserte det."
+      - text: "Elektromagnetisk interferens får EKG til å gå i nulllinje"
+        correct: false
+        feedback: "EMI legger typisk støy til sporet i stedet for å forårsake nulllinje. En nulllinje under en falsk asystolialarm peker mot signaltap."
+      - text: "Monitorens CPU er overbelastet og mangler QRS-deteksjoner"
+        correct: false
+        feedback: "Moderne monitorer har dedikert DSP-maskinvare for EKG-prosessering. CPU-belastning påvirker ikke QRS-deteksjon."
+  - type: multiple-choice
+    id: investigation
+    question: "Du ankommer sengeposten. Pasienten har det bra og EKG-sporet ser normalt ut nå. Du gjennomgår alarmloggen og ser: '06:15 — ASYSTOLI, avledning II, varighet 6,2 s' etterfulgt av '06:15 — Ledningsfeil utbedret.' Hendelsen 'ledningsfeil' rett etter asystoli bekrefter hypotesen din. Hva sjekker du?"
+    hint: "Ledningsfeilmeldingen forteller deg at en elektrode mistet kontakt. Finn nå ut hvilken elektrode og hvorfor."
+    choices:
+      - text: "Inspiser alle elektrodeplasseringer for festekvalitet, sjekk for inntørket gel, og test EKG-kabelen for intermitterende kontinuitet"
+        correct: true
+        feedback: "Riktig — sjekk elektrodene først (feste, geltilstand, hudforberedelse), deretter kabelen. Meldingen 'ledningsfeil utbedret' betyr at kontakten ble gjenopprettet, noe som tyder på et intermitterende problem ved elektroden eller kabeltilkoblingen."
+      - text: "Bytt hele EKG-kabelen med en ny"
+        correct: false
+        feedback: "Kabelen er kanskje ikke problemet — elektrodefeste er vanligere. Sjekk elektrodene først før du bytter kabelen."
+      - text: "Juster asystolialarmforsinkelsen til 10 sekunder for å redusere falske alarmer"
+        correct: false
+        feedback: "Å forlenge alarmforsinkelsen er farlig — en ekte asystoli ville bli oppdaget senere. Fiks rotårsaken i stedet."
+      - text: "Bytt overvåkingsavledning fra avledning II til avledning I"
+        correct: false
+        feedback: "Å bytte avledning fikser ikke en løs elektrode. Hvis RA-elektroden er løs, vil avledning I ha samme problem."
+  - type: lab-handoff
+    id: measurement
+    instruction: "På benken, koble Philips IntelliVue MX800 til Fluke ProSim 8 pasientsimulator. Test EKG-signalkvalitet, responstid for lead-off-deteksjon, og verifiser at asystolialarmen utløses korrekt for ekte asystoli og IKKE utløses ved korte signalbrudd."
+    simulated_data:
+      tool: "Fluke ProSim 8 — EKG- og lead-off-deteksjonstest"
+      readings:
+        - setting: "EKG-signalkvalitet — NSR 60 bpm via ProSim 8"
+          delivered: "Rent spor, HR 60 ±1 bpm"
+          status: pass
+        - setting: "Lead-off-deteksjon — koble fra RA-ledning"
+          delivered: "Ledningsfeilalarm etter 2,1 s"
+          status: pass
+          spec: "< 5 s"
+        - setting: "Asystolideteksjon — ProSim 8 nulllinje i 8 s"
+          delivered: "Asystolialarm ved 6,0 s"
+          status: pass
+          spec: "4–8 s (konfigurerbar)"
+        - setting: "Kort frakoblingstest — fjern/tilkoble RA på 3 s"
+          delivered: "Ledningsfeilalarm, INGEN asystolialarm"
+          status: pass
+        - setting: "Kort frakoblingstest — fjern/tilkoble RA på 7 s"
+          delivered: "Ledningsfeil + asystolialarm"
+          status: warning
+          error: "7 s frakobling utløser begge alarmer — realistisk scenario"
+  - type: multiple-choice
+    id: diagnosis
+    question: "Monitoren fungerer korrekt — den detekterer ledningsfeil og asystoli riktig. De falske alarmene ble forårsaket av intermitterende elektrodefrakobling som varte > 6 sekunder. Hva er den fullstendige løsningen?"
+    choices:
+      - text: "Bytt den slitte EKG-kabelen (bøyeutmatting ved kontakt), sikre ferske elektroder med godt feste, og anbefal avdelingen å innføre en rutine for daglig kontroll av elektroder og kabler"
+        correct: true
+        feedback: "Riktig — adresser både den umiddelbare årsaken (slitt kabel med intermitterende kontakt ved koblingen) og det systemiske problemet (ingen rutine for elektrode-/kabelsjekk). Ferske elektroder bør påføres daglig, og kabler bør inspiseres for kontaktslitasje ved hvert pasientbytte. Dette reduserer falske alarmer og gjenoppretter personalets tillit."
+      - text: "Bytt monitoren — tre falske asystolialarmer tyder på et pålitelighetsproblem"
+        correct: false
+        feedback: "Monitoren fungerer korrekt. De falske alarmene ble forårsaket av elektrode-/kabelproblemer, ikke monitorfeil. Å bytte monitoren fikser ikke forbruksmateriellproblemet."
+      - text: "Øk asystolideteksjonsforsinkelsen fra 6 til 10 sekunder"
+        correct: false
+        feedback: "Å forlenge forsinkelsen reduserer falske alarmer, men forsinker også deteksjon av ekte asystoli. Rotårsaken er elektrodekontakt, ikke alarmtimingen."
+      - text: "Deaktiver asystolialarmer på denne monitoren siden pasienten er stabil"
+        correct: false
+        feedback: "Deaktiver aldri kritiske alarmer. Pasientens tilstand kan endre seg når som helst. Fiks signalkvaliteten i stedet."
+learning_points:
+  - text: "Falske asystolialarmer forårsakes oftest av intermitterende EKG-elektrodefrakobling — ikke monitorfeil. Monitoren oppdager korrekt 'ingen QRS' når signalet går tapt."
+  - text: "Alarmtretthet fra falske alarmer er en anerkjent pasientsikkerhetsrisiko. ECRI Institute rangerer konsekvent alarmhåndtering blant de øverste helseteknoligiske farene. Falske alarmer undergraver tillit og forsinker respons på ekte hendelser."
+    source: "ECRI Institute — Top 10 Health Technology Hazards (alarmhåndtering)"
+    source_type: incident-data
+  - text: "EKG-elektroder bør byttes daglig og hudforberedelse bør verifiseres ved hvert vaktskifte. Inntørket gel, dårlig feste og fet hud er de primære årsakene til elektrode-relatert signaltap."
+    source_type: best-practice
+  - text: "IEC 60601-2-27 §201.12.1.101.11 krever at monitorer detekterer og indikerer elektrodefrakobling. Lead-off-deteksjonen skal utløse en 'teknisk alarm' (ledningsfeil) før den 'kliniske alarmen' (asystoli) kan aktiveres."
+    source: "IEC 60601-2-27 §201.12.1.101.11"
+    source_type: standard
+  - text: "Når du etterforsker klager på falske alarmer, sjekk alltid alarmloggen — den inneholder tidsstempler, alarmtyper, og ofte ledningsfeilhendelser som avslører rotårsaken."
+    source_type: best-practice

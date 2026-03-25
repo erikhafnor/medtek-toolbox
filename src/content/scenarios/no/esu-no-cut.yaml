@@ -1,0 +1,110 @@
+id: esu-no-cut
+title: ESU-en kutter ikke under kirurgi
+device: Erbe VIO 300 D
+category: electrosurgery
+level: 1
+estimated_time: 12min
+has_lab_handoff: true
+briefing:
+  caller: Operasjonssykepleier Astrid, operasjonsstue 5
+  location: Operasjonsstue 5
+  facility: Stavanger universitetssjukehus
+  time: "Mandag 13:45"
+  message: "Kirurgen forsøker å gjøre et snitt med Erbe VIO, men det er ingen kutteeffekt — hun hører aktiveringstonen, men ingenting skjer når hun berører vev. Vi har prøvd å skru opp effekten til 80 watt, og den kutter fortsatt ikke. Pasienten er klargjort og tildekket. Kan du komme nå?"
+  urgency: high
+  context:
+    - "Erbe VIO 300 D, serienr.: VIO-38921"
+    - "Snittemodus valgt, effekt satt til 80 W"
+    - "Aktiveringstonen er hørbar — generatoren aktiveres"
+    - "Ingen vevseffekt ved den aktive elektroden"
+    - "Pasienten er klargjort og tildekket, kirurgi pågår"
+    - "Returelektrodepad påført på høyre lår"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "Generatoren aktiveres (du hører tonen), men det er ingen vevseffekt. Generatoren produserer utgang — noe er galt i kretsen mellom generatoren og pasienten. Hva sjekker du først?"
+    hint: "ESU-kretsen er: generator → aktiv elektrodekabel → håndstykke → vev → returelektrodepad → returkabel → generator. Identifiser det mest sannsynlige feilstedet."
+    choices:
+      - text: "Sjekk returelektroden — er den ordentlig festet til pasienten med full kontakt?"
+        correct: true
+        feedback: "Riktig — returelektroden er den vanligste årsaken til klager om 'ingen utgang'. Hvis paden har dårlig kontakt (delvis løsnet, gel tørket ut, plassert over hår eller benfremspring), er kretsimpedansen for høy for effektiv strømflyt. Sjekk REM-indikatoren på generatoren — den kan vise en advarsel eller ha blitt stilnet."
+      - text: "Åpne generatoren og sjekk den interne effektforsterkeren"
+        correct: false
+        feedback: "Generatoren aktiveres (du hører tonen), så den interne elektronikken fungerer sannsynligvis. Problemet er nesten helt sikkert i den eksterne kretsen — kabler, tilkoblinger eller returelektroden."
+      - text: "Bytt håndstykket for den aktive elektroden"
+        correct: false
+        feedback: "Verdt å prøve hvis returelektroden sjekker ut, men returelektroden er et langt vanligere feilpunkt."
+      - text: "Sjekk generatorens effektinnstilling i servicemenyen"
+        correct: false
+        feedback: "Effekten er satt til 80 W og generatoren aktiveres. Innstillingen er neppe problemet — det er kretsbanen."
+  - type: multiple-choice
+    id: investigation
+    question: "Du sjekker Erbe VIO-skjermen: REM-indikatoren viser en gul advarselstrekant, men ingen hørbar alarm ble oppfattet i den støyete operasjonsstuen. Du inspiserer returelektroden — det er en splittet-pad-elektrode påført på høyre lår. Den øvre halvdelen av paden har løsnet fra huden på grunn av svette. Hva er problemet?"
+    hint: "REM (Return Electrode Monitoring) måler impedansen mellom de to halvdelene av en splittet pad. Hva skjer når kontaktarealet minker?"
+    choices:
+      - text: "Det reduserte kontaktarealet øker strømtettheten ved padstedet, og REM-systemet har detektert den høye impedansen og redusert utgangseffekten"
+        correct: true
+        feedback: "Riktig — Erbe VIO sitt REM-system (kalt CQM — Contact Quality Monitoring) måler kontinuerlig impedansen mellom de to halvdelene av den splittede paden. Når halvparten av paden løsner, stiger impedansen, og systemet reduserer eller deaktiverer utgangen for å forhindre en returelektrodebrannskade. Den visuelle advarselen ble vist, men den hørbare alarmen ble ikke oppfattet."
+      - text: "Paden har gått ut på dato og gelen har degradert"
+        correct: false
+        feedback: "Gelen kan bidra, men hovedproblemet er mekanisk — paden har fysisk løsnet på grunn av svette. Selv en ny pad kan svikte hvis hudforberedelsen er utilstrekkelig."
+      - text: "Padtypen er inkompatibel med denne generatoren"
+        correct: false
+        feedback: "Padinkompatibilitet ville forhindret aktivering helt. Systemet aktiverte, men reduserte utgangen fordi det detekterte den høye impedansen."
+      - text: "Svette har skapt en kortslutning mellom padhalvdelene"
+        correct: false
+        feedback: "En kortslutning mellom padhalvdelene ville senket impedansen, ikke økt den. Problemet er tap av hudkontakt på den ene halvdelen."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Etter å ha løst det kliniske problemet (ny pad påført, kirurgien fortsetter), ta med Erbe VIO 300 D til verkstedet og verifiser CQM/REM-funksjonen ved hjelp av Fluke QA-ES III. Verifiser også nøyaktigheten av utgangseffekten i snittemodus."
+    simulated_data:
+      tool: "Fluke QA-ES III ESU-analysator — REM- og effekttest"
+      load: "200 Ω"
+      readings:
+        - setting: "CQM-alarmterskel — impedans ved alarm"
+          delivered: "Alarm ved 137 Ω"
+          status: pass
+          spec: "135 ± 10 Ω"
+        - setting: "CQM-respons — utgang deaktivert ved alarm"
+          delivered: "Utgang deaktivert innen 0,5 s"
+          status: pass
+          spec: "< 1 s"
+        - setting: "Innstilling: Snittemodus 30 W — målt utgang"
+          delivered: "28 W"
+          status: pass
+          spec: "24–36 W (±20 %)"
+        - setting: "Innstilling: Snittemodus 80 W — målt utgang"
+          delivered: "76 W"
+          status: pass
+          spec: "64–96 W (±20 %)"
+        - setting: "Innstilling: Snittemodus 200 W — målt utgang"
+          delivered: "192 W"
+          status: pass
+          spec: "160–240 W (±20 %)"
+  - type: multiple-choice
+    id: diagnosis
+    question: "Generatoren bestod alle tester — CQM-alarm og utgangseffekt er innenfor spesifikasjonen. Problemet var utilstrekkelig kontakt på returelektroden. Hvilke korrigerende tiltak forhindrer gjentakelse?"
+    choices:
+      - text: "Opplæring av operasjonsteamet: sørg for at huden er ren og tørr før påføring av returelektrode, verifiser at CQM-indikatoren er grønn etter padpåføring, og sørg for at alarmvolumet ikke er satt for lavt"
+        correct: true
+        feedback: "Riktig — dette var et bruksrelatert problem, ikke en enhetsfeil. CQM-systemet fungerte korrekt, men den visuelle advarselen ble oversett i en støyete operasjonsstue. Anbefalinger: (1) sjekk alarmvolumet på alle VIO-enheter, (2) forsterk hudforberedelse før padpåføring, (3) legg til CQM-statussjekk i den kirurgiske sjekklisten."
+      - text: "Bytt alle returelektrodepader til en nyere limformulering"
+        correct: false
+        feedback: "Bedre lim kan hjelpe, men hudforberedelse er den viktigste faktoren. Selv det beste limet svikter på våt eller hårete hud."
+      - text: "Øk CQM-alarmterskelen for å tillate mer toleranse"
+        correct: false
+        feedback: "Å heve terskelen forsinker deteksjon av farlige padtilstander. Terskelen eksisterer for å forhindre pasientbrannskader."
+      - text: "Legg til en ekstern visuell alarmindikator (tårnlys) på alle ESU-generatorer"
+        correct: false
+        feedback: "En ekstern indikator kan hjelpe i noen tilfeller, men det legger til kompleksitet. Den enklere løsningen er å sørge for at den eksisterende alarmen er hørbar og at CQM-status sjekkes ved oppsett."
+learning_points:
+  - text: "Returelektrodeproblemer er den vanligste årsaken til klager om 'ESU-en kutter ikke'. Returelektrodeovervåkingen (REM/CQM) beskytter mot brannskader ved å detektere dårlig padkontakt — men bare hvis alarmen blir lagt merke til."
+  - text: "Hudforberedelse er avgjørende for returelektrodens feste. Ren, tørr, hårfri hud over en godt vaskularisert muskelgruppe gir best kontakt. Svette, kremer og benfremspring reduserer alle padfeste og øker impedans."
+    source_type: best-practice
+  - text: "IEC 60601-2-2 krever at ESU-er inkluderer en metode for å overvåke returelektrodens kontaktkvalitet. Systemet må alarmere og deaktivere utgangen når kontaktimpedansen overskrider terskelverdien."
+    source: "IEC 60601-2-2 §201.12.4.4"
+    source_type: standard
+  - text: "I støyete operasjonsstuer er visuelle alarmer på ESU-generatorer lett å overse. Klinisk ingeniøravdeling bør verifisere at alarmvolum er riktig innstilt under PM, og anbefale å legge til CQM-status i den kirurgiske sjekklisten."
+    source_type: best-practice
+  - text: "Når en klage om 'ingen utgang' løses ved å fikse returelektroden, test alltid generatoren etterpå for å bekrefte at den fungerer korrekt. Ikke anta at paden var det eneste problemet."
+    source_type: best-practice

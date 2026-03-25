@@ -1,0 +1,106 @@
+id: defib-pad-alert
+title: '"Check Pads" Alert With Pads Connected'
+device: LIFEPAK 15
+category: defibrillator
+level: 1
+estimated_time: 12min
+has_lab_handoff: true
+briefing:
+  caller: Nurse Lars, Emergency Department
+  location: ED Resuscitation Bay
+  facility: Stavanger University Hospital
+  time: "Friday 16:30"
+  message: "The LIFEPAK 15 in Resus Bay 1 keeps showing 'Check Pads' even though the pads are plugged in and they're new — we just opened a fresh set. We've unplugged and replugged them twice. This is our only defibrillator in Resus right now, the other one is out for PM."
+  urgency: high
+  context:
+    - "ED Resus Bay — must have a functioning defibrillator at all times"
+    - "Device serial: 45892322"
+    - "New QUIK-COMBO pads opened from sealed package"
+    - "Pads plugged in and reconnected twice"
+    - "Second defibrillator out for scheduled PM"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "The ED needs a working defibrillator immediately. With only one unit available, you need to solve this fast. What's your approach?"
+    hint: "The 'Check Pads' alert means the device can't detect an acceptable impedance through the pad circuit. What's in that circuit?"
+    choices:
+      - text: "Try a different set of pads — the new ones might be defective"
+        correct: false
+        feedback: "Worth trying, but sealed new pads are very rarely defective. The connector or cable is a more likely culprit."
+      - text: "Inspect the QUIK-COMBO connector on both the cable and device sides for contamination, corrosion, or damage"
+        correct: true
+        feedback: "Correct — the 'Check Pads' circuit measures impedance through the entire pad circuit: device connector → cable → pads → patient (or short-circuit test). Connector issues are the most common cause when pads themselves are new."
+      - text: "Power-cycle the device to reset the pad detection circuit"
+        correct: false
+        feedback: "Power-cycling may temporarily clear an error, but the 'Check Pads' alert is a real-time impedance check — it will return if the circuit is still faulty."
+      - text: "Bypass the check by using the device in monitoring-only mode"
+        correct: false
+        feedback: "This defeats the purpose — the ED needs defibrillation capability. You must fix the pad circuit."
+  - type: multiple-choice
+    id: investigation
+    question: "You inspect the QUIK-COMBO connector on the therapy cable. You notice a greenish-white residue on two of the connector pins, and the plastic housing has a fine crack near the strain relief. The pads connector looks clean. What's causing this?"
+    hint: "Think about what the cable is exposed to in the ED environment."
+    choices:
+      - text: "Manufacturing defect in the connector — contact Stryker for a warranty replacement"
+        correct: false
+        feedback: "This is environmental damage, not a manufacturing defect. The crack and corrosion pattern are consistent with chemical exposure."
+      - text: "Corrosion from cleaning agents (chlorhexidine, hydrogen peroxide wipes) seeping into the connector through the cracked housing"
+        correct: true
+        feedback: "Correct — ED equipment is aggressively cleaned between patients. Cleaning agents seep into cracked connector housings and corrode the pins. This is one of the most common causes of 'Check Pads' alerts in high-use environments."
+      - text: "Normal oxidation from humidity in the hospital environment"
+        correct: false
+        feedback: "Normal humidity doesn't produce the greenish-white corrosion pattern. This is chemical corrosion from cleaning solutions."
+      - text: "Electrolytic corrosion from pad gel residue on the connector"
+        correct: false
+        feedback: "Pad gel is conductive but doesn't typically cause the greenish-white corrosion pattern seen here. Cleaning agents are the more common cause."
+  - type: lab-handoff
+    id: measurement
+    instruction: "On the bench, clean the corroded connector pins with isopropyl alcohol and a connector cleaning brush. Then measure pad circuit impedance using the LIFEPAK 15's built-in test mode with a 50 Ω test load connected."
+    simulated_data:
+      tool: "LIFEPAK 15 — Pad Circuit Impedance Test (50 Ω test load)"
+      readings:
+        - setting: "Before cleaning — pad circuit impedance"
+          delivered: "187 Ω"
+          status: fail
+          error: "'Check Pads' threshold is 180 Ω"
+          spec: "< 180 Ω with 50 Ω load"
+        - setting: "After cleaning connector pins — pad circuit impedance"
+          delivered: "54 Ω"
+          status: pass
+          spec: "< 180 Ω with 50 Ω load"
+        - setting: "Cable connector housing inspection"
+          delivered: "Hairline crack at strain relief"
+          status: warning
+          error: "Will allow cleaning agents to re-enter"
+        - setting: "5J test discharge through 50 Ω load"
+          delivered: "4.8J"
+          status: pass
+          spec: "4.25–5.75J"
+  - type: multiple-choice
+    id: diagnosis
+    question: "Cleaning restored the impedance from 187 Ω to 54 Ω, and the device works normally. But the cable housing has a hairline crack. What's the right long-term fix?"
+    choices:
+      - text: "Cleaning solved the problem — return the device to service and schedule a follow-up check in a week"
+        correct: false
+        feedback: "The cleaning is a temporary fix. The cracked housing will allow cleaning agents to re-corrode the pins within days to weeks in the ED environment."
+      - text: "Replace the QUIK-COMBO therapy cable, return device to service, and flag this as a recurring issue for the cable replacement programme"
+        correct: true
+        feedback: "Correct — the cable has structural damage (cracked housing) that will cause recurring corrosion. Replace the cable now. Also check the other LIFEPAK 15 cables in the department for similar damage — this is often a fleet-wide issue."
+      - text: "Apply silicone sealant to the crack and return to service"
+        correct: false
+        feedback: "Field repairs to cable housings are not acceptable for life-critical equipment. The cable needs replacement — a sealed repair may mask future issues."
+      - text: "Replace the entire device — connector corrosion may have damaged the internal circuitry"
+        correct: false
+        feedback: "The device tested normally after cable cleaning. The corrosion was on the cable connector, not the device's internal connector. Cable replacement is sufficient."
+learning_points:
+  - text: "'Check Pads' alerts are almost always caused by high impedance in the pad circuit (connector corrosion, cable damage, or expired pads), not by device failure. Check the cable connector first."
+  - text: "Aggressive cleaning regimens in high-acuity areas (ED, OR, ICU) are the leading cause of connector corrosion on therapy cables. Cleaning agents seep into cracked or worn cable housings."
+    source: "ECRI Institute hazard report — cleaning-related damage to medical device cables and connectors"
+    source_type: incident-data
+  - text: "Always test the ENTIRE pad circuit (device connector → cable → pads or test load) after any connector repair or cable replacement. A resistance measurement of the connector alone is not sufficient."
+    source_type: best-practice
+  - text: "IEC 60601-2-4 requires defibrillators to detect pad connection status before allowing discharge. The typical impedance threshold is device-specific (LIFEPAK 15: approximately 180 Ω)."
+    source: "IEC 60601-2-4 §201.12"
+    source_type: standard
+  - text: "When one cable fails from environmental damage, inspect all cables of the same type and age in the department. Connector corrosion is often a fleet-wide issue, not an isolated incident."
+    source_type: best-practice

@@ -77,6 +77,8 @@ Perform at the interval specified by the manufacturer and your facility's PM pro
 
 Practice diagnosing defibrillator faults with guided simulation scenarios:
 
-- [Defibrillator won't charge — LIFEPAK 15](/en/scenarios/defib-wont-charge/) *(Level 2)*
-- [Battery failure mid-resuscitation](/en/scenarios/defib-battery-failure/) *(Level 3)*
+- [Defibrillator won't charge — LIFEPAK 15](/en/scenarios/defib-wont-charge/) *(Level 1)*
+- [Battery failure mid-resuscitation](/en/scenarios/defib-battery-failure/) *(Level 2)*
 - [ECG noise during monitoring](/en/scenarios/ecg-noise-defib/) *(Level 1)*
+- [Synchronized cardioversion won't fire](/en/scenarios/defib-sync-failure/) *(Level 2)*
+- ["Check Pads" alert with pads connected](/en/scenarios/defib-pad-alert/) *(Level 1)*

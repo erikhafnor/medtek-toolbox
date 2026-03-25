@@ -1,0 +1,109 @@
+id: monitor-nbp-failure
+title: NIBP-målefeil
+device: Philips IntelliVue MX800
+category: patient-monitor
+level: 1
+estimated_time: 12min
+has_lab_handoff: true
+briefing:
+  caller: Sykepleier Jonas, postoperativ avdeling
+  location: Postoperativ plass 6
+  facility: Stavanger universitetssjukehus
+  time: "Torsdag 15:00"
+  message: "Blodtrykket på MX800 på plass 6 feiler stadig — den blåser opp mansjetten, holder en stund, og viser så 'NIBP-måling feilet.' Vi har prøvd tre forskjellige mansjetter og to forskjellige pasienter. De andre monitorene på postoperativ måler helt fint. Vi trenger denne monitoren i drift — alle plassene våre er fulle etter operasjon."
+  urgency: medium
+  context:
+    - "NIBP-måling feiler konsekvent på denne monitoren"
+    - "Mansjetten blåses opp, men målingen feiler hver gang"
+    - "Prøvd tre forskjellige mansjetter og to forskjellige pasienter"
+    - "Andre monitorer på postoperativ fungerer normalt"
+    - "Philips IntelliVue MX800, serienummer: MX-44735"
+    - "Postoperativ avdeling med full kapasitet"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "Flere mansjetter og pasienter er forsøkt — problemet følger monitoren. Mansjetten blåses opp (så pumpen fungerer), men målingen feiler. Hva er den mest sannsynlige årsaken?"
+    hint: "NIBP-systemet har tre hovedkomponenter: luftpumpen (blåser opp mansjetten), luftslangen (kobler pumpe til mansjett), og trykktransduceren (måler oscillometriske signaler). Pumpen fungerer — hvilken komponent er neste å mistenke?"
+    choices:
+      - text: "Luftslangen mellom monitoren og mansjetten har en langsom lekkasje — den blåser opp, men kan ikke opprettholde stabilt trykk for oscillometrisk måling"
+        correct: true
+        feedback: "Riktig — en langsom lekkasje i luftslangen tillater innledende oppblåsing, men forårsaker et gradvis trykkfall under målefasen. Monitoren trenger stabilt trykk for å detektere de små oscillometriske variasjonene fra arteriell pulsering. En lekkasje skaper en trykkdrift som maskerer disse oscillasjonene, noe som fører til at målingen feiler."
+      - text: "NIBP-modulen inne i monitoren har sviktet"
+        correct: false
+        feedback: "Mulig, men mindre vanlig. Pumpen fungerer (oppblåsing skjer), så modulen er i det minste delvis funksjonell. Sjekk de enklere eksterne komponentene først."
+      - text: "Monitorens NIBP-algoritme er korrumpert og trenger en programvareoppdatering"
+        correct: false
+        feedback: "Programvarekorrupsjon ville typisk påvirke alle funksjoner, ikke bare NIBP. Dette er mer sannsynlig et maskinvareproblem i den pneumatiske kretsen."
+      - text: "Pumpen er for svak — den blåser opp, men kan ikke nå tilstrekkelig trykk"
+        correct: false
+        feedback: "Hvis pumpen var for svak, ville sykepleieren merke ufullstendig oppblåsing. Mansjetten blåses opp normalt — problemet oppstår under målefasen."
+  - type: multiple-choice
+    id: investigation
+    question: "Du inspiserer NIBP-luftslangen — det er en spiralslange som kobler fra monitorens NIBP-port til mansjetten. Du merker at slangekoblingen på monitorsiden vipper litt når du dytter på den. Hva gjør du?"
+    hint: "En løs eller slitt kobling kan forårsake en langsom lekkasje som er vanskelig å se, men tilstrekkelig til å forstyrre oscillometrisk måling."
+    choices:
+      - text: "Bytt luftslangen med en ny fra lageret og test på nytt"
+        correct: true
+        feedback: "Riktig — NIBP-luftslanger er rimelige forbruksartikler. En slitt kobling er den vanligste årsaken til langsomme lekkasjer. Bytt den ut og test. Hvis problemet vedvarer med ny slange, undersøk monitorens interne pneumatiske krets."
+      - text: "Påfør teflontape på koblingen for å stoppe lekkasjen"
+        correct: false
+        feedback: "Pneumatiske koblinger på medisinsk utstyr er designet for push-fit- eller luer-tilkoblinger, ikke gjengetetning. Taperester kan blokkere luftbanen. Bytt slangen."
+      - text: "Stram koblingen med en tang"
+        correct: false
+        feedback: "Å tvinge koblingen kan skade monitorens NIBP-port. Disse koblingene er designet for fingerstramming — hvis de ikke tetter, bytt slangen."
+      - text: "Kjør monitorens NIBP-selvtest for å bekrefte lekkasjen"
+        correct: false
+        feedback: "Selvtesten er nyttig, men å bytte en mistenkt slange tar sekunder og tester hypotesen din umiddelbart. Kjør selvtest etterpå hvis den nye slangen ikke løser problemet."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Bytt luftslangen og verifiser NIBP-funksjon. Bruk Fluke ProSim 8 sin NIBP-simulering for å teste ved tre blodtrykksverdier. Utfør også en pneumatisk lekkasjetest ved å bruke monitorens innebygde testmodus."
+    simulated_data:
+      tool: "Fluke ProSim 8 — NIBP-simulering + Philips lekkasjetest"
+      readings:
+        - setting: "Pneumatisk lekkasjetest (ny slange) — trykkfall over 60 s"
+          delivered: "2 mmHg fall"
+          status: pass
+          spec: "< 6 mmHg/min"
+        - setting: "Pneumatisk lekkasjetest (gammel slange) — trykkfall over 60 s"
+          delivered: "18 mmHg fall"
+          status: fail
+          error: "Lekkasje ved kobling — 3x over spesifikasjon"
+        - setting: "NIBP-simulering — 120/80 mmHg"
+          delivered: "118/78 mmHg"
+          status: pass
+          spec: "±3 mmHg"
+        - setting: "NIBP-simulering — 180/110 mmHg (hypertensiv)"
+          delivered: "177/108 mmHg"
+          status: pass
+          spec: "±3 mmHg"
+        - setting: "NIBP-simulering — 80/50 mmHg (hypotensiv)"
+          delivered: "82/52 mmHg"
+          status: pass
+          spec: "±3 mmHg"
+  - type: multiple-choice
+    id: diagnosis
+    question: "Den nye slangen består lekkasjetesten (2 mmHg/min mot 18 mmHg/min med den gamle slangen), og alle tre NIBP-simuleringene er nøyaktige. Hva anbefaler du?"
+    choices:
+      - text: "Returner monitoren til drift med den nye slangen. Anbefal å legge NIBP-slangeinspeksjon inn i den faste vedlikeholdssjekklisten og å ha reserveslanger i postoperativt utstyrsskap"
+        correct: true
+        feedback: "Riktig — reparasjonen er enkel, men den forebyggende anbefalingen er viktig. NIBP-slanger slites ut fra daglig bruk (spiralisering, mansjettbytter, rengjøring). Ha reserveslanger der de trengs og inspiser under forebyggende vedlikehold."
+      - text: "Problemet er løst — ingen ytterligere tiltak nødvendig"
+        correct: false
+        feedback: "Det umiddelbare problemet er løst, men uten en forebyggende anbefaling vil samme feil gjenta seg når andre slanger slites ut."
+      - text: "Send den gamle slangen til produsenten for feilanalyse"
+        correct: false
+        feedback: "En slitt kobling er normal slitasje, ikke en produksjonsfeil. Dokumenter og kasser."
+      - text: "Bytt alle NIBP-slanger på postoperativ som en forholdsregel"
+        correct: false
+        feedback: "Å bytte alle slanger proaktivt er sløsing. Legg heller slangeinspeksjon inn i vedlikeholdssjekklisten slik at de byttes når de er slitt."
+learning_points:
+  - text: "NIBP-målefeil forårsakes oftest av pneumatiske lekkasjer i luftslangen eller mansjetten, ikke av monitorfeil. En langsom lekkasje forstyrrer den oscillometriske målingen ved å skape en trykkdrift som maskerer arterielle pulsasjoner."
+  - text: "NIBP-luftslanger er forbruksartikler med høy slitasje — koblingene løsner med gjentatte mansjettbytter og daglig bruk. Ha reservedeler i kliniske arealer og inspiser slanger under forebyggende vedlikehold."
+    source_type: best-practice
+  - text: "IEC 60601-2-30 krever NIBP-nøyaktighet på ±3 mmHg for statisk trykk. Verifiser alltid nøyaktigheten etter enhver reparasjon av den pneumatiske kretsen med en kalibrert NIBP-simulator."
+    source: "IEC 60601-2-30 §201.12.1"
+    source_type: standard
+  - text: "Ved NIBP-feilsøking er den diagnostiske rekkefølgen: mansjett → slange → monitortilkoblinger → intern pneumatisk ventil → NIBP-modul. Jobb fra den billigste/enkleste komponenten utover."
+    source_type: best-practice
+  - text: "Monitorens innebygde pneumatiske lekkasjetest er et verdifullt diagnostisk verktøy. Den trykksetter systemet og måler trykkfall over tid — et fall > 6 mmHg/min indikerer en lekkasje i slangen, koblingen eller interne ventiler."
+    source_type: best-practice

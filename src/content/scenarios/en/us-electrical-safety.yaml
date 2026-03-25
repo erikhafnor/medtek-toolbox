@@ -1,0 +1,110 @@
+id: us-electrical-safety
+title: Electrical Safety After Fluid Spill
+device: GE LOGIQ E10
+category: ultrasound
+level: 2
+estimated_time: 18min
+has_lab_handoff: true
+briefing:
+  caller: Nurse Berit, Maternity Ward
+  location: Ultrasound Room, Maternity
+  facility: Stavanger University Hospital
+  time: "Friday 13:30"
+  message: "A patient accidentally knocked over a large cup of water onto the ultrasound machine. Most of it went over the keyboard area and some ran down the side of the unit. We immediately powered it off and unplugged it. The machine was working fine before. We need it for obstetric scans — we have patients booked all afternoon. Is it safe to turn back on?"
+  urgency: medium
+  context:
+    - "Water spilled over keyboard and side panel of GE LOGIQ E10"
+    - "Staff powered off and unplugged immediately"
+    - "Amount: approximately 300 mL water"
+    - "System was operating normally before spill"
+    - "Obstetric ultrasound appointments booked for the afternoon"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "The staff did the right thing — power off immediately. The question is: when is it safe to power back on? What's your approach?"
+    hint: "Water and mains-powered medical equipment are a serious electrical safety concern. Think about where the water could have gone inside the housing."
+    choices:
+      - text: "Wait 24 hours for it to dry, then turn it back on"
+        correct: false
+        feedback: "Waiting for evaporation is not sufficient — water may pool inside the chassis in areas that don't dry easily, and mineral residue from tap water can create conductive paths even after drying."
+      - text: "Inspect the chassis for water ingress, dry any accessible areas, then perform a full electrical safety test (IEC 62353) before reconnecting to mains power"
+        correct: true
+        feedback: "Correct — you cannot safely power on a fluid-exposed device without first verifying electrical safety. Inspect for visible water inside vents/ports, dry accessible areas, then test earth bond, enclosure leakage, and patient leakage before reconnecting. The safety test is the gatekeeper."
+      - text: "Turn it on and check if it works — modern equipment has splash protection"
+        correct: false
+        feedback: "Extremely dangerous. Even IPX1-rated equipment (protection against dripping water) is not designed for a 300 mL spill. Water may have reached internal components and could cause a short circuit or electric shock when powered on."
+      - text: "Send it directly to GE for professional assessment"
+        correct: false
+        feedback: "GE assessment takes weeks. You can perform the safety evaluation in-house. If the device passes safety testing and functions normally, there's no need for manufacturer involvement."
+  - type: multiple-choice
+    id: investigation
+    question: "You inspect the LOGIQ E10. The keyboard area has surface moisture (you dry it). You check the ventilation slots on the right side — you can see water droplets on internal components through the vent. What does this mean for your safety assessment?"
+    hint: "Visible water on internal components means the insulation between mains-powered circuits and accessible parts may be compromised."
+    choices:
+      - text: "Do NOT power on. Open the covers (per service manual access procedures), carefully dry internal components with lint-free cloths and compressed air, then allow 2–4 hours of air drying before safety testing"
+        correct: true
+        feedback: "Correct — with visible internal moisture, you must physically dry the components before safety testing. Compressed air (low pressure, no moisture) removes pooled water; lint-free cloths absorb residue. Allow additional air drying time. Only then proceed with electrical safety testing."
+      - text: "The water on internal components is minimal — proceed with the safety test"
+        correct: false
+        feedback: "Testing with water still present on internal components could give falsely elevated leakage readings AND risks damaging the test equipment or creating additional short circuits."
+      - text: "The device needs to go to a manufacturer service centre — opening covers voids the warranty"
+        correct: false
+        feedback: "Clinical engineering departments routinely open device covers for inspection and maintenance. This is a standard service activity covered under IEC 62353. Most service manuals document the access procedure."
+      - text: "Use a heat gun to speed up the drying process"
+        correct: false
+        feedback: "Heat guns can damage temperature-sensitive electronics, melt plastic components, and create fire risk. Use room-temperature compressed air and natural air drying."
+  - type: lab-handoff
+    id: measurement
+    instruction: "After thorough drying and 2 hours of air circulation, perform a complete IEC 62353 electrical safety test using the Fluke ESA615. Test the system and each probe. Also power on and run a functional check with the CIRS phantom."
+    simulated_data:
+      tool: "Fluke ESA615 — IEC 62353 Electrical Safety Test (Post-Spill)"
+      readings:
+        - setting: "Protective earth resistance"
+          delivered: "0.08 Ω"
+          status: pass
+          spec: "< 0.3 Ω"
+        - setting: "Enclosure leakage current (normal condition)"
+          delivered: "78 µA"
+          status: pass
+          spec: "< 100 µA"
+        - setting: "Enclosure leakage current (open earth SFC)"
+          delivered: "320 µA"
+          status: pass
+          spec: "< 500 µA"
+        - setting: "Patient leakage — C5-1 probe (BF applied part)"
+          delivered: "45 µA"
+          status: pass
+          spec: "< 100 µA normal"
+        - setting: "Functional test — B-mode image on CIRS phantom"
+          delivered: "Normal image quality, no artifacts"
+          status: pass
+        - setting: "Keyboard and trackball function"
+          delivered: "All keys and trackball responsive"
+          status: pass
+  - type: multiple-choice
+    id: resolution
+    question: "All safety tests pass and the system functions normally. What's the appropriate course of action?"
+    choices:
+      - text: "Return to service with documentation. Schedule a follow-up safety test in 1 month to check for delayed corrosion effects. Add a protective keyboard cover to prevent future spills."
+        correct: true
+        feedback: "Correct — the device passes all tests and can return to service. Document the incident, the drying process, and all test results. A follow-up test in 1 month catches any delayed effects from mineral residue or slow corrosion. A keyboard cover is a simple, cheap preventive measure."
+      - text: "Return to service immediately — the tests passed"
+        correct: false
+        feedback: "Documentation is essential. Without records, there's no evidence the device was properly assessed after the fluid exposure. Also, a follow-up test is wise to catch delayed effects."
+      - text: "Keep it out of service for a week to ensure it's fully dry"
+        correct: false
+        feedback: "If it passes the electrical safety test and functions normally, it's safe to use. Extended downtime with no clinical justification wastes resources and delays patient care."
+      - text: "Replace the keyboard assembly as a precaution before returning to service"
+        correct: false
+        feedback: "The keyboard is functional and the device passes safety testing. Precautionary replacement is not warranted. The follow-up test will catch any delayed issues."
+learning_points:
+  - text: "After any fluid spill on medical equipment: power off immediately, unplug, inspect for internal water ingress, dry thoroughly, and perform a complete IEC 62353 electrical safety test before reconnecting to mains power."
+  - text: "Never power on a fluid-exposed device without safety testing. Water on internal mains-carrying components can cause short circuits, electric shock, or fire. The electrical safety test is the gatekeeper for return to service."
+    source: "IEC 62353 — test after incident that may affect electrical safety"
+    source_type: standard
+  - text: "Schedule a follow-up electrical safety test 1 month after a fluid exposure incident. Tap water contains minerals that leave conductive residue when dried, and slow corrosion can develop weeks after the initial event."
+    source_type: best-practice
+  - text: "Document everything: the incident description, drying procedure, all test results, and the return-to-service decision. This record is essential for regulatory compliance and for defence if questions arise later."
+    source_type: best-practice
+  - text: "Preventive measures for ultrasound rooms: keyboard covers, cup holders away from the equipment, and staff awareness. A €10 keyboard cover prevents a €50,000 equipment loss."
+    source_type: best-practice

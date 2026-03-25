@@ -1,0 +1,106 @@
+id: defib-pad-alert
+title: "«Check Pads»-alarm med tilkoblede pads"
+device: LIFEPAK 15
+category: defibrillator
+level: 1
+estimated_time: 12min
+has_lab_handoff: true
+briefing:
+  caller: Sykepleier Lars, akuttmottaket
+  location: Akuttmottakets hjertestansbay
+  facility: Stavanger universitetssjukehus
+  time: "Fredag 16:30"
+  message: "LIFEPAK 15 i hjertestansbay 1 viser stadig «Check Pads» selv om padsene er plugget inn og de er nye — vi åpnet akkurat en ny forseglet pakke. Vi har koblet fra og til igjen to ganger. Dette er den eneste defibrillatoren vi har i hjertestansbay akkurat nå, den andre er ute til forebyggende vedlikehold."
+  urgency: high
+  context:
+    - "Akuttmottakets hjertestansbay — må ha en fungerende defibrillator til enhver tid"
+    - "Serienummer: 45892322"
+    - "Nye QUIK-COMBO pads åpnet fra forseglet pakke"
+    - "Pads plugget inn og koblet til på nytt to ganger"
+    - "Andre defibrillator ute til planlagt forebyggende vedlikehold"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "Akuttmottaket trenger en fungerende defibrillator umiddelbart. Med bare én enhet tilgjengelig, må du løse dette raskt. Hva er din tilnærming?"
+    hint: "«Check Pads»-alarmen betyr at enheten ikke kan detektere akseptabel impedans gjennom pad-kretsen. Hva er i den kretsen?"
+    choices:
+      - text: "Prøv et annet sett med pads — de nye kan være defekte"
+        correct: false
+        feedback: "Verdt å prøve, men forseglede nye pads er svært sjelden defekte. Tilkoblingen eller kabelen er en mer sannsynlig synder."
+      - text: "Inspiser QUIK-COMBO-tilkoblingen på både kabel- og enhetssiden for forurensning, korrosjon eller skade"
+        correct: true
+        feedback: "Riktig — «Check Pads»-kretsen måler impedans gjennom hele pad-kretsen: enhetens tilkobling → kabel → pads → pasient (eller kortslutningstest). Tilkoblingsproblemer er den vanligste årsaken når padsene er nye."
+      - text: "Slå enheten av og på igjen for å tilbakestille pad-deteksjonskretsen"
+        correct: false
+        feedback: "Omstart kan midlertidig fjerne en feil, men «Check Pads»-alarmen er en sanntids impedanssjekk — den vil komme tilbake hvis kretsen fortsatt er defekt."
+      - text: "Omgå sjekken ved å bruke enheten kun i overvåkingsmodus"
+        correct: false
+        feedback: "Dette motvirker formålet — akuttmottaket trenger defibrilleringskapasitet. Du må fikse pad-kretsen."
+  - type: multiple-choice
+    id: investigation
+    question: "Du inspiserer QUIK-COMBO-tilkoblingen på terapikabelen. Du ser en grønnhvit belegging på to av tilkoblingspinnene, og plasthuset har en fin sprekk nær strekkavlastningen. Pads-tilkoblingen ser ren ut. Hva forårsaker dette?"
+    hint: "Tenk på hva kabelen utsettes for i akuttmottaksmiljøet."
+    choices:
+      - text: "Produksjonsfeil i tilkoblingen — kontakt Stryker for garantibytte"
+        correct: false
+        feedback: "Dette er miljøskade, ikke en produksjonsfeil. Sprekk- og korrosjonsmønsteret er forenlig med kjemisk eksponering."
+      - text: "Korrosjon fra rengjøringsmidler (klorheksidin, hydrogenperoksid-kluter) som trenger inn i tilkoblingen gjennom det sprukne huset"
+        correct: true
+        feedback: "Riktig — akuttmottaksutstyr rengjøres aggressivt mellom pasienter. Rengjøringsmidler trenger inn i sprukne tilkoblingshus og korroderer pinnene. Dette er en av de vanligste årsakene til «Check Pads»-alarmer i miljøer med høy bruksintensitet."
+      - text: "Normal oksidasjon fra fuktighet i sykehusmiljøet"
+        correct: false
+        feedback: "Normal fuktighet gir ikke det grønnhvite korrosjonsmønsteret. Dette er kjemisk korrosjon fra rengjøringsløsninger."
+      - text: "Elektrolytisk korrosjon fra pad-gelrester på tilkoblingen"
+        correct: false
+        feedback: "Pad-gel er ledende, men gir typisk ikke det grønnhvite korrosjonsmønsteret som ses her. Rengjøringsmidler er den vanligste årsaken."
+  - type: lab-handoff
+    id: measurement
+    instruction: "På arbeidsbenken, rengjør de korroderte tilkoblingspinnene med isopropylalkohol og en tilkoblingsrengjøringsbørste. Mål deretter pad-kretsimpedansen ved hjelp av LIFEPAK 15 sin innebygde testmodus med en 50 Ω testlast tilkoblet."
+    simulated_data:
+      tool: "LIFEPAK 15 — Pad-kretsimpedanstest (50 Ω testlast)"
+      readings:
+        - setting: "Før rengjøring — pad-kretsimpedans"
+          delivered: "187 Ω"
+          status: fail
+          error: "«Check Pads»-terskel er 180 Ω"
+          spec: "< 180 Ω med 50 Ω last"
+        - setting: "Etter rengjøring av tilkoblingspinner — pad-kretsimpedans"
+          delivered: "54 Ω"
+          status: pass
+          spec: "< 180 Ω med 50 Ω last"
+        - setting: "Inspeksjon av kabeltilkoblingshus"
+          delivered: "Hårfin sprekk ved strekkavlastning"
+          status: warning
+          error: "Vil tillate rengjøringsmidler å trenge inn igjen"
+        - setting: "Innstilling: 5J testutlading gjennom 50 Ω last"
+          delivered: "4,8J"
+          status: pass
+          spec: "4,25–5,75J"
+  - type: multiple-choice
+    id: diagnosis
+    question: "Rengjøring gjenopprettet impedansen fra 187 Ω til 54 Ω, og enheten fungerer normalt. Men kabelhuset har en hårfin sprekk. Hva er riktig langsiktig løsning?"
+    choices:
+      - text: "Rengjøring løste problemet — returner enheten til drift og planlegg en oppfølgingssjekk om en uke"
+        correct: false
+        feedback: "Rengjøringen er en midlertidig løsning. Det sprukne huset vil la rengjøringsmidler korrodere pinnene igjen innen dager til uker i akuttmottaksmiljøet."
+      - text: "Bytt QUIK-COMBO terapikabelen, returner enheten til drift, og flagg dette som et gjentakende problem for kabelutskiftingsprogrammet"
+        correct: true
+        feedback: "Riktig — kabelen har strukturell skade (sprukket hus) som vil forårsake gjentakende korrosjon. Bytt kabelen nå. Sjekk også de andre LIFEPAK 15-kablene i avdelingen for lignende skade — dette er ofte et flåteomfattende problem."
+      - text: "Påfør silikonforsegling på sprekken og returner til drift"
+        correct: false
+        feedback: "Feltreparasjoner av kabelhus er ikke akseptabelt for livskritisk utstyr. Kabelen må byttes — en forseglet reparasjon kan skjule fremtidige problemer."
+      - text: "Bytt hele enheten — tilkoblingskorrosjon kan ha skadet de interne kretsene"
+        correct: false
+        feedback: "Enheten testet normalt etter kabelrengjøring. Korrosjonen var på kabeltilkoblingen, ikke enhetens interne tilkobling. Kabelbytte er tilstrekkelig."
+learning_points:
+  - text: "«Check Pads»-alarmer skyldes nesten alltid høy impedans i pad-kretsen (tilkoblingskorrosjon, kabelskade eller utgåtte pads), ikke enhetsfeil. Sjekk kabeltilkoblingen først."
+  - text: "Aggressive rengjøringsrutiner i høyakutte områder (akuttmottak, operasjon, intensiv) er den ledende årsaken til tilkoblingskorrosjon på terapikabler. Rengjøringsmidler trenger inn i sprukne eller slitte kabelhus."
+    source: "ECRI Institute farevarsel — rengjøringsrelatert skade på medisinske enhetskabler og tilkoblinger"
+    source_type: incident-data
+  - text: "Test alltid HELE pad-kretsen (enhetstilkobling → kabel → pads eller testlast) etter enhver tilkoblingsreparasjon eller kabelbytte. En motstandsmåling av tilkoblingen alene er ikke tilstrekkelig."
+    source_type: best-practice
+  - text: "IEC 60601-2-4 krever at defibrillatorer detekterer pad-tilkoblingsstatus før utlading tillates. Den typiske impedansterskelen er enhetsspesifikk (LIFEPAK 15: omtrent 180 Ω)."
+    source: "IEC 60601-2-4 §201.12"
+    source_type: standard
+  - text: "Når én kabel svikter på grunn av miljøskade, inspiser alle kabler av samme type og alder i avdelingen. Tilkoblingskorrosjon er ofte et flåteomfattende problem, ikke en enkelthendelse."
+    source_type: best-practice

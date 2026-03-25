@@ -1,0 +1,105 @@
+id: defib-sync-failure
+title: Synchronized Cardioversion Won't Fire
+device: LIFEPAK 15
+category: defibrillator
+level: 2
+estimated_time: 20min
+has_lab_handoff: true
+briefing:
+  caller: Dr. Nilsen, Cardiology
+  location: Cardiac Catheterisation Lab
+  facility: Stavanger University Hospital
+  time: "Wednesday 11:30"
+  message: "I'm trying to cardiovert a patient with atrial flutter, but the LIFEPAK 15 charges up fine and I press the shock button — and nothing happens. It just sits there fully charged. I've tried three times. Unsynchronised shock works if I turn SYNC off, but I need synchronised delivery for this patient. Is there something wrong with the SYNC function?"
+  urgency: high
+  context:
+    - "Patient with atrial flutter requiring synchronised cardioversion"
+    - "Device serial: 45892319"
+    - "Device charges to selected energy without issue"
+    - "Shock delivers normally in unsynchronised (DEFIB) mode"
+    - "SYNC mode — device charges but does not fire when shock button pressed"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "The cardiologist is frustrated and the patient is sedated and waiting. You need to troubleshoot quickly. What's your first assessment?"
+    hint: "In SYNC mode, the device waits for an R-wave detection before allowing discharge. What could prevent R-wave detection?"
+    choices:
+      - text: "The SYNC circuit board is faulty — swap the device for a backup unit"
+        correct: false
+        feedback: "Before assuming a hardware fault, check the signal. SYNC requires the device to detect R-waves — the most common reason for SYNC failure is a signal issue, not a hardware fault."
+      - text: "Check the ECG trace on the LIFEPAK display — look for sync markers on the R-waves and check signal amplitude"
+        correct: true
+        feedback: "Correct — in SYNC mode, the device must detect R-waves and marks them on the display. If you see no sync markers, the device can't find the R-wave, which explains why it won't fire."
+      - text: "Try turning SYNC off and back on to reset the sync algorithm"
+        correct: false
+        feedback: "Worth trying as a quick step, but first look at whether the device is detecting R-waves at all. Cycling SYNC won't help if the underlying signal is inadequate."
+      - text: "Check if the device firmware is up to date"
+        correct: false
+        feedback: "Firmware checks are not appropriate troubleshooting in a time-critical clinical situation. Focus on the signal chain."
+  - type: multiple-choice
+    id: investigation
+    question: "You look at the display: the ECG shows atrial flutter with a rate of ~150 bpm. There are NO sync markers visible on the trace. The lead selector is set to Lead III, and the R-wave amplitude is very small (< 0.3 mV). What's the issue and immediate fix?"
+    hint: "The SYNC algorithm needs a sufficiently tall R-wave to lock onto. Atrial flutter often has sawtooth waves that can confuse R-wave detection."
+    choices:
+      - text: "Switch to a lead with a taller R-wave — try Lead II or modify the gain, and recheck for sync markers"
+        correct: true
+        feedback: "Correct — Lead II typically has the tallest R-wave. In atrial flutter, the sawtooth F-waves can be larger than the R-waves in some leads, confusing the sync algorithm. Switching leads often solves the problem immediately."
+      - text: "Increase the ECG gain setting to amplify the signal"
+        correct: false
+        feedback: "Increasing gain amplifies everything — including the flutter waves and noise. The device's sync algorithm works on the actual signal, not the display scaling. Lead selection is the primary fix."
+      - text: "Apply new electrodes for better signal quality"
+        correct: false
+        feedback: "Electrode quality affects signal noise, not which lead has the tallest R-wave. The issue is lead selection, not electrode contact."
+      - text: "The device is defective — the SYNC circuit can't detect R-waves at this heart rate"
+        correct: false
+        feedback: "The LIFEPAK 15 SYNC function works at rates well above 150 bpm. The issue is R-wave amplitude in the selected lead, not rate."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Back in the workshop, verify the SYNC function: connect the LIFEPAK 15 to the Fluke Impulse 7000DP. Use the built-in ECG simulator to generate a 60 bpm normal sinus rhythm. Test sync delay at 50J. Then test with a simulated atrial flutter at 150 bpm to reproduce the clinical scenario."
+    simulated_data:
+      tool: "Fluke Impulse 7000DP — Synchronisation Delay Test"
+      load: "50 Ω"
+      readings:
+        - setting: "60 bpm NSR, Lead II, 50J — sync delay"
+          delivered: "38 ms"
+          status: pass
+          spec: "≤60 ms"
+        - setting: "60 bpm NSR, Lead II, 50J — sync markers"
+          delivered: "Present on all R-waves"
+          status: pass
+        - setting: "150 bpm atrial flutter, Lead III, 50J — sync markers"
+          delivered: "Absent — no R-wave detection"
+          status: fail
+          error: "F-waves exceed R-wave amplitude in Lead III"
+        - setting: "150 bpm atrial flutter, Lead II, 50J — sync delay"
+          delivered: "42 ms"
+          status: pass
+          spec: "≤60 ms"
+  - type: multiple-choice
+    id: diagnosis
+    question: "The device passes all SYNC tests when an adequate R-wave is present. It fails to detect R-waves in atrial flutter on Lead III because flutter waves exceed R-wave amplitude in that lead. What's your conclusion and recommendation?"
+    choices:
+      - text: "Device is functioning within specification — the clinical issue was lead selection. Educate the clinical team on optimising lead selection for SYNC mode."
+        correct: true
+        feedback: "Correct — this is a use-related issue, not a device fault. The SYNC algorithm performed correctly — it requires an identifiable R-wave. In atrial flutter, lead selection is critical. Document the finding, educate the team, and suggest adding a troubleshooting tip to the department's cardioversion checklist."
+      - text: "Device has a marginal SYNC algorithm — escalate to manufacturer for firmware improvement"
+        correct: false
+        feedback: "The sync function meets IEC 60601-2-4 requirements. No device can sync on a lead where R-waves are smaller than artefact. This is a user education opportunity."
+      - text: "Replace the device — a defibrillator should be able to sync regardless of lead selection"
+        correct: false
+        feedback: "No defibrillator can sync on a lead with inadequate R-wave amplitude. This is a fundamental limitation of all sync algorithms, not a device-specific fault."
+      - text: "Add an external ECG trigger — the internal ECG is not reliable enough for cardioversion"
+        correct: false
+        feedback: "The internal ECG is reliable when the correct lead is selected. An external trigger adds complexity without addressing the root cause."
+learning_points:
+  - text: "SYNC mode failure is most often a signal issue, not a device fault. The defibrillator needs a clearly identifiable R-wave to synchronise — if the R-wave is too small or obscured by arrhythmia, SYNC won't fire."
+  - text: "In atrial flutter, the sawtooth F-waves can be larger than R-waves in certain leads (especially Lead III). Always try Lead II first for synchronised cardioversion — it typically has the tallest R-wave."
+    source_type: best-practice
+  - text: "IEC 60601-2-4 §201.12.4.3 requires sync delay ≤ 60 ms after R-wave peak. But the standard doesn't mandate R-wave detection in all leads under all arrhythmias — adequate signal is a prerequisite."
+    source: "IEC 60601-2-4 §201.12.4.3"
+    source_type: standard
+  - text: "Clinical engineers have a unique educational role: when a 'device fault' turns out to be a use issue, document it and feed it back to clinical training. This prevents repeat calls and improves patient safety."
+    source_type: best-practice
+  - text: "Approximately 15-20% of medical device complaints investigated by clinical engineering turn out to be use-related rather than true device failures."
+    source: "ECRI Institute analysis of device complaint investigations"
+    source_type: incident-data

@@ -1,0 +1,104 @@
+id: us-probe-failure
+title: Probe Failure Investigation
+device: GE LOGIQ E10
+category: ultrasound
+level: 2
+estimated_time: 18min
+has_lab_handoff: true
+briefing:
+  caller: Dr. Strand, Emergency Department
+  location: ED Point-of-Care Ultrasound Station
+  facility: Stavanger University Hospital
+  time: "Saturday 20:00"
+  message: "The linear probe on our ED ultrasound won't produce an image at all — just a grey screen with noise. I need it for a suspected DVT scan. The curvilinear probe works fine on the same machine. We only have one linear probe and it's Saturday night. Any chance you can fix it or do we need to borrow from radiology?"
+  urgency: high
+  context:
+    - "GE LOGIQ E10 in ED — linear probe (L3-12) non-functional"
+    - "Grey screen with noise, no recognizable image"
+    - "Curvilinear probe (C1-6) works normally on same system"
+    - "Saturday night — limited parts/probes available"
+    - "Clinical need: suspected DVT scan"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "The linear probe shows no image but the curvilinear works fine on the same system. This confirms the problem is the probe, not the system. What's the most likely failure point?"
+    hint: "A complete image loss (not just dropouts) suggests a total connection failure rather than gradual element degradation."
+    choices:
+      - text: "Probe connector issue — damaged pins, poor contact, or cable break near the connector preventing any signal from reaching the system"
+        correct: true
+        feedback: "Correct — complete image loss (noise only) typically indicates a total signal path failure. The most common point of failure is the connector (bent/broken pins, corrosion) or a cable break near the strain relief. Element degradation causes partial image loss (dark lines), not total failure."
+      - text: "All piezoelectric elements have failed simultaneously"
+        correct: false
+        feedback: "Simultaneous failure of all elements is extremely unlikely. Even severe probe drops usually damage a portion of the array, not all elements."
+      - text: "The probe is not compatible with this LOGIQ E10"
+        correct: false
+        feedback: "The L3-12 is a standard probe for the LOGIQ E10. If it were incompatible, the system would display an error message, not noise."
+      - text: "The probe's internal EEPROM has been corrupted"
+        correct: false
+        feedback: "EEPROM corruption might cause the system to not recognise the probe (showing an error), but it wouldn't generate a noise image. The system is receiving some signal — it's just not usable."
+  - type: multiple-choice
+    id: investigation
+    question: "You inspect the L3-12 probe. The acoustic lens looks intact, but you notice the cable has a sharp bend near the strain relief where it exits the probe housing. When you straighten the cable, the image briefly appears and then disappears. What does this tell you?"
+    hint: "An intermittent connection that responds to cable position indicates a specific failure location."
+    choices:
+      - text: "The cable has an internal break at the strain relief — the conductors are fractured but the outer jacket is intact"
+        correct: true
+        feedback: "Correct — cable flexion fatigue at the strain relief is the most common location for probe cable failure. The outer jacket is flexible and intact, but the thin internal conductors (128–256 individual wires) fracture from repeated bending. The 'works briefly when straightened' behaviour is classic for this failure."
+      - text: "The connector pins need cleaning — the cable bend is coincidental"
+        correct: false
+        feedback: "If the image reappears when you straighten the cable at the strain relief, the connection at the connector end is irrelevant. The fault is at the bend point."
+      - text: "The probe housing is cracked and moisture has entered"
+        correct: false
+        feedback: "Moisture ingress would cause gradual degradation or electrical safety failure, not the position-dependent intermittent failure you're seeing."
+      - text: "The probe needs to be recalibrated by the system"
+        correct: false
+        feedback: "Recalibration doesn't fix a physical cable break. The intermittent connection is a mechanical fault."
+  - type: lab-handoff
+    id: measurement
+    instruction: "On the bench, perform an electrical safety test on the L3-12 probe, then test cable continuity. For the safety test, use the Fluke ESA615 to measure patient leakage current. For continuity, carefully flex the cable at the strain relief while monitoring the image on the LOGIQ E10."
+    simulated_data:
+      tool: "Fluke ESA615 Safety Test + Cable Continuity Assessment"
+      readings:
+        - setting: "Patient leakage current — L3-12 probe (BF applied part)"
+          delivered: "85 µA"
+          status: warning
+          spec: "≤ 100 µA normal condition"
+          error: "Close to limit — cable damage may compromise insulation"
+        - setting: "Cable continuity — static (cable straight)"
+          delivered: "Intermittent — image appears/disappears"
+          status: fail
+        - setting: "Cable continuity — dynamic (flexing at strain relief)"
+          delivered: "Total loss when bent > 30°"
+          status: fail
+          error: "Internal conductor fracture at strain relief"
+        - setting: "Curvilinear C1-6 probe — leakage current (comparison)"
+          delivered: "22 µA"
+          status: pass
+          spec: "≤ 100 µA normal condition"
+  - type: multiple-choice
+    id: resolution
+    question: "The L3-12 has a confirmed cable break at the strain relief and borderline leakage current (85 µA). It's Saturday night. What's the immediate and long-term plan?"
+    choices:
+      - text: "Immediate: borrow a compatible linear probe from radiology for the weekend. Long-term: send the L3-12 for cable repair (third-party probe repair service), and inspect all frequently used probes for strain relief damage."
+        correct: true
+        feedback: "Correct — the clinical need is urgent (DVT scan), so arrange a loaner. The L3-12 needs professional cable repair — the fractured conductors and elevated leakage current mean it's not safe for patient use even if temporarily functional. Inspect other high-use probes because cable fatigue at the strain relief is a fleet-wide risk."
+      - text: "Tape the cable in a straight position as a temporary fix for the weekend"
+        correct: false
+        feedback: "A probe with compromised insulation (85 µA leakage, close to the 100 µA limit) is not safe for patient use regardless of cable position. The leakage current alone disqualifies it."
+      - text: "Order a new L3-12 probe and use only the curvilinear probe until it arrives"
+        correct: false
+        feedback: "A new probe costs €8,000–15,000 and takes weeks to deliver. Cable repair is much cheaper (€1,000–3,000) and faster (days). The clinical need is tonight — borrow from radiology."
+      - text: "The probe is beyond repair — recommend purchasing a replacement"
+        correct: false
+        feedback: "Cable breaks at the strain relief are a standard repair for third-party probe service companies. Replacement is only needed if the transducer array itself is damaged."
+learning_points:
+  - text: "Cable flexion fatigue at the strain relief is the most common cause of probe failure. The thin internal conductors fracture from repeated bending while the outer jacket remains intact. It presents as intermittent or total image loss."
+  - text: "Probe cables contain 128–256 individual micro-coaxial conductors. They are the most mechanically vulnerable part of the probe. Proper cable management (no tight coiling, no hanging probes by the cable, no rolling over cables with cart wheels) extends probe life significantly."
+    source_type: best-practice
+  - text: "Always perform an electrical safety test on a damaged probe before returning it to service. Cable damage can compromise insulation and elevate patient leakage current above safe limits."
+    source: "IEC 62353 — recurrent test after repair"
+    source_type: standard
+  - text: "Third-party probe repair services can repair cable breaks, replace acoustic lenses, and refurbish connector assemblies at 20–40% of the cost of a new probe. Clinical engineering departments should establish a relationship with a reputable service."
+    source_type: best-practice
+  - text: "When a critical probe fails outside business hours, have a plan: know which departments have compatible probes that can be borrowed, and maintain a probe loaner inventory for high-use specialties."
+    source_type: best-practice

@@ -1,0 +1,108 @@
+id: vent-volume-inaccuracy
+title: Tidalvolum-unøyaktighet
+device: Dräger Evita V500
+category: ventilator
+level: 2
+estimated_time: 20min
+has_lab_handoff: true
+briefing:
+  caller: Dr. Johansen, overlege intensiv
+  location: Kirurgisk intensiv
+  facility: Stavanger universitetssjukehus
+  time: "Torsdag 09:30"
+  message: "Vi har problemer med å avvenne en postoperativ pasient fra respiratoren. Evita V500 viser et tidalvolum på 450 mL i trykkstøttemodus, men pasientens endtidal CO₂ fortsetter å stige — den er på 52 mmHg og stiger. Jeg mistenker at respiratoren rapporterer for høyt levert volum. Kan du ta med en flowanalysator og verifisere?"
+  urgency: medium
+  context:
+    - "Postoperativ pasient, vanskeligheter med avvenning fra respirator"
+    - "Respirator innstilt på trykkstøtte 12 cmH₂O, PEEP 5, FiO₂ 0,35"
+    - "Vist Vt ekspirert: 450 mL"
+    - "Endtidal CO₂: 52 mmHg (normalt 35–45 mmHg) — tyder på hypoventilasjon"
+    - "Stigende CO₂ til tross for tilsynelatende adekvate tidalvolum"
+    - "Serienummer: EV-59023"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "Klinikeren mistenker at respiratoren rapporterer for høyt tidalvolum. Stigende EtCO₂ med tilsynelatende adekvat Vt støtter denne hypotesen. Hva er den mest effektive måten å bekrefte dette på?"
+    hint: "Du trenger en uavhengig måling av det faktiske gassvolumet som når pasienten."
+    choices:
+      - text: "Sjekk respiratorens kalibreringslogg for å se når flowsensorene sist ble kalibrert"
+        correct: false
+        feedback: "Nyttig bakgrunnsinformasjon, men bekrefter ikke om de nåværende avlesningene er nøyaktige. Du trenger en sanntids uavhengig måling."
+      - text: "Plasser VT900A ved pasient-Y-stykket for å uavhengig måle det faktiske leverte tidalvolumet"
+        correct: true
+        feedback: "Riktig — VT900A ved pasient-Y-stykket gir deg en uavhengig måling av den faktiske gassleveransen. Hvis den avviker vesentlig fra respiratorens display, har du bekreftet unøyaktigheten og kan begynne å diagnostisere årsaken."
+      - text: "Bytt til volumstyrt modus for å se om tidalvolumet er mer nøyaktig"
+        correct: false
+        feedback: "Å bytte modus endrer den kliniske behandlingen og forklarer ikke hvorfor flowmålingen er feil. Mål først, deretter feilsøk."
+      - text: "Kjør respiratorens innebygde selvtest for å sjekke sensorkalibrering"
+        correct: false
+        feedback: "Selvtesten sjekker grunnleggende funksjon, men verifiserer ikke målenøyaktighet under faktiske ventilasjonsforhold. En ekstern måling er gullstandarden."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Koble Fluke VT900A in-line ved pasient-Y-stykket. Registrer VT900A-avlesninger sammen med respiratorens display for tidalvolum, topptrykk og PEEP over 10 innåndinger i trykkstøttemodus."
+    simulated_data:
+      tool: "Fluke VT900A Gas Flow Analyzer — in-line ved pasient-Y-stykke"
+      readings:
+        - setting: "Innstilling: Respirator display Vt ekspirert (gjennomsnitt av 10 innåndinger)"
+          delivered: "448 mL"
+          status: warning
+          spec: "Bør samsvare med VT900A innenfor ±10 %"
+        - setting: "Innstilling: VT900A målt Vt ved pasient-Y-stykke (gjennomsnitt av 10 innåndinger)"
+          delivered: "312 mL"
+          status: fail
+          error: "30 % lavere enn respiratorens display"
+        - setting: "Innstilling: Respirator display topptrykk"
+          delivered: "17 cmH₂O"
+          status: pass
+        - setting: "Innstilling: VT900A målt topptrykk ved Y-stykke"
+          delivered: "16,8 cmH₂O"
+          status: pass
+        - setting: "Innstilling: PEEP (begge avlesninger)"
+          delivered: "5,1 cmH₂O"
+          status: pass
+  - type: multiple-choice
+    id: investigation
+    question: "VT900A bekrefter at pasienten bare mottar 312 mL mens respiratoren viser 448 mL — en overrapporteringsfeil på 30 %. Trykkavlesningene samsvarer mellom de to instrumentene. Hva forteller dette avviksmønsteret deg?"
+    hint: "Trykket er nøyaktig, men volumet er feil. Volum beregnes fra flowmåling. Hvor i kretsen måles flow?"
+    choices:
+      - text: "Den ekspiratoriske flowsensoren er kontaminert eller svikter — den leser høyere flow enn reell, noe som gjør at respiratoren overrapporterer ekspirert volum"
+        correct: true
+        feedback: "Riktig — Evita V500 måler ekspirert volum med den ekspiratoriske flowsensoren (varmetrådsanemometer). Fuktighet, sekresjonståke eller biofilm på sensoren gjør at den leser høyere flow enn reell. Trykksensorene er upåvirket fordi de bruker et annet måleprinsipp."
+      - text: "Det er en kretslekkasje som respiratoren ikke oppdager"
+        correct: false
+        feedback: "En kretslekkasje ville fått respiratoren til å UNDERRAPPORTERE ekspirert volum (mindre gass returnerer), ikke overrapportere det. Respiratoren viser MER volum enn faktisk levert."
+      - text: "Respiratorens kompliansekompensasjon er feil"
+        correct: false
+        feedback: "Kompliansekompensasjon påvirker volumleveranse i volumstyrt modus. I trykkstøttemodus målstyrer respiratoren et trykk, og pasientens innsats bestemmer volumet. Problemet er måling, ikke leveranse."
+      - text: "VT900A trenger rekalibrering — den leser for lavt"
+        correct: false
+        feedback: "VT900A ble nylig kalibrert (dette bør du verifisere). Det kliniske bildet (stigende EtCO₂) underbygger VT900A-avlesningen, ikke respiratorens display."
+  - type: multiple-choice
+    id: diagnosis
+    question: "Den ekspiratoriske flowsensoren er kontaminert og overrapporterer ekspirert volum med 30 %. Hva er korrigerende tiltak?"
+    choices:
+      - text: "Rengjør den ekspiratoriske flowsensoren per produsentens prosedyre, rekalibrer og verifiser nøyaktigheten med VT900A"
+        correct: true
+        feedback: "Riktig — den ekspiratoriske flowsensoren fra Dräger kan tas ut, rengjøres med godkjent løsning, tørkes og settes inn igjen. Etter reinstallasjon, kjør sensorkalibrering og verifiser med VT900A. Hvis rengjøring ikke gjenoppretter nøyaktigheten, bytt sensoren."
+      - text: "Bytt den ekspiratoriske flowsensoren umiddelbart — ikke kast bort tid på rengjøring"
+        correct: false
+        feedback: "Rengjøring er anbefalt som første steg og fungerer i de fleste tilfeller. Erstatningssensorer er kanskje ikke umiddelbart tilgjengelige, og rengjøring tar bare 10–15 minutter."
+      - text: "Flytt pasienten til en annen respirator og send denne til produsenten"
+        correct: false
+        feedback: "Den ekspiratoriske flowsensoren er en brukervedlikeholdbar komponent. Rengjøring eller bytte er en rutineoppgave for kliniske ingeniører — produsentinvolvering er ikke nødvendig."
+      - text: "Juster respiratorens volumkalibreringsfaktor for å kompensere for sensorfeilen"
+        correct: false
+        feedback: "Det finnes ingen brukerjusterbar kalibreringsfaktor. Sensoren må lese korrekt — å kompensere for en kjent feil er utrygt fordi feilen vil endre seg over tid."
+learning_points:
+  - text: "Når en respirator viser tilsynelatende adekvate tidalvolum, men pasienten viser tegn på hypoventilasjon (stigende EtCO₂, desaturasjon), mistenk flowsensorfeil. Respiratorens viste volum er bare så nøyaktig som flowsensorene."
+  - text: "Ekspiratoriske flowsensorer (varmetrådsanemometre) er den mest vedlikeholdssensitive komponenten i moderne respiratorer. Fuktighet, sekresjonståke og biofilm gjør at de leser for høyt, noe som gir falskt betryggende volumvisninger."
+    source: "Dräger Evita V500 servicehåndbok — vedlikehold av ekspiratorisk flowsensor"
+    source_type: best-practice
+  - text: "IEC 60601-2-12 krever tidalvolumnøyaktighet på ±10 % eller ±10 mL (det som er størst). En feil på 30 % er et betydelig sikkerhetsavvik som kan skade pasienten."
+    source: "IEC 60601-2-12 §201.12.1"
+    source_type: standard
+  - text: "Verifiser alltid respiratornøyaktighet med en uavhengig ekstern analysator (VT900A eller tilsvarende) ved pasient-Y-stykket. Respiratorens innebygde sensorer kan ikke verifisere seg selv."
+    source_type: best-practice
+  - text: "Flowsensorkontaminasjon er den vanligste årsaken til unøyaktig volummåling i respiratorer. Regelmessige rengjøringsintervall (per produsentens plan) og rengjøring etter hver pasient forebygger de fleste hendelser."
+    source: "ECRI Institute — beste praksis for respiratorvedlikehold"
+    source_type: incident-data

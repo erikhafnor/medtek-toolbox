@@ -1,0 +1,109 @@
+id: defib-battery-failure
+title: Batterisvikt midt i gjenopplivning
+device: LIFEPAK 15
+category: defibrillator
+level: 2
+estimated_time: 20min
+has_lab_handoff: true
+briefing:
+  caller: Anestesisykepleier Erik, operasjonsstue 2
+  location: Operasjonsstue 2
+  facility: Stavanger universitetssjukehus
+  time: "Torsdag 14:20"
+  message: "Vi hadde en hjertestans under kirurgi, og LIFEPAK 15 slo seg av etter to sjokk. Vi byttet til reserveenheten og fikk ROSC, men batteriet på den som sviktet viste 3 av 4 streker på indikatoren før den døde. Dette er andre gang denne måneden et batteri har sviktet uventet. Kan du hente den og finne ut hva som skjer?"
+  urgency: high
+  context:
+    - "Hjertestans under elektiv kirurgi — pasienten gjenopplivet med reserveenhet"
+    - "Serienummer: 45892307"
+    - "Batteriindikator viste 3/4 streker før avslåing"
+    - "Andre uventede batterisvikt denne måneden på operasjonsavdelingen"
+    - "Batteri installert for 2,5 år siden, daglig bruk"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "Pasienten er stabil og operasjonsavdelingen bruker reserveenheten. Du har den sviktede LIFEPAK 15 på arbeidsbenken. Hva er din første prioritet?"
+    hint: "Tenk på hvilke data enheten selv kan gi deg, og hva operasjonsavdelingen trenger fra deg akkurat nå."
+    choices:
+      - text: "Åpne batterirommet og inspiser cellene visuelt"
+        correct: false
+        feedback: "Fysisk inspeksjon forklarer ikke hvorfor indikatoren viste 3/4 streker. Du trenger elektronisk diagnostikk først."
+      - text: "Bytt batteri med et nytt og returner enheten til operasjonsavdelingen umiddelbart"
+        correct: false
+        feedback: "Operasjonsavdelingen har allerede reserveenheten. Du må forstå hvorfor dette har skjedd to ganger — bare å bytte forhindrer ikke en tredje svikt."
+      - text: "Sjekk enhetens hendelseslogg for batteridata, deretter utfør en full batterikapasitetstest"
+        correct: true
+        feedback: "Riktig — hendelsesloggen fanger spenning, temperatur og ladesyklustall. Kombinert med en kapasitetstest kan du fastslå om dette er et batteriproblem, et BMS-kalibreringsproblem eller en ladefeil."
+      - text: "Kontakt Stryker teknisk support for en erstatningsenhet"
+        correct: false
+        feedback: "For tidlig — du trenger diagnostiske data før du eskalerer. Dette kan være et batteri-, BMS- eller ladeproblem."
+  - type: multiple-choice
+    id: investigation
+    question: "Hendelsesloggen viser: batteri på 11,1V da enheten slo seg av (nominelt 11,1V = ~20 % kapasitet), men drivstoffmåleren rapporterte 75 %. Batteriet har 847 ladesykluser. Hva forteller dette avviket deg?"
+    hint: "Drivstoffmålerchipet estimerer gjenværende kapasitet basert på en innlært modell. Hva skjer med den modellen over tid?"
+    choices:
+      - text: "Drivstoffmålerchipet har mistet kalibreringen — det overestimerer gjenværende kapasitet fordi cellekapasiteten har degradert"
+        correct: true
+        feedback: "Riktig — litiumionceller mister kapasitet med alder og sykling, men drivstoffmålerens innlærte modell følger ikke nødvendigvis denne degraderingen nøyaktig. Måleren 'tror' batteriet holder mer enn det faktisk kan."
+      - text: "Batteriet er i orden, men laderen lader det ikke fullt"
+        correct: false
+        feedback: "Hvis laderen underlader, ville drivstoffmåleren vist lavere ladetilstand, ikke høyere — avviket går feil vei."
+      - text: "Det er en programvarefeil i strømstyringsfastvaren"
+        correct: false
+        feedback: "Mulig men usannsynlig — den spenningsbaserte avslåingen ved 11,1V er en maskinvaresikkerhetsmekanisme. Problemet er kapasitetsestimeringen, ikke avslåingslogikken."
+      - text: "Batterikontakten har intermitterende kontakt som forårsaker spenningsfall"
+        correct: false
+        feedback: "Intermitterende kontakt ville forårsake plutselige avslåinger ved varierende ladenivåer, ikke et konsistent avvik mellom måler og virkelighet."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Utfør en full batterikapasitetstest: lad batteriet fullt i LIFEPAK 15, deretter kjør en kontrollert utlading ved nominell belastning ved hjelp av enhetens innebygde selvtestmodus. Registrer faktisk driftstid og sammenlign med produsentens spesifikasjon."
+    simulated_data:
+      tool: "LIFEPAK 15 batterikapasitetstest — full lade-/utladingssyklus"
+      readings:
+        - setting: "Fulladingsspenning"
+          delivered: "12,6V"
+          status: pass
+          spec: "12,6V nominelt"
+        - setting: "Ladesykluser (fra BMS)"
+          delivered: "847 sykluser"
+          status: warning
+          spec: "Beregnet for 500 sykluser"
+        - setting: "Nominell driftstid (kontinuerlig overvåking)"
+          delivered: "2,8 timer"
+          status: fail
+          spec: "≥5,5 timer"
+        - setting: "Antall 200J-sjokk fra full lading"
+          delivered: "89 sjokk"
+          status: fail
+          spec: "≥250 sjokk"
+        - setting: "Drivstoffmåler rapportert SoC ved faktisk 50 % kapasitet"
+          delivered: "82 %"
+          status: fail
+          error: "Måleren overestimerer med ~32 %"
+  - type: multiple-choice
+    id: diagnosis
+    question: "Batteriet lader til full spenning (12,6V) men leverer bare 51 % av nominell kapasitet, og drivstoffmåleren overrapporterer med 32 %. Batteriet har 847 sykluser (beregnet for 500). Hva er rotårsaken og korrigerende tiltak?"
+    choices:
+      - text: "Celledegradring fra overskredet nominell sykluslevetid — bytt batteri og kalibrer drivstoffmåleren på nytt batteri"
+        correct: true
+        feedback: "Riktig — ved 170 % av nominelt syklustall har litiumioncellene betydelig redusert kapasitet. Drivstoffmålerens innlærte modell er trent på den opprinnelige kapasiteten og har ikke fulgt degraderingen. Bytt batteri, og det nye batteriets drivstoffmåler starter med en nøyaktig modell."
+      - text: "Defekt BMS-chip — bytt BMS-kortet og behold eksisterende celler"
+        correct: false
+        feedback: "BMS rapporterer spenning korrekt (12,6V lading, 11,1V avslåing). Problemet er at cellene ikke lenger kan holde sin nominelle kapasitet."
+      - text: "Degradert ladekrets — batteriet blir ikke fulladet"
+        correct: false
+        feedback: "Batteriet når full ladespenning (12,6V), så laderen fungerer korrekt. Problemet er at full spenning ikke lenger tilsvarer full kapasitet i aldrede celler."
+      - text: "Fastvareoppdatering nødvendig for å rekalibrere kapasitetsalgoritmen"
+        correct: false
+        feedback: "Drivstoffmåleren lærer fra det spesifikke batteriet som er installert. En fastvareoppdatering kan forbedre fremtidig kalibrering, men det grunnleggende problemet er at disse cellene har passert sin brukbare levetid."
+learning_points:
+  - text: "Batteridrivstoffmålere kan gi farlig misvisende informasjon i aldrede batterier. Måleren estimerer kapasitet basert på spenning og en innlært modell, men litiumiondegradring reduserer faktisk kapasitet uten at modellen nødvendigvis oppdateres proporsjonalt."
+  - text: "Litiumionbatterier i kliniske miljøer med høy bruksintensitet degraderer ofte før utskiftingsintervallet basert på kalenderalder. Følg med på ladesykluser, ikke bare installasjonsdato."
+    source: "FDA MAUDE — batterirelaterte defibrillatorklager utgjør ~18 % av alle uønskede hendelser med defibrillatorer"
+    source_type: incident-data
+  - text: "Etter en batterirelatert hendelse, test ALLE batterier av samme alder/parti i avdelingen. Én svikt signaliserer ofte at en kohort nærmer seg slutten av levetiden."
+    source_type: best-practice
+  - text: "IEC 60601-1 §16 krever at batteridrevet livsopprettholdende utstyr indikerer når gjenværende batterikapasitet er utilstrekkelig for sikker drift. En unøyaktig drivstoffmåler kan bryte dette kravet."
+    source: "IEC 60601-1 §16 (ME-utstyr drevet av intern elektrisk kraftkilde)"
+    source_type: standard
+  - text: "Dokumenter feilmønsteret (overrapportering fra måler, faktisk kapasitet, syklustall) og anbefal en syklusbasert utskiftingspolicy for avdelingen — f.eks. bytt ved 500 sykluser uavhengig av tilsynelatende tilstand."
+    source_type: best-practice

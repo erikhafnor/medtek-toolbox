@@ -1,0 +1,105 @@
+id: vent-leak-alarm
+title: Circuit Leak Alarm on the ICU Ventilator
+device: Dräger Evita V500
+category: ventilator
+level: 1
+estimated_time: 15min
+has_lab_handoff: true
+briefing:
+  caller: Nurse Hilde, Medical ICU
+  location: ICU Bed 8
+  facility: Stavanger University Hospital
+  time: "Sunday 03:20"
+  message: "The Evita V500 on bed 8 keeps alarming for a circuit leak — it says leak volume is 400 mL and the alarm goes off every 30 seconds. The patient is on volume control at 500 mL tidal volume and seems okay, but the expired volume shows only 320 mL. I've checked the circuit and can't find anything obviously disconnected. Can you come check?"
+  urgency: high
+  context:
+    - "Patient on volume-controlled ventilation, Vt 500 mL, PEEP 8, FiO₂ 0.4"
+    - "Leak alarm: 400 mL leak volume (inspired minus expired)"
+    - "Expired Vt on display: 320 mL (should be ~500 mL)"
+    - "No visible disconnection in the circuit"
+    - "Active heated humidifier (Fisher & Paykel MR850)"
+    - "Night shift — limited staff available"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "You arrive at the bedside. The ventilator displays Vt inspired 510 mL, Vt expired 320 mL, leak 37%. The patient's SpO₂ is 94% (was 97%). What's your systematic approach to finding the leak?"
+    hint: "Work from the ventilator outward through the circuit to the patient. A leak this large should be audible or detectable by feel."
+    choices:
+      - text: "Start by checking the expiratory flow sensor — a faulty sensor could show a false leak"
+        correct: false
+        feedback: "The SpO₂ drop suggests a real leak is occurring, not just a sensor error. Check the circuit first."
+      - text: "Systematically check every connection from the ventilator outlet through the circuit to the patient: ventilator port, humidifier inlet/outlet, circuit connections at wye, ET tube cuff"
+        correct: true
+        feedback: "Correct — work methodically from the ventilator outward. Check each connection by feel (leaking gas) and by ear (hissing). The falling SpO₂ confirms this is a real leak affecting ventilation."
+      - text: "Replace the entire breathing circuit with a new one"
+        correct: false
+        feedback: "Replacing the whole circuit at 3 AM is time-consuming and may not be necessary. A systematic check will identify the specific leak point faster."
+      - text: "Increase the tidal volume to 700 mL to compensate for the leak"
+        correct: false
+        feedback: "Compensating for a leak without fixing it is unsafe — the leak could worsen, and over-pressurising a leaky circuit wastes gas without reliably ventilating the patient."
+  - type: multiple-choice
+    id: investigation
+    question: "You check all visible connections — they're tight. You listen along the circuit and hear a faint hissing near the humidifier. The Fisher & Paykel MR850 humidifier chamber has a hairline crack in the base where it seats into the heater plate. What's the immediate action?"
+    hint: "The patient needs continued ventilation. What's the fastest way to restore circuit integrity?"
+    choices:
+      - text: "Replace the humidifier chamber with a new one from the ward stock"
+        correct: true
+        feedback: "Correct — humidifier chambers are readily available consumables. Swap it out, reconnect, and verify the leak resolves. The cracked chamber is the most common cause of 'invisible' circuit leaks because the crack is hidden under the heater plate."
+      - text: "Seal the crack with medical-grade tape as a temporary fix"
+        correct: false
+        feedback: "Taping a cracked humidifier chamber is not acceptable — the tape won't seal reliably under pressure, and the adhesive may contaminate the gas path. Chambers are cheap and readily available."
+      - text: "Bypass the humidifier temporarily using an HME (heat-moisture exchanger) filter"
+        correct: false
+        feedback: "An HME is a valid backup, but since replacement chambers are available on the ward, a direct swap is faster and restores the intended humidification method."
+      - text: "Turn off the humidifier heater to reduce the pressure differential and reduce the leak"
+        correct: false
+        feedback: "Turning off the heater doesn't fix the crack. The leak is caused by the physical break in the chamber wall, not by heating."
+  - type: lab-handoff
+    id: measurement
+    instruction: "After replacing the humidifier chamber, verify circuit integrity. Occlude the patient wye piece and run the ventilator's built-in leak test. Then confirm gas delivery accuracy by measuring delivered tidal volume with the Fluke VT900A at the patient wye."
+    simulated_data:
+      tool: "Dräger Evita V500 Circuit Leak Test + Fluke VT900A Verification"
+      readings:
+        - setting: "Circuit leak test (occluded wye, 60 cmH₂O)"
+          delivered: "45 mL/min"
+          status: pass
+          spec: "< 200 mL/min"
+        - setting: "Vt delivered at patient wye (set 500 mL)"
+          delivered: "495 mL"
+          status: pass
+          spec: "450–550 mL (±10%)"
+        - setting: "Vt expired (ventilator display)"
+          delivered: "488 mL"
+          status: pass
+        - setting: "Leak volume (ventilator display)"
+          delivered: "12 mL (2%)"
+          status: pass
+          spec: "< 10% for clinical acceptability"
+  - type: multiple-choice
+    id: diagnosis
+    question: "The leak is resolved — circuit leak test passes, delivered Vt is accurate, and the patient's SpO₂ has returned to 97%. What should you document and recommend?"
+    choices:
+      - text: "Document the fault, recommend the ward check humidifier chambers during daily circuit checks, and inspect the remaining chamber stock for similar cracks"
+        correct: true
+        feedback: "Correct — document the root cause (cracked humidifier chamber), recommend adding chamber inspection to the daily ventilator circuit check, and inspect the remaining stock. Hairline cracks in humidifier chambers are a known issue, especially if chambers are reprocessed or roughly handled during setup."
+      - text: "Document the repair and close the call — this is a routine consumable issue"
+        correct: false
+        feedback: "A circuit leak on a ventilated patient is never 'routine.' The 37% leak caused clinically significant desaturation. Document it properly and add a preventive recommendation."
+      - text: "File a manufacturer report against Fisher & Paykel for the cracked chamber"
+        correct: false
+        feedback: "A single cracked chamber is likely a handling or age issue, not a manufacturer defect. Check the stock first — if you find a pattern of cracks in the same lot, then a manufacturer report is warranted."
+      - text: "Recommend switching to HME filters instead of active humidification to eliminate this failure mode"
+        correct: false
+        feedback: "Active humidification is clinically preferred for most ICU patients, especially those on prolonged ventilation. Eliminating a clinical benefit to avoid a maintenance issue is disproportionate."
+learning_points:
+  - text: "Humidifier chamber cracks are one of the most common causes of 'invisible' ventilator circuit leaks. The crack is often hidden under the heater plate and not visible without removing the chamber."
+  - text: "A large circuit leak reduces delivered tidal volume, which can cause hypoxia and hypercapnia. The ventilator alarm is a critical safety feature — never silence it without investigating."
+    source: "IEC 60601-2-12 §201.13 — alarm conditions for ventilators"
+    source_type: standard
+  - text: "When troubleshooting circuit leaks, work systematically from the ventilator outward: ventilator port → humidifier inlet → humidifier chamber → humidifier outlet → inspiratory limb → wye → expiratory limb → expiratory valve → ET tube cuff."
+    source_type: best-practice
+  - text: "Circuit leak alarms account for approximately 25% of all ventilator-related clinical engineering calls. Most are caused by loose connections or damaged consumables, not ventilator faults."
+    source: "ECRI Institute — ventilator alarm management"
+    source_type: incident-data
+  - text: "Always verify the fix with both the ventilator's built-in leak test AND an independent measurement (VT900A) at the patient wye. The built-in test confirms circuit integrity; the independent measurement confirms delivery accuracy."
+    source_type: best-practice

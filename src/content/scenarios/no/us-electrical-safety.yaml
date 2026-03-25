@@ -1,0 +1,110 @@
+id: us-electrical-safety
+title: Elektrisk sikkerhet etter væskesøl
+device: GE LOGIQ E10
+category: ultrasound
+level: 2
+estimated_time: 18min
+has_lab_handoff: true
+briefing:
+  caller: Sykepleier Berit, Fødeavdelingen
+  location: Ultralydrom, Fødeavdelingen
+  facility: Stavanger universitetssjukehus
+  time: "Fredag 13:30"
+  message: "En pasient veltet ved et uhell et stort glass vann over ultralydapparatet. Det meste gikk over tastaturområdet og noe rant ned langs siden av enheten. Vi slo det av umiddelbart og trakk ut støpselet. Maskinen fungerte fint før. Vi trenger den til obstetriske undersøkelser — vi har pasienter bestilt hele ettermiddagen. Er det trygt å slå den på igjen?"
+  urgency: medium
+  context:
+    - "Vann sølt over tastatur og sidepanel på GE LOGIQ E10"
+    - "Personalet slo av og trakk ut støpselet umiddelbart"
+    - "Mengde: cirka 300 mL vann"
+    - "Systemet fungerte normalt før sølet"
+    - "Obstetriske ultralydtimer bestilt for ettermiddagen"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "Personalet gjorde riktig — slå av umiddelbart. Spørsmålet er: når er det trygt å slå på igjen? Hva er din tilnærming?"
+    hint: "Vann og nettilkoblet medisinsk utstyr er et alvorlig elektrisk sikkerhetsproblem. Tenk på hvor vannet kan ha tatt veien inne i kabinettet."
+    choices:
+      - text: "Vent 24 timer til det tørker, slå deretter på igjen"
+        correct: false
+        feedback: "Å vente på fordamping er ikke tilstrekkelig — vann kan samle seg inne i chassiset på steder som ikke tørker lett, og mineralrester fra springvann kan skape ledende baner selv etter tørking."
+      - text: "Inspiser chassiset for vanninntrenging, tørk tilgjengelige områder, utfør deretter en komplett elektrisk sikkerhetstest (IEC 62353) før du kobler til strømnettet"
+        correct: true
+        feedback: "Riktig — du kan ikke trygt slå på et væskeeksponert apparat uten å først verifisere elektrisk sikkerhet. Inspiser for synlig vann inne i ventiler/porter, tørk tilgjengelige områder, test deretter jordtilkobling, kapslingslekkasje og pasientlekkasje før du kobler til igjen. Sikkerhetstesten er portvokteren."
+      - text: "Slå den på og sjekk om den fungerer — moderne utstyr har sølebeskyttelse"
+        correct: false
+        feedback: "Ekstremt farlig. Selv IPX1-klassifisert utstyr (beskyttelse mot dryppende vann) er ikke konstruert for et søl på 300 mL. Vann kan ha nådd interne komponenter og kan forårsake kortslutning eller elektrisk støt ved oppstart."
+      - text: "Send det direkte til GE for profesjonell vurdering"
+        correct: false
+        feedback: "GE-vurdering tar uker. Du kan utføre sikkerhetsevalueringen internt. Hvis apparatet består sikkerhetstesting og fungerer normalt, er det ikke behov for produsentinvolvering."
+  - type: multiple-choice
+    id: investigation
+    question: "Du inspiserer LOGIQ E10. Tastaturområdet har overflatefuktighet (du tørker det). Du sjekker ventilasjonsspalterne på høyre side — du kan se vanndråper på interne komponenter gjennom ventilen. Hva betyr dette for sikkerhetsvurderingen din?"
+    hint: "Synlig vann på interne komponenter betyr at isolasjonen mellom nettilkoblede kretser og tilgjengelige deler kan være kompromittert."
+    choices:
+      - text: "IKKE slå på. Åpne dekslene (per servicemanualtilgangsprosedyrer), tørk forsiktig interne komponenter med lofrie kluter og trykkluft, la det deretter lufttørke 2–4 timer før sikkerhetstest"
+        correct: true
+        feedback: "Riktig — med synlig intern fuktighet må du fysisk tørke komponentene før sikkerhetstest. Trykkluft (lavt trykk, uten fuktighet) fjerner oppsamlet vann; lofrie kluter absorberer rester. Gi ekstra lufttørketid. Først deretter kan du gå videre med elektrisk sikkerhetstest."
+      - text: "Vannet på interne komponenter er minimalt — gå videre med sikkerhetstesten"
+        correct: false
+        feedback: "Testing med vann fortsatt til stede på interne komponenter kan gi falskt forhøyede lekkasjeverdier OG risikerer å skade testutstyret eller skape ytterligere kortslutninger."
+      - text: "Apparatet må til et produsentservicesenter — å åpne deksler ugyldiggjør garantien"
+        correct: false
+        feedback: "Kliniske ingeniøravdelinger åpner rutinemessig apparatdeksler for inspeksjon og vedlikehold. Dette er en standard serviceaktivitet dekket under IEC 62353. De fleste servicemanualer dokumenterer tilgangsprosedyren."
+      - text: "Bruk en varmepistol for å fremskynde tørkeprosessen"
+        correct: false
+        feedback: "Varmepistoler kan skade temperaturfølsom elektronikk, smelte plastkomponenter og skape brannrisiko. Bruk trykkluft ved romtemperatur og naturlig lufttørking."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Etter grundig tørking og 2 timer med luftsirkulasjon, utfør en komplett IEC 62353 elektrisk sikkerhetstest med Fluke ESA615. Test systemet og hver probe. Slå også på og kjør en funksjonskontroll med CIRS-fantomet."
+    simulated_data:
+      tool: "Fluke ESA615 — IEC 62353 Elektrisk sikkerhetstest (etter søl)"
+      readings:
+        - setting: "Beskyttende jordresistans"
+          delivered: "0,08 Ω"
+          status: pass
+          spec: "< 0,3 Ω"
+        - setting: "Kapslingslekkasjestrøm (normalforhold)"
+          delivered: "78 µA"
+          status: pass
+          spec: "< 100 µA"
+        - setting: "Kapslingslekkasjestrøm (åpen jord SFC)"
+          delivered: "320 µA"
+          status: pass
+          spec: "< 500 µA"
+        - setting: "Pasientlekkasje — C5-1-probe (BF tilkoblingsdel)"
+          delivered: "45 µA"
+          status: pass
+          spec: "< 100 µA normal"
+        - setting: "Funksjonstest — B-modus-bilde på CIRS-fantom"
+          delivered: "Normal bildekvalitet, ingen artifakter"
+          status: pass
+        - setting: "Tastatur- og styrkulefunksjon"
+          delivered: "Alle taster og styrekule responderer"
+          status: pass
+  - type: multiple-choice
+    id: resolution
+    question: "Alle sikkerhetstester bestått og systemet fungerer normalt. Hva er riktig handlemåte?"
+    choices:
+      - text: "Sett tilbake i drift med dokumentasjon. Planlegg en oppfølgende sikkerhetstest om 1 måned for å kontrollere for forsinkede korrosjonseffekter. Monter et beskyttende tastaturdeksel for å forebygge fremtidige søl."
+        correct: true
+        feedback: "Riktig — apparatet består alle tester og kan settes tilbake i drift. Dokumenter hendelsen, tørkeprosessen og alle testresultater. En oppfølgingstest om 1 måned fanger opp eventuelle forsinkede effekter fra mineralrester eller langsom korrosjon. Et tastaturdeksel er et enkelt, billig forebyggende tiltak."
+      - text: "Sett tilbake i drift umiddelbart — testene bestod"
+        correct: false
+        feedback: "Dokumentasjon er essensielt. Uten registreringer finnes det ingen bevis på at apparatet ble korrekt vurdert etter væskeeksponeringen. En oppfølgingstest er også fornuftig for å fange opp forsinkede effekter."
+      - text: "Hold det ute av drift i en uke for å sikre at det er fullstendig tørt"
+        correct: false
+        feedback: "Hvis det består den elektriske sikkerhetstesten og fungerer normalt, er det trygt å bruke. Forlenget nedetid uten klinisk begrunnelse kaster bort ressurser og forsinker pasientbehandling."
+      - text: "Bytt tastaturenheten som en forholdsregel før tilbake i drift"
+        correct: false
+        feedback: "Tastaturet fungerer og apparatet består sikkerhetstesting. Forebyggende utskifting er ikke berettiget. Oppfølgingstesten vil fange opp eventuelle forsinkede problemer."
+learning_points:
+  - text: "Etter ethvert væskesøl på medisinsk utstyr: slå av umiddelbart, trekk ut støpselet, inspiser for intern vanninntrenging, tørk grundig, og utfør en komplett IEC 62353 elektrisk sikkerhetstest før du kobler til strømnettet igjen."
+  - text: "Slå aldri på et væskeeksponert apparat uten sikkerhetstest. Vann på interne strømførende komponenter kan forårsake kortslutning, elektrisk støt eller brann. Den elektriske sikkerhetstesten er portvokteren for tilbake i drift."
+    source: "IEC 62353 — test etter hendelse som kan påvirke elektrisk sikkerhet"
+    source_type: standard
+  - text: "Planlegg en oppfølgende elektrisk sikkerhetstest 1 måned etter en væskeeksponeringshendelse. Springvann inneholder mineraler som etterlater ledende rester når det tørker, og langsom korrosjon kan utvikle seg uker etter den opprinnelige hendelsen."
+    source_type: best-practice
+  - text: "Dokumenter alt: hendelsesbeskrivelse, tørkeprosedyre, alle testresultater og beslutningen om tilbake i drift. Denne registreringen er essensiell for regulatorisk etterlevelse og for forsvar hvis spørsmål oppstår senere."
+    source_type: best-practice
+  - text: "Forebyggende tiltak for ultralydrom: tastaturdeksler, koppholdere borte fra utstyret og personalbevissthet. Et tastaturdeksel til 100 kr forebygger et utstyrstap til 500 000 kr."
+    source_type: best-practice

@@ -1,0 +1,103 @@
+id: monitor-alarm-fatigue
+title: Alarm Fatigue Investigation
+device: Philips IntelliVue MX800
+category: patient-monitor
+level: 2
+estimated_time: 20min
+has_lab_handoff: false
+briefing:
+  caller: Head Nurse Marit, Medical Ward 4A
+  location: Ward 4A Nursing Station
+  facility: Stavanger University Hospital
+  time: "Monday 09:00"
+  message: "We have a serious alarm fatigue problem on our ward. Our nurses are reporting over 200 alarms per shift, and most of them are meaningless — the monitors are constantly beeping for heart rates of 58 or SpO₂ of 93%, which are completely normal for our patient population. Last week, a genuine bradycardia alarm was missed because the nurse assumed it was another false alarm. We need help configuring these monitors properly."
+  urgency: medium
+  context:
+    - "Medical ward — general internal medicine patients"
+    - "12 Philips IntelliVue MX800 bedside monitors"
+    - "Nurses report ~200+ alarms per shift"
+    - "Most alarms are non-actionable (parameters within normal clinical range)"
+    - "Genuine bradycardia alarm missed last week"
+    - "Current alarm thresholds appear to be ICU-level defaults"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "The nurses are overwhelmed by alarms and a real event was missed. This is a system-level problem. What's your first step?"
+    hint: "Before changing any settings, you need data. What information do you need to understand the scope of the problem?"
+    choices:
+      - text: "Pull the alarm log data from all 12 monitors for the past week — analyse alarm frequency, types, and which thresholds are most commonly violated"
+        correct: true
+        feedback: "Correct — data-driven alarm management. The alarm logs will tell you exactly which parameters are generating the most alarms, which thresholds are being crossed, and the time pattern. This evidence guides targeted changes rather than guessing."
+      - text: "Immediately widen all alarm thresholds to reduce the alarm volume"
+        correct: false
+        feedback: "Changing thresholds without data is dangerous — you might widen limits that are already appropriate, or miss parameters that need adjustment. Data first."
+      - text: "Switch all monitors from ICU mode to a general ward profile"
+        correct: false
+        feedback: "A ward profile may exist, but you need to verify it matches this ward's patient population. Data analysis first, then targeted configuration."
+      - text: "Disable advisory (yellow) alarms and keep only critical (red) alarms"
+        correct: false
+        feedback: "Disabling all advisory alarms removes early warning capability. Many yellow alarms are clinically relevant — the issue is which ones, not the category."
+  - type: multiple-choice
+    id: data-analysis
+    question: "You pull the alarm data. In the past week: 8,400 total alarms across 12 monitors. The top generators are: HR low (35% — threshold 50 bpm), SpO₂ low (28% — threshold 95%), NIBP high (15% — threshold 140/90), and arrhythmia (12% — mostly PVCs). The ward's typical patients are elderly with baseline HR 55–65 and SpO₂ 91–94%. What does this tell you?"
+    hint: "Compare the alarm thresholds to the ward's actual patient population. Where is the mismatch?"
+    choices:
+      - text: "The alarm thresholds are set for ICU/cardiac patients, not for an elderly medical ward population. HR 50 and SpO₂ 95% are too tight for this patient group."
+        correct: true
+        feedback: "Correct — the default thresholds are appropriate for an ICU where patients need tight monitoring, but not for a general medical ward where elderly patients normally have lower heart rates and marginally lower SpO₂. The thresholds need to be adjusted to match the clinical context — wider limits for parameters that are normally variant in this population."
+      - text: "The patients are sicker than the nursing staff realises — these alarms may be clinically significant"
+        correct: false
+        feedback: "The head nurse explicitly stated HR 58 and SpO₂ 93% are normal for their population. With 200+ alarms per shift and a 85%+ non-actionable rate, this is clearly an alarm configuration problem."
+      - text: "The monitors have been reset to factory defaults after a software update"
+        correct: false
+        feedback: "This may explain how the ICU-level thresholds ended up on a medical ward, but the cause doesn't change the solution — the thresholds need to be adjusted."
+      - text: "The arrhythmia algorithm is too sensitive and should be turned off"
+        correct: false
+        feedback: "Arrhythmia detection is only 12% of alarms and may include clinically relevant events. Don't disable it — review the sensitivity settings."
+  - type: multiple-choice
+    id: solution-design
+    question: "You need to create a customised alarm profile for Ward 4A. Working with the head nurse and the attending physician, what threshold changes are appropriate?"
+    hint: "Alarm thresholds should reflect clinical decision points — the values at which the nurse needs to take action — not normal physiological variation."
+    choices:
+      - text: "HR low: 50 → 45 bpm, SpO₂ low: 95% → 88%, NIBP high: 140/90 → 160/100, PVC alarm: reduce to > 10/min. Document the rationale and get physician sign-off."
+        correct: true
+        feedback: "Correct — these thresholds reflect clinical decision points for an elderly medical ward: HR < 45 needs assessment, SpO₂ < 88% needs intervention, BP > 160/100 needs attention, and isolated PVCs are not actionable. Crucially, the changes are documented with clinical rationale and approved by the responsible physician."
+      - text: "Disable all yellow alarms and keep red alarms with current thresholds"
+        correct: false
+        feedback: "This is a blunt instrument — some yellow alarms are important (e.g., trending SpO₂ decline). Adjusting thresholds is more precise than disabling categories."
+      - text: "Set all thresholds to the widest possible values to eliminate false alarms"
+        correct: false
+        feedback: "The widest values eliminate false alarms but also miss real events. Thresholds should match clinical decision points, not be maximally permissive."
+      - text: "Keep current thresholds but add a 2-minute delay before alarming"
+        correct: false
+        feedback: "A delay on critical alarms (like true asystole) is dangerous. The problem is the thresholds, not the response time."
+  - type: multiple-choice
+    id: implementation
+    question: "You've agreed on new thresholds with the clinical team. How do you implement the changes across all 12 monitors safely?"
+    choices:
+      - text: "Create a named alarm profile in the Philips system (e.g., 'Ward 4A Medical'), deploy it to all 12 monitors via the central station, verify each monitor, and document the profile in the ward's equipment policy"
+        correct: true
+        feedback: "Correct — a named profile ensures consistency and makes it easy to reset if a patient needs tighter monitoring (e.g., switch to the ICU profile for a deteriorating patient, then back). Deploying via the central station ensures all monitors get the same settings. Documentation ensures the rationale is preserved."
+      - text: "Manually adjust each monitor's thresholds one at a time"
+        correct: false
+        feedback: "Manual adjustment of 12 monitors is error-prone and time-consuming. If a monitor is replaced or reset, the custom thresholds are lost. A profile-based approach is far more reliable."
+      - text: "Configure the new thresholds on one monitor and let the nurses copy the settings to the others"
+        correct: false
+        feedback: "Clinical engineering should maintain control of alarm configuration. Delegating to nursing staff risks inconsistency and configuration errors."
+      - text: "Deploy the changes overnight to minimise disruption"
+        correct: false
+        feedback: "Alarm changes should be deployed during daytime when senior clinical staff can observe the impact. Overnight deployment means inexperienced staff deal with any unintended consequences."
+learning_points:
+  - text: "Alarm fatigue is a system-level patient safety hazard. When most alarms are non-actionable, staff habituate and may miss or delay response to real events. Clinical engineering has a key role in alarm configuration and optimisation."
+  - text: "Alarm thresholds should match clinical decision points for the specific patient population, not factory defaults. ICU thresholds on a general ward generate massive non-actionable alarm volumes."
+    source: "The Joint Commission — National Patient Safety Goal on alarm management"
+    source_type: best-practice
+  - text: "Data-driven alarm management: analyse alarm logs before making changes. Identify the top alarm generators, compare thresholds to the population's baseline, and target changes where they'll have the most impact."
+    source_type: best-practice
+  - text: "All alarm threshold changes must be documented with clinical rationale and approved by the responsible physician. Clinical engineering implements and deploys; clinical staff defines the clinical appropriateness."
+    source_type: best-practice
+  - text: "ECRI Institute identifies alarm hazards as the number one health technology hazard. Studies show that 72–99% of clinical alarms are non-actionable, with alarm fatigue contributing to missed events and patient deaths."
+    source: "ECRI Institute — Top 10 Health Technology Hazards; Sendelbach & Funk (2013) alarm fatigue literature review"
+    source_type: incident-data
+  - text: "Named alarm profiles (per-unit or per-ward) are more maintainable than per-monitor configuration. They survive monitor replacements, resets, and software updates."
+    source_type: best-practice

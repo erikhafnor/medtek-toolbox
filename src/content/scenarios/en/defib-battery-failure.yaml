@@ -1,0 +1,109 @@
+id: defib-battery-failure
+title: Battery Failure Mid-Resuscitation
+device: LIFEPAK 15
+category: defibrillator
+level: 2
+estimated_time: 20min
+has_lab_handoff: true
+briefing:
+  caller: Anesthesia nurse Erik, OR 2
+  location: Operating Room 2
+  facility: Stavanger University Hospital
+  time: "Thursday 14:20"
+  message: "We had a cardiac arrest during surgery and the LIFEPAK 15 shut down after two shocks. We swapped to the backup unit and got ROSC, but the battery on the failed unit showed 3 bars out of 4 on the indicator before it died. This is the second time this month a battery has failed on us unexpectedly. Can you pull it and figure out what's going on?"
+  urgency: high
+  context:
+    - "Cardiac arrest during elective surgery — patient resuscitated with backup unit"
+    - "Device serial: 45892307"
+    - "Battery indicator showed 3/4 bars before shutdown"
+    - "Second unexpected battery failure this month in OR department"
+    - "Battery installed 2.5 years ago, daily use"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "The patient is stable and the OR is using the backup unit. You have the failed LIFEPAK 15 on your bench. What's your first priority?"
+    hint: "Think about what data the device itself can tell you, and what the OR department needs from you right now."
+    choices:
+      - text: "Open the battery compartment and visually inspect the cells"
+        correct: false
+        feedback: "Physical inspection won't explain why the indicator showed 3/4 bars. You need electronic diagnostics first."
+      - text: "Replace the battery with a new one and return the device to OR immediately"
+        correct: false
+        feedback: "The OR already has the backup unit. You need to understand why this happened twice — just swapping won't prevent a third failure."
+      - text: "Check the device event log for battery data, then perform a full battery capacity test"
+        correct: true
+        feedback: "Correct — the event log captures voltage, temperature, and cycle count. Combined with a capacity test, you can determine if this is a battery issue, a BMS calibration problem, or a charging fault."
+      - text: "Contact Stryker technical support for a replacement unit"
+        correct: false
+        feedback: "Premature — you need diagnostic data before escalating. This could be a battery, BMS, or charging issue."
+  - type: multiple-choice
+    id: investigation
+    question: "The event log shows: battery at 11.1V when device shut down (nominal 11.1V = ~20% capacity), but the fuel gauge reported 75%. The battery has 847 charge cycles. What does this discrepancy tell you?"
+    hint: "The fuel gauge chip estimates remaining capacity based on a learned model. What happens to that model over time?"
+    choices:
+      - text: "The fuel gauge chip has lost calibration — it overestimates remaining capacity because cell capacity has degraded"
+        correct: true
+        feedback: "Correct — lithium-ion cells lose capacity with age and cycling, but the fuel gauge's learned model may not track this degradation accurately. The gauge 'thinks' the battery holds more than it actually can."
+      - text: "The battery is fine but the charger is not fully charging it"
+        correct: false
+        feedback: "If the charger were undercharging, the fuel gauge would show a lower state of charge, not higher — the discrepancy goes the wrong way."
+      - text: "There is a software bug in the power management firmware"
+        correct: false
+        feedback: "Possible but unlikely — the voltage-based shutdown at 11.1V is a hardware safety feature. The issue is with capacity estimation, not shutdown logic."
+      - text: "The battery connector has intermittent contact causing voltage drops"
+        correct: false
+        feedback: "Intermittent contact would cause sudden shutdowns at variable charge levels, not a consistent gauge-vs-reality mismatch."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Perform a full battery capacity test: fully charge the battery in the LIFEPAK 15, then run a controlled discharge at rated load using the device's built-in self-test mode. Record actual run time and compare to the manufacturer specification."
+    simulated_data:
+      tool: "LIFEPAK 15 Battery Capacity Test — Full Charge/Discharge Cycle"
+      readings:
+        - setting: "Full charge voltage"
+          delivered: "12.6V"
+          status: pass
+          spec: "12.6V nominal"
+        - setting: "Charge cycles (from BMS)"
+          delivered: "847 cycles"
+          status: warning
+          spec: "Rated for 500 cycles"
+        - setting: "Rated run time (continuous monitoring)"
+          delivered: "2.8 hours"
+          status: fail
+          spec: "≥5.5 hours"
+        - setting: "Number of 200J shocks from full charge"
+          delivered: "89 shocks"
+          status: fail
+          spec: "≥250 shocks"
+        - setting: "Fuel gauge reported SoC at actual 50% capacity"
+          delivered: "82%"
+          status: fail
+          error: "Gauge overestimates by ~32%"
+  - type: multiple-choice
+    id: diagnosis
+    question: "The battery charges to full voltage (12.6V) but delivers only 51% of rated capacity, with the fuel gauge overreporting by 32%. The battery has 847 cycles (rated for 500). What is the root cause and corrective action?"
+    choices:
+      - text: "Battery cell degradation from exceeding rated cycle life — replace battery and recalibrate fuel gauge on new battery"
+        correct: true
+        feedback: "Correct — at 170% of rated cycles, the lithium-ion cells have significantly reduced capacity. The fuel gauge's learned model is trained on the original capacity and hasn't tracked the degradation. Replace battery, and the new battery's fuel gauge will start with an accurate model."
+      - text: "Defective BMS chip — replace the BMS board and keep the existing cells"
+        correct: false
+        feedback: "The BMS is reporting voltage correctly (12.6V charge, 11.1V shutdown). The problem is that the cells can't hold their rated capacity anymore."
+      - text: "Charger circuit degradation — the battery isn't being fully charged"
+        correct: false
+        feedback: "The battery reaches full charge voltage (12.6V), so the charger is working correctly. The issue is that full voltage no longer equals full capacity in aged cells."
+      - text: "Firmware update needed to recalibrate the capacity algorithm"
+        correct: false
+        feedback: "The fuel gauge learns from the specific battery installed. A firmware update might improve future calibration, but the fundamental issue is that these cells are past their useful life."
+learning_points:
+  - text: "Battery fuel gauge displays can be dangerously misleading in aged batteries. The gauge estimates capacity based on voltage and a learned model, but lithium-ion degradation reduces actual capacity while the model may not update proportionally."
+  - text: "Lithium-ion batteries in high-use clinical environments often degrade before the calendar-age replacement interval. Track charge cycles, not just installation date."
+    source: "FDA MAUDE — battery-related defibrillator complaints represent ~18% of all defibrillator adverse events"
+    source_type: incident-data
+  - text: "After a battery-related incident, test ALL batteries of the same age/lot in the department. One failure often signals a cohort approaching end-of-life."
+    source_type: best-practice
+  - text: "IEC 60601-1 §16 requires that battery-powered life-support devices indicate when remaining battery capacity is insufficient for safe operation. An inaccurate fuel gauge can violate this requirement."
+    source: "IEC 60601-1 §16 (ME equipment powered by an internal electrical power source)"
+    source_type: standard
+  - text: "Document the failure pattern (gauge overreporting, actual capacity, cycle count) and recommend a cycle-based replacement policy for the department — e.g., replace at 500 cycles regardless of apparent condition."
+    source_type: best-practice

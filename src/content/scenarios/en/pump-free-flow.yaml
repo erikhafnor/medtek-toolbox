@@ -1,0 +1,128 @@
+id: pump-free-flow
+title: Free-Flow Incident Investigation
+device: B. Braun Infusomat Space
+category: infusion-pump
+level: 3
+estimated_time: 25min
+has_lab_handoff: true
+briefing:
+  caller: Patient Safety Officer Silje
+  location: Conference Room, Clinical Engineering
+  facility: Stavanger University Hospital
+  time: "Tuesday 09:00"
+  message: "We had a serious incident last night on Ward 5C. A patient received an uncontrolled bolus of morphine — estimated 8 mg over 2–3 minutes instead of 2 mg/h. The patient required naloxone and was transferred to ICU. The nurse reported she opened the pump door to change the syringe, and when she reloaded and closed the door, the fluid ran through by gravity before the pump engaged. We need a full investigation before this morning's safety huddle at 11:00."
+  urgency: high
+  context:
+    - "Patient received ~8 mg morphine in 2–3 minutes (intended: 2 mg/h)"
+    - "Naloxone administered, patient transferred to ICU, now stable"
+    - "Nurse opened pump door to change syringe/set"
+    - "Fluid ran by gravity before pump re-engaged"
+    - "Device serial: SP-20941, B. Braun Infusomat Space"
+    - "Administration set: B. Braun IV standard set with anti-siphon valve"
+    - "Safety huddle at 11:00 — need preliminary findings"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "This is a serious patient safety incident. You have 2 hours before the safety huddle. How do you structure your investigation?"
+    hint: "Incident investigation requires preserving evidence, testing the specific device and consumables involved, and separating device failure from process failure."
+    choices:
+      - text: "Test the pump immediately to check if the anti-free-flow mechanism works"
+        correct: false
+        feedback: "Don't test yet — you'll destroy evidence. First, preserve the state of the device and consumables exactly as found. Photograph everything before touching it."
+      - text: "Interview the nurse first to understand exactly what happened step-by-step"
+        correct: false
+        feedback: "Important, but not first. The device and set should be secured and preserved before anything else — they are your physical evidence."
+      - text: "Secure and photograph the device and administration set as-found, then interview the nurse, then test"
+        correct: true
+        feedback: "Correct — evidence preservation first: photograph the pump, set, clamp positions, door latch, and label the set. Then interview to understand the sequence of events. Only then test the device with a new set to separate device failure from set/process issues."
+      - text: "Pull the device from service and send it to B. Braun for manufacturer investigation"
+        correct: false
+        feedback: "You need preliminary findings in 2 hours. Manufacturer investigation takes weeks. Test in-house first, then decide if manufacturer involvement is needed."
+  - type: multiple-choice
+    id: investigation
+    question: "You've photographed everything. The nurse explains: she opened the door, removed the empty bag, hung a new bag, threaded the set through the pump, and closed the door. She noticed fluid dripping fast from the chamber for about 2–3 minutes before she realised the pump hadn't started. You examine the set and notice the roller clamp is fully open. The anti-siphon valve on the set looks intact. What's the critical question?"
+    hint: "Free-flow prevention relies on multiple barriers. Which ones should have been active during the set change?"
+    choices:
+      - text: "Why didn't the nurse close the roller clamp before opening the pump door?"
+        correct: false
+        feedback: "This is a contributing factor, but blaming the nurse misses the system-level question. The pump's anti-free-flow mechanism should prevent gravity flow even if the clamp is open."
+      - text: "Did the pump's anti-free-flow clamp (door interlock mechanism) engage properly when the door was closed?"
+        correct: true
+        feedback: "Correct — the Infusomat Space has a built-in anti-free-flow clamp that should compress the tubing when the door opens and only release when the pump actively engages. If this mechanism failed, gravity flow would occur regardless of whether the nurse closed the roller clamp."
+      - text: "Was the anti-siphon valve in the administration set defective?"
+        correct: false
+        feedback: "Anti-siphon valves prevent siphoning (pressure-driven free-flow when the bag is above the patient), but they typically don't prevent gravity flow when the set is completely open. The pump's door clamp is the primary barrier."
+      - text: "Did the nurse use the correct administration set for this pump?"
+        correct: false
+        feedback: "Set compatibility is worth checking, but even an incorrect set should not allow free-flow if the pump's door interlock mechanism is functioning correctly."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Test the pump's anti-free-flow mechanism: with a fluid-filled set loaded, open the pump door and observe whether the tubing is clamped. Then close the door WITHOUT starting the pump and check if gravity flow is blocked. Measure with the IDA-5."
+    simulated_data:
+      tool: "IDA-5 + Visual Inspection — Anti-Free-Flow Mechanism Test"
+      readings:
+        - setting: "Door open — anti-free-flow clamp engagement"
+          delivered: "Clamp partially engaged — tubing not fully occluded"
+          status: fail
+          error: "Gap visible between clamp faces"
+        - setting: "Door open — gravity flow rate through set"
+          delivered: "42 mL/min (uncontrolled)"
+          status: fail
+          spec: "0 mL/min (fully occluded)"
+        - setting: "Door closed, pump OFF — gravity flow"
+          delivered: "0 mL/min"
+          status: pass
+        - setting: "Door latch mechanism inspection"
+          delivered: "Clamp spring corroded, reduced tension"
+          status: fail
+          error: "Spring force insufficient to fully occlude tubing"
+        - setting: "Pump running, door closed — flow accuracy at 2 mL/h"
+          delivered: "2.1 mL/h"
+          status: pass
+          spec: "1.9–2.1 mL/h (±5%)"
+  - type: multiple-choice
+    id: root-cause
+    question: "The anti-free-flow clamp doesn't fully occlude the tubing when the door is open due to a corroded spring. Once the door is closed and the pump runs, flow is accurate. What's your root cause analysis?"
+    choices:
+      - text: "Root cause: corroded anti-free-flow clamp spring (device failure). Contributing factors: nurse did not close roller clamp (process gap), no independent check before restarting infusion (system gap)"
+        correct: true
+        feedback: "Correct — this is a multi-factor incident. The device failure (corroded spring) defeated the primary safety barrier. The open roller clamp removed the secondary barrier. And the lack of a verification step (checking for flow before pump engagement) removed the last opportunity to catch the error. All three factors must be addressed."
+      - text: "Root cause: nurse error — failure to close roller clamp before opening pump door"
+        correct: false
+        feedback: "Human error is a contributing factor, not a root cause. The anti-free-flow mechanism exists specifically because humans will sometimes forget to clamp. Blaming the nurse doesn't fix the system."
+      - text: "Root cause: manufacturer design defect — the spring should be stainless steel, not corrodible"
+        correct: false
+        feedback: "Material choice is a factor, but the corroded spring should have been caught during preventive maintenance. The PM programme may need revision."
+      - text: "Root cause: inadequate preventive maintenance — the spring corrosion should have been detected"
+        correct: false
+        feedback: "PM is one contributing factor, but the root cause is the specific mechanism failure. A complete analysis addresses the device failure, the process gap, and the system gap."
+  - type: multiple-choice
+    id: corrective-action
+    question: "What corrective actions do you recommend for the safety huddle?"
+    choices:
+      - text: "Immediate: test ALL Infusomat Space pumps in the hospital for anti-free-flow clamp function. Short-term: add clamp spring inspection to PM checklist. Long-term: reinforce roller clamp procedure and add a post-set-change verification step"
+        correct: true
+        feedback: "Correct — addresses all three levels: (1) fleet inspection catches other pumps with the same issue, (2) PM checklist prevents recurrence, (3) process improvements add defence-in-depth. Also recommend filing a manufacturer report (MIR/MDR) and checking for field safety notices."
+      - text: "Replace all Infusomat Space pumps with a newer model that has a more robust anti-free-flow design"
+        correct: false
+        feedback: "Replacing the entire fleet is disproportionate. The mechanism works when maintained — this was a maintenance gap, not a fundamental design flaw."
+      - text: "Retrain all nursing staff on the proper procedure for changing administration sets"
+        correct: false
+        feedback: "Training alone doesn't address the device failure or the PM gap. A corrective action that relies solely on human performance will eventually fail again."
+      - text: "Add a warning label to each pump reminding nurses to close the roller clamp before opening the door"
+        correct: false
+        feedback: "Warning labels are the weakest form of risk control. The hierarchy of controls prioritises engineering controls (fix the clamp) over administrative controls (labels, training)."
+learning_points:
+  - text: "Free-flow prevention in infusion pumps relies on defence-in-depth: the pump's anti-free-flow clamp (engineering control), the roller clamp (user action), and post-change verification (process control). When investigating an incident, assess all barriers."
+  - text: "IEC 60601-2-24 §201.12.4.3 requires that means shall be provided to prevent uncontrolled flow of infusion fluid. This is a mandatory safety feature — a failed anti-free-flow mechanism is a serious compliance violation."
+    source: "IEC 60601-2-24 §201.12.4.3"
+    source_type: standard
+  - text: "Free-flow incidents are consistently among the top 10 health technology hazards identified by ECRI Institute. They are almost always multi-causal — a device failure combined with a process gap."
+    source: "ECRI Institute — Top 10 Health Technology Hazards"
+    source_type: incident-data
+  - text: "In incident investigations, preserve evidence before testing. Photograph the device, set, clamp positions, and label everything. Your photographs are primary evidence if the investigation escalates to regulatory reporting."
+    source_type: best-practice
+  - text: "Root cause analysis should identify system-level causes, not blame individuals. Human error is always a contributing factor, never a root cause — ask 'why was the error possible?' not 'who made the error?'"
+    source_type: best-practice
+  - text: "After a serious incident, test the entire fleet of the same device model. If one pump has a corroded spring, others of the same age/environment likely have the same issue."
+    source_type: best-practice

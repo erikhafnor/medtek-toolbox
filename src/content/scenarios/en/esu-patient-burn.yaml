@@ -1,0 +1,128 @@
+id: esu-patient-burn
+title: Patient Burn at Return Electrode Site
+device: Erbe VIO 300 D
+category: electrosurgery
+level: 3
+estimated_time: 25min
+has_lab_handoff: true
+briefing:
+  caller: OR Manager Tone
+  location: Clinical Engineering Office
+  facility: Stavanger University Hospital
+  time: "Wednesday 08:00"
+  message: "We had a patient burn incident yesterday in OR 3. During a laparoscopic cholecystectomy, the patient sustained a second-degree burn at the return electrode site on the left thigh. The surgical team says the REM alarm never sounded. The patient is stable but will need wound care. Risk management wants a full device investigation today. The generator and all accessories have been impounded and are waiting for you in the workshop."
+  urgency: high
+  context:
+    - "Patient sustained second-degree burn at return electrode site during laparoscopic cholecystectomy"
+    - "Surgery duration: 2 hours 15 minutes"
+    - "REM alarm reportedly did not activate"
+    - "Generator: Erbe VIO 300 D, serial VIO-38945"
+    - "Return electrode: Erbe NESSY split-pad, lot 2025-08-143"
+    - "All equipment impounded for investigation"
+steps:
+  - type: multiple-choice
+    id: evidence-preservation
+    question: "The generator, cables, return electrode pad, and active electrode are in the workshop. How do you begin the investigation?"
+    hint: "This is a patient harm incident. Evidence handling matters — your findings may be needed for a regulatory report or legal review."
+    choices:
+      - text: "Photograph all equipment as-received, document serial numbers, lot numbers, and condition, then develop a structured test plan"
+        correct: true
+        feedback: "Correct — document everything before touching it. Photograph the return electrode pad (both sides), the cable connectors, the generator display/settings, and any visible damage. Record all identifying information. This creates a chain of evidence for the regulatory report."
+      - text: "Test the CQM function immediately to see if it's working"
+        correct: false
+        feedback: "Don't test yet — you need to document the as-found condition first. Testing may change the state of the evidence (e.g., clearing error logs, changing settings)."
+      - text: "Interview the surgical team first to understand what happened"
+        correct: false
+        feedback: "Interviews are important but should happen in parallel with evidence preservation. The physical evidence must be documented before it degrades — the pad adhesive dries out, connector states change."
+      - text: "Send the generator directly to Erbe for manufacturer analysis"
+        correct: false
+        feedback: "You need to do your own investigation first. Manufacturer analysis takes weeks and you need preliminary findings today."
+  - type: multiple-choice
+    id: investigation
+    question: "You've photographed everything. The return electrode pad shows: full adhesion on the medial half, but the lateral half has a fold — the pad was creased during application, reducing the effective contact area by approximately 40%. The CQM connector on the pad cable shows no visible damage. What do you investigate next?"
+    hint: "The folded pad reduced contact area. The question is: why didn't CQM detect this and alarm?"
+    choices:
+      - text: "Test the CQM circuit: does the generator properly detect high impedance and alarm when the return electrode contact is compromised?"
+        correct: true
+        feedback: "Correct — the critical question is whether CQM was functional. A folded pad with 40% less contact area should have raised impedance above the CQM threshold. Either CQM failed, or the remaining 60% contact area kept impedance below the alarm threshold while allowing dangerous current density."
+      - text: "Measure the output power to see if it was set too high"
+        correct: false
+        feedback: "Power setting is a contributing factor to assess, but the primary question is why the safety system (CQM) didn't prevent the burn."
+      - text: "Check if the pad lot has been subject to a recall"
+        correct: false
+        feedback: "Worth checking in parallel, but the physical evidence (folded pad) suggests an application issue, not a pad manufacturing defect."
+      - text: "Send the pad to a lab for gel conductivity analysis"
+        correct: false
+        feedback: "Lab analysis takes days and the gel is already drying. The visible fold is the most likely contributing factor. Test the CQM system first."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Test the Erbe VIO 300 D CQM function using the Fluke QA-ES III. Test at multiple return electrode impedance levels to map the alarm threshold. Then simulate the incident conditions: test with a 60% contact area (using the QA-ES III's variable impedance)."
+    simulated_data:
+      tool: "Fluke QA-ES III — CQM Function and Threshold Mapping"
+      load: "200 Ω"
+      readings:
+        - setting: "CQM alarm threshold — full contact (20 Ω pad impedance)"
+          delivered: "No alarm — CQM indicator green"
+          status: pass
+        - setting: "CQM alarm threshold — 50% contact (75 Ω pad impedance)"
+          delivered: "No alarm — CQM indicator green"
+          status: warning
+          error: "Impedance below alarm threshold"
+        - setting: "CQM alarm threshold — 30% contact (120 Ω pad impedance)"
+          delivered: "CQM alarm at 135 Ω"
+          status: pass
+          spec: "135 ± 10 Ω"
+        - setting: "Simulated 60% contact (55 Ω pad impedance) — 80 W cut for 5 s"
+          delivered: "No alarm — but current density at pad exceeds safe limit"
+          status: fail
+          error: "CQM impedance below alarm, but contact area insufficient for safe current density"
+        - setting: "HF leakage current — active to return"
+          delivered: "42 mA"
+          status: pass
+          spec: "≤ 150 mA"
+  - type: multiple-choice
+    id: root-cause
+    question: "The CQM system is functioning within specification — it alarms at 135 Ω as designed. But with 60% pad contact (55 Ω), the impedance stays below the threshold. The burn occurred because current density was dangerously high at the reduced contact area, despite impedance being within the 'safe' CQM range. What's the root cause?"
+    choices:
+      - text: "Multi-factor: the folded pad reduced contact area below the safe minimum, but CQM impedance remained below the alarm threshold. CQM monitors impedance, not contact area directly — it has a detection gap for partial contact loss."
+        correct: true
+        feedback: "Correct — this is a known limitation of impedance-based REM systems. A folded or bunched pad can maintain low total impedance while concentrating current in a smaller area. CQM detected no problem because the impedance was below threshold, but the current density at the remaining contact area was high enough to cause thermal injury. The root cause is pad misapplication combined with the inherent limitation of impedance-based monitoring."
+      - text: "CQM system failure — the alarm threshold should be lower to catch 60% contact loss"
+        correct: false
+        feedback: "The CQM threshold is set per the manufacturer's design and meets IEC requirements. Setting it lower would cause excessive false alarms. The issue isn't the threshold — it's that impedance alone can't fully characterise contact quality."
+      - text: "Surgeon error — the power setting was too high for the procedure"
+        correct: false
+        feedback: "80 W is a normal setting for laparoscopic surgery. The power setting is a contributing factor but not the root cause. The burn would not have occurred with proper pad application."
+      - text: "Pad manufacturing defect — the adhesive was defective on the lateral half"
+        correct: false
+        feedback: "The photographs showed a fold in the pad, not an adhesion defect. The pad was mechanically creased during application."
+  - type: multiple-choice
+    id: corrective-action
+    question: "What corrective actions do you recommend?"
+    choices:
+      - text: "Immediate: visual pad inspection protocol after application (check for folds, wrinkles, full contact). Long-term: add pad application verification to the surgical safety checklist. File a manufacturer incident report (MIR) and regulatory report."
+        correct: true
+        feedback: "Correct — the corrective actions address the controllable factor (pad application quality) while acknowledging the CQM limitation. A visual inspection after pad application takes seconds and catches folds/wrinkles that CQM cannot detect. The MIR and regulatory report ensure the incident is tracked and the manufacturer is aware."
+      - text: "Replace all Erbe VIO generators with a competitor that has more sensitive REM monitoring"
+        correct: false
+        feedback: "All impedance-based REM systems have this same limitation. Switching brands doesn't address the root cause (pad application quality)."
+      - text: "Add a thermal camera to detect hot spots at the return electrode site during surgery"
+        correct: false
+        feedback: "Interesting research concept but not practical for routine surgery. The simpler intervention (visual pad inspection) addresses the root cause."
+      - text: "Retrain all OR staff on return electrode application and close the investigation"
+        correct: false
+        feedback: "Training alone is insufficient — you also need a process change (checklist item) and regulatory reporting. Training without system changes has limited long-term effectiveness."
+learning_points:
+  - text: "Impedance-based REM/CQM systems monitor total impedance, not contact area. A partially detached pad can maintain impedance below the alarm threshold while allowing dangerous current density. Visual inspection after pad application is an essential second layer of protection."
+  - text: "Return electrode burns are one of the most common electrosurgical injuries. They typically involve pad misapplication (folds, wrinkles, partial detachment) combined with prolonged surgery at moderate-to-high power."
+    source: "ECRI Institute — electrosurgical burn prevention"
+    source_type: incident-data
+  - text: "IEC 60601-2-2 §201.12.4.4 requires return electrode monitoring but acknowledges that impedance monitoring has limitations. The standard requires the system to alarm when impedance exceeds the threshold — it does not guarantee burn prevention in all scenarios."
+    source: "IEC 60601-2-2 §201.12.4.4"
+    source_type: standard
+  - text: "Patient harm incidents require formal investigation: evidence preservation, device testing, root cause analysis, corrective actions, and regulatory reporting (MIR/MDR). Clinical engineering's investigation report is primary evidence."
+    source_type: best-practice
+  - text: "When investigating incidents, separate device failure from use-related causes. In this case, the device worked within specification — the safety gap was in the application process. Both types of causes need corrective action."
+    source_type: best-practice
+  - text: "The hierarchy of controls applies: engineering controls (CQM) caught the most severe cases but had a gap. Administrative controls (visual inspection checklist) fill the gap. Both layers are needed."
+    source_type: best-practice

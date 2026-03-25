@@ -1,0 +1,109 @@
+id: pump-occlusion-alarm
+title: False Occlusion Alarms on the Ward
+device: B. Braun Infusomat Space
+category: infusion-pump
+level: 1
+estimated_time: 15min
+has_lab_handoff: true
+briefing:
+  caller: Nurse Marte, Surgical Ward 3A
+  location: Ward 3A, Nursing Station
+  facility: Stavanger University Hospital
+  time: "Monday 22:15"
+  message: "We've had three pumps alarm for occlusion tonight on different patients, but the lines are all clear — no kinks, no clamps closed. The nurses keep silencing the alarm and restarting, and it runs for 10–15 minutes before alarming again. We've swapped one of the pumps already and the replacement does the same thing. It's waking patients up and the staff is frustrated."
+  urgency: medium
+  context:
+    - "Three B. Braun Infusomat Space pumps affected"
+    - "All running normal saline at 100–125 mL/h"
+    - "Occlusion alarms occurring every 10–15 minutes"
+    - "Lines visually clear, clamps open"
+    - "One pump already swapped — replacement has same issue"
+    - "New batch of IV administration sets delivered last week"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "Multiple pumps showing the same false occlusion alarm, including a replacement unit. The problem follows the sets, not the pumps. What's your first hypothesis?"
+    hint: "When the same problem appears on multiple devices, think about what they share — consumables, environment, or configuration."
+    choices:
+      - text: "A batch of defective IV administration sets — incorrect tubing diameter or material"
+        correct: true
+        feedback: "Correct — when multiple pumps (including a replacement) show the same problem with different patients, the common factor is the consumable. A new batch of sets with slightly different tubing compliance or diameter can cause systematic pressure build-up triggering occlusion alarms."
+      - text: "Environmental issue — ward temperature is affecting pump performance"
+        correct: false
+        feedback: "Temperature can affect flow rates slightly, but wouldn't cause occlusion alarms on multiple pumps simultaneously."
+      - text: "All three pumps need recalibration — they've drifted together"
+        correct: false
+        feedback: "Three pumps drifting identically at the same time is extremely unlikely. The replacement pump showing the same issue confirms it's not a pump problem."
+      - text: "Nursing staff are loading the sets incorrectly"
+        correct: false
+        feedback: "Possible for one pump, but unlikely for three pumps with different nurses. And the replacement pump was presumably loaded by someone aware of the issue."
+  - type: multiple-choice
+    id: investigation
+    question: "You bring one of the affected pumps and a set from the new batch to the workshop. You also bring a set from the previous batch (found in the store). What test do you run?"
+    hint: "You need to compare the pump's behaviour with the old sets versus the new sets, and measure the actual pressure at which the alarm triggers."
+    choices:
+      - text: "Run both sets at 100 mL/h and measure the downstream pressure with the IDA-5"
+        correct: true
+        feedback: "Correct — the IDA-5 in pressure mode will show you the actual pressure generated during infusion. If the new sets generate higher back-pressure at the same flow rate, you've found the cause."
+      - text: "Measure the tubing inner diameter of both sets with calipers"
+        correct: false
+        feedback: "Useful supporting evidence, but tubing compliance matters as much as diameter. The IDA-5 test will show the functional impact."
+      - text: "Load the new set and run the pump self-test"
+        correct: false
+        feedback: "The self-test checks pump mechanism function, not set compatibility. You need to measure actual infusion pressure."
+      - text: "Contact B. Braun to check for a service bulletin on the Infusomat Space"
+        correct: false
+        feedback: "Worth doing in parallel, but you need diagnostic data first. The issue is likely set-related, not pump-related."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Using the IDA-5 Infusion Device Analyzer, run the B. Braun Infusomat Space at 100 mL/h with both the old batch set and the new batch set. Record downstream pressure during steady-state infusion and the pressure at which the occlusion alarm triggers."
+    simulated_data:
+      tool: "IDA-5 Infusion Device Analyzer — Pressure and Flow Test"
+      readings:
+        - setting: "Old batch set @ 100 mL/h — steady-state pressure"
+          delivered: "285 mmHg"
+          status: pass
+          spec: "< 500 mmHg"
+        - setting: "Old batch set @ 100 mL/h — occlusion alarm"
+          delivered: "Did not alarm in 60 min"
+          status: pass
+        - setting: "New batch set @ 100 mL/h — steady-state pressure"
+          delivered: "465 mmHg"
+          status: warning
+          error: "63% higher than old set"
+        - setting: "New batch set @ 100 mL/h — occlusion alarm"
+          delivered: "Alarm at 502 mmHg after 12 min"
+          status: fail
+          spec: "Alarm threshold set at 500 mmHg"
+        - setting: "New batch set — tubing wall thickness"
+          delivered: "0.9 mm (old batch: 0.7 mm)"
+          status: warning
+          error: "Thicker walls reduce compliance"
+  - type: multiple-choice
+    id: diagnosis
+    question: "The new batch sets generate 63% higher back-pressure (465 vs 285 mmHg), triggering the 500 mmHg occlusion alarm. The tubing wall is 0.9 mm vs 0.7 mm. What's the root cause and corrective action?"
+    choices:
+      - text: "The new batch sets have stiffer (less compliant) tubing that generates higher pressure in the pump mechanism — quarantine the batch and revert to the previous set supplier/lot"
+        correct: true
+        feedback: "Correct — the thicker tubing walls are less compliant, so the peristaltic mechanism generates higher pressure to achieve the same flow. When this pressure approaches the occlusion alarm threshold, normal pressure fluctuations trigger false alarms. Quarantine the batch, switch back, and file a supplier quality report."
+      - text: "Raise the occlusion alarm threshold to 700 mmHg to accommodate the new sets"
+        correct: false
+        feedback: "Raising the threshold masks the problem and delays detection of real occlusions. High thresholds also increase bolus-on-release volume, which is a patient safety concern (IEC 60601-2-24)."
+      - text: "The pump mechanism needs adjustment to work with the new tubing"
+        correct: false
+        feedback: "The pump is designed for sets that meet specific compliance specifications. Adjusting the pump to compensate for out-of-spec sets would affect accuracy with all other sets."
+      - text: "Both sets are acceptable — the alarm threshold needs recalibration"
+        correct: false
+        feedback: "The alarm threshold is correct. The new sets operate too close to the threshold, which is a set quality issue, not a pump calibration issue."
+learning_points:
+  - text: "When multiple pumps show the same problem, look at the consumables first. Administration set changes (new supplier, new lot, different tubing material) are a common cause of fleet-wide infusion pump issues."
+  - text: "Tubing compliance significantly affects pump back-pressure. A seemingly minor change in wall thickness (0.2 mm) caused a 63% pressure increase — enough to trigger false occlusion alarms."
+    source: "IEC 60601-2-24 §201.12.1 — accuracy requirements are tested with manufacturer-specified administration sets"
+    source_type: standard
+  - text: "Never raise occlusion alarm thresholds to compensate for set incompatibility. Higher thresholds delay real occlusion detection and increase bolus-on-release volume, both of which are patient safety risks."
+    source: "IEC 60601-2-24 §201.12.4.4 — bolus after occlusion release shall not exceed specified limits"
+    source_type: standard
+  - text: "When investigating fleet-wide alarms, always test with the IDA-5 using both the suspect consumable and a known-good reference. Comparative data is more persuasive than a single measurement when communicating findings to purchasing and nursing leadership."
+    source_type: best-practice
+  - text: "File a supplier quality report and involve the procurement department. Clinical engineering has a critical gatekeeper role in consumable quality — a change that seems cosmetic to purchasing can have significant clinical impact."
+    source_type: best-practice

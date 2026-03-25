@@ -1,0 +1,107 @@
+id: ecg-false-asystole
+title: False Asystole Alarm
+device: Philips IntelliVue MX800
+category: patient-monitor
+level: 1
+estimated_time: 12min
+has_lab_handoff: true
+briefing:
+  caller: Nurse Ragnhild, Cardiac Ward 2B
+  location: Ward 2B, Room 204
+  facility: Stavanger University Hospital
+  time: "Wednesday 06:30"
+  message: "The patient monitor in room 204 alarmed for asystole at 06:15 — the nurses ran in and the patient was sitting up eating breakfast. This is the third false asystole alarm this week on this monitor. The night staff are losing trust in the alarms. Can you come check the monitor before day shift starts?"
+  urgency: high
+  context:
+    - "Third false asystole alarm this week on same monitor"
+    - "Patient was awake and stable during alarm"
+    - "Philips IntelliVue MX800, serial: MX-44721"
+    - "5-lead ECG monitoring"
+    - "Staff losing confidence in alarm system"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "False asystole alarms are a critical patient safety issue — they erode trust in the alarm system, leading staff to delay response to real alarms. What's the most common cause of false asystole?"
+    hint: "Asystole means the monitor detected no QRS complexes for a defined period. What could make the QRS disappear briefly?"
+    choices:
+      - text: "ECG lead disconnect — a loose or intermittent electrode connection causes momentary signal loss that the monitor interprets as asystole"
+        correct: true
+        feedback: "Correct — intermittent lead disconnect is the single most common cause of false asystole alarms. When an electrode loses contact briefly (patient movement, dried gel, poor adhesion), the ECG signal drops to flatline. If this lasts longer than the asystole detection window (typically 4–8 seconds), the monitor alarms."
+      - text: "The monitor's arrhythmia algorithm is miscalibrated"
+        correct: false
+        feedback: "Algorithm miscalibration is rare. The algorithm correctly detected 'no QRS' — the issue is that the signal was lost, not that the algorithm misidentified it."
+      - text: "Electromagnetic interference is causing the ECG to flatline"
+        correct: false
+        feedback: "EMI typically adds noise to the trace rather than causing flatline. A flatline during a false asystole alarm points to signal loss."
+      - text: "The monitor's CPU is overloaded and missing QRS detections"
+        correct: false
+        feedback: "Modern monitors have dedicated DSP hardware for ECG processing. CPU load doesn't affect QRS detection."
+  - type: multiple-choice
+    id: investigation
+    question: "You arrive at the bedside. The patient is fine and the ECG trace looks normal now. You review the alarm log and see: '06:15 — ASYSTOLE, Lead II, duration 6.2 s' followed by '06:15 — Lead fault cleared.' The 'lead fault' event immediately after asystole confirms your hypothesis. What do you check?"
+    hint: "The lead fault message tells you an electrode lost contact. Now find out which electrode and why."
+    choices:
+      - text: "Inspect all electrode sites for adhesion quality, check for dried gel, and test the ECG cable for intermittent continuity"
+        correct: true
+        feedback: "Correct — check the electrodes first (adhesion, gel condition, skin prep), then the cable. The 'lead fault cleared' message means contact was restored, suggesting an intermittent problem at the electrode or cable connection."
+      - text: "Replace the entire ECG cable with a new one"
+        correct: false
+        feedback: "The cable may not be the issue — electrode adhesion is more common. Check electrodes first before replacing the cable."
+      - text: "Adjust the asystole alarm delay to 10 seconds to reduce false alarms"
+        correct: false
+        feedback: "Extending the alarm delay is dangerous — a real asystole would be detected later. Fix the root cause instead."
+      - text: "Change the monitoring lead from Lead II to Lead I"
+        correct: false
+        feedback: "Changing leads doesn't fix a loose electrode. If the RA electrode is loose, Lead I would have the same problem."
+  - type: lab-handoff
+    id: measurement
+    instruction: "On the bench, connect the Philips IntelliVue MX800 to the Fluke ProSim 8 patient simulator. Test ECG signal quality, lead-off detection response time, and verify that the asystole alarm triggers correctly for real asystole and does NOT trigger during brief signal interruptions."
+    simulated_data:
+      tool: "Fluke ProSim 8 — ECG and Lead-Off Detection Test"
+      readings:
+        - setting: "ECG signal quality — NSR 60 bpm via ProSim 8"
+          delivered: "Clean trace, HR 60 ±1 bpm"
+          status: pass
+        - setting: "Lead-off detection — disconnect RA lead"
+          delivered: "Lead fault alarm in 2.1 s"
+          status: pass
+          spec: "< 5 s"
+        - setting: "Asystole detection — ProSim 8 flatline for 8 s"
+          delivered: "Asystole alarm at 6.0 s"
+          status: pass
+          spec: "4–8 s (configurable)"
+        - setting: "Brief disconnect test — remove/reconnect RA in 3 s"
+          delivered: "Lead fault alarm, NO asystole alarm"
+          status: pass
+        - setting: "Brief disconnect test — remove/reconnect RA in 7 s"
+          delivered: "Lead fault + Asystole alarm"
+          status: warning
+          error: "7 s disconnect triggers both alarms — realistic scenario"
+  - type: multiple-choice
+    id: diagnosis
+    question: "The monitor functions correctly — it properly detects lead faults and asystole. The false alarms were caused by intermittent electrode disconnect lasting > 6 seconds. What's the complete fix?"
+    choices:
+      - text: "Replace the worn ECG cable (flex fatigue at connector), ensure fresh electrodes with good adhesion, and recommend the ward implement a protocol for daily electrode and cable checks"
+        correct: true
+        feedback: "Correct — address both the immediate cause (worn cable with intermittent contact at the connector) and the systemic issue (no routine electrode/cable checks). Fresh electrodes should be applied daily, and cables should be inspected for connector wear at each patient change. This reduces false alarms and restores staff confidence."
+      - text: "Replace the monitor — three false asystole alarms indicate a reliability problem"
+        correct: false
+        feedback: "The monitor is functioning correctly. The false alarms were caused by electrode/cable issues, not monitor failure. Replacing the monitor doesn't fix the consumable problem."
+      - text: "Increase the asystole detection delay from 6 to 10 seconds"
+        correct: false
+        feedback: "Extending the delay reduces false alarms but also delays detection of real asystole. The root cause is electrode contact, not the alarm timing."
+      - text: "Disable asystole alarms on this monitor since the patient is stable"
+        correct: false
+        feedback: "Never disable critical alarms. The patient's condition can change at any time. Fix the signal quality instead."
+learning_points:
+  - text: "False asystole alarms are most commonly caused by intermittent ECG electrode disconnect — not monitor malfunction. The monitor correctly detects 'no QRS' when the signal is lost."
+  - text: "Alarm fatigue from false alarms is a recognised patient safety hazard. ECRI Institute consistently ranks alarm management among the top health technology hazards. False alarms erode trust and delay response to real events."
+    source: "ECRI Institute — Top 10 Health Technology Hazards (alarm management)"
+    source_type: incident-data
+  - text: "ECG electrodes should be replaced daily and skin prep should be verified at each shift change. Dried gel, poor adhesion, and oily skin are the primary causes of electrode-related signal loss."
+    source_type: best-practice
+  - text: "IEC 60601-2-27 §201.12.1.101.11 requires monitors to detect and indicate electrode disconnection. The lead-off detection should trigger a 'technical alarm' (lead fault) before the 'clinical alarm' (asystole) can activate."
+    source: "IEC 60601-2-27 §201.12.1.101.11"
+    source_type: standard
+  - text: "When investigating false alarm complaints, always check the alarm log — it contains timestamps, alarm types, and often lead-fault events that reveal the root cause."
+    source_type: best-practice

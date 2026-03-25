@@ -1,0 +1,108 @@
+id: vent-volume-inaccuracy
+title: Tidal Volume Inaccuracy
+device: Dräger Evita V500
+category: ventilator
+level: 2
+estimated_time: 20min
+has_lab_handoff: true
+briefing:
+  caller: Dr. Johansen, ICU Consultant
+  location: Surgical ICU
+  facility: Stavanger University Hospital
+  time: "Thursday 09:30"
+  message: "We're having trouble weaning a post-operative patient from the ventilator. The Evita V500 displays a tidal volume of 450 mL in pressure support mode, but the patient's end-tidal CO₂ keeps rising — it's at 52 mmHg and climbing. I think the ventilator is over-reporting the delivered volume. Can you bring a flow analyser and verify?"
+  urgency: medium
+  context:
+    - "Post-operative patient, difficulty weaning from ventilator"
+    - "Ventilator set to pressure support 12 cmH₂O, PEEP 5, FiO₂ 0.35"
+    - "Displayed Vt expired: 450 mL"
+    - "End-tidal CO₂: 52 mmHg (normal 35–45 mmHg) — suggesting hypoventilation"
+    - "Rising CO₂ despite apparently adequate tidal volumes"
+    - "Device serial: EV-59023"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "The clinician suspects the ventilator is over-reporting tidal volume. Rising EtCO₂ with apparently adequate Vt supports this hypothesis. What's the most efficient way to confirm?"
+    hint: "You need an independent measurement of the actual gas volume reaching the patient."
+    choices:
+      - text: "Check the ventilator's calibration log to see when the flow sensors were last calibrated"
+        correct: false
+        feedback: "Useful background information, but doesn't confirm whether the current readings are accurate. You need a real-time independent measurement."
+      - text: "Place the VT900A at the patient wye to independently measure the actual delivered tidal volume"
+        correct: true
+        feedback: "Correct — the VT900A at the patient wye gives you an independent measurement of actual gas delivery. If it differs significantly from the ventilator display, you've confirmed the inaccuracy and can start diagnosing the cause."
+      - text: "Switch to volume-controlled mode to see if the tidal volume is more accurate"
+        correct: false
+        feedback: "Switching modes changes the clinical treatment and doesn't explain why the flow measurement is wrong. Measure first, then troubleshoot."
+      - text: "Run the ventilator's built-in self-test to check sensor calibration"
+        correct: false
+        feedback: "The self-test checks basic function, but doesn't verify measurement accuracy under actual ventilation conditions. An external measurement is the gold standard."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Connect the Fluke VT900A in-line at the patient wye. Record the VT900A readings alongside the ventilator display for tidal volume, peak pressure, and PEEP over 10 breaths in pressure support mode."
+    simulated_data:
+      tool: "Fluke VT900A Gas Flow Analyzer — In-Line at Patient Wye"
+      readings:
+        - setting: "Ventilator display Vt expired (average of 10 breaths)"
+          delivered: "448 mL"
+          status: warning
+          spec: "Should match VT900A within ±10%"
+        - setting: "VT900A measured Vt at patient wye (average of 10 breaths)"
+          delivered: "312 mL"
+          status: fail
+          error: "30% less than ventilator display"
+        - setting: "Ventilator display peak pressure"
+          delivered: "17 cmH₂O"
+          status: pass
+        - setting: "VT900A measured peak pressure at wye"
+          delivered: "16.8 cmH₂O"
+          status: pass
+        - setting: "PEEP (both readings)"
+          delivered: "5.1 cmH₂O"
+          status: pass
+  - type: multiple-choice
+    id: investigation
+    question: "The VT900A confirms the patient is only receiving 312 mL while the ventilator displays 448 mL — a 30% over-reporting error. Pressure readings match between the two instruments. What does this discrepancy pattern tell you?"
+    hint: "The pressure is accurate but the volume is wrong. Volume is calculated from flow measurement. Where in the circuit is flow measured?"
+    choices:
+      - text: "The expiratory flow sensor is contaminated or failing — it's reading higher flow than actual, causing the ventilator to over-report expired volume"
+        correct: true
+        feedback: "Correct — the Evita V500 measures expired volume using the expiratory flow sensor (hot-wire anemometer). Moisture, secretion mist, or biofilm on the sensor causes it to read higher flow than actual. Pressure sensors are unaffected because they use a different measurement principle."
+      - text: "There's a circuit leak that the ventilator isn't detecting"
+        correct: false
+        feedback: "A circuit leak would cause the ventilator to UNDER-report expired volume (less gas returns), not over-report it. The ventilator shows MORE volume than actually delivered."
+      - text: "The ventilator's compliance compensation is incorrect"
+        correct: false
+        feedback: "Compliance compensation affects volume delivery in volume-controlled mode. In pressure support mode, the ventilator targets a pressure, and the patient's effort determines the volume. The issue is measurement, not delivery."
+      - text: "The VT900A needs recalibration — it's reading low"
+        correct: false
+        feedback: "The VT900A was recently calibrated (you should verify this). The clinical picture (rising EtCO₂) corroborates the VT900A reading, not the ventilator display."
+  - type: multiple-choice
+    id: diagnosis
+    question: "The expiratory flow sensor is contaminated, over-reporting expired volume by 30%. What's the corrective action?"
+    choices:
+      - text: "Clean the expiratory flow sensor per the manufacturer's procedure, recalibrate, and verify accuracy with the VT900A"
+        correct: true
+        feedback: "Correct — the Dräger expiratory flow sensor can be removed, cleaned with the approved solution, dried, and reinstalled. After reinstallation, run the sensor calibration and verify with the VT900A. If cleaning doesn't restore accuracy, replace the sensor."
+      - text: "Replace the expiratory flow sensor immediately — don't waste time cleaning"
+        correct: false
+        feedback: "Cleaning is the recommended first step and works in most cases. Replacement sensors may not be immediately available, and cleaning takes only 10–15 minutes."
+      - text: "Switch the patient to a different ventilator and send this one to the manufacturer"
+        correct: false
+        feedback: "The expiratory flow sensor is a user-serviceable component. Cleaning or replacing it is a routine clinical engineering task — no manufacturer involvement needed."
+      - text: "Adjust the ventilator's volume calibration factor to compensate for the sensor error"
+        correct: false
+        feedback: "There is no user-adjustable calibration factor. The sensor must read correctly — compensating for a known error is unsafe because the error will change over time."
+learning_points:
+  - text: "When a ventilator displays apparently adequate tidal volumes but the patient shows signs of hypoventilation (rising EtCO₂, desaturation), suspect flow sensor error. The ventilator's displayed volume is only as accurate as its flow sensors."
+  - text: "Expiratory flow sensors (hot-wire anemometers) are the most maintenance-sensitive component in modern ventilators. Moisture, secretion mist, and biofilm cause them to over-read, leading to falsely reassuring volume displays."
+    source: "Dräger Evita V500 service manual — expiratory flow sensor maintenance"
+    source_type: best-practice
+  - text: "IEC 60601-2-12 requires tidal volume accuracy of ±10% or ±10 mL (whichever is greater). A 30% error is a significant safety deviation that could cause patient harm."
+    source: "IEC 60601-2-12 §201.12.1"
+    source_type: standard
+  - text: "Always verify ventilator accuracy with an independent external analyser (VT900A or equivalent) at the patient wye. The ventilator's built-in sensors cannot verify themselves."
+    source_type: best-practice
+  - text: "Flow sensor contamination is the leading cause of ventilator volume inaccuracy. Regular cleaning intervals (per manufacturer schedule) and cleaning after every patient prevent most incidents."
+    source: "ECRI Institute — ventilator maintenance best practices"
+    source_type: incident-data

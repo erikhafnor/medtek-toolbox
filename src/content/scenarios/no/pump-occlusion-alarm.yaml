@@ -1,0 +1,109 @@
+id: pump-occlusion-alarm
+title: Falske okklusjonsalarmer på sengeposten
+device: B. Braun Infusomat Space
+category: infusion-pump
+level: 1
+estimated_time: 15min
+has_lab_handoff: true
+briefing:
+  caller: Sykepleier Marte, kirurgisk sengepost 3A
+  location: Sengepost 3A, sykepleierstasjon
+  facility: Stavanger universitetssjukehus
+  time: "Mandag 22:15"
+  message: "Vi har hatt tre pumper som har alarmet for okklusjon i kveld på ulike pasienter, men slangene er helt fine — ingen knekk, ingen klemmer lukket. Sykepleierne kvitterer alarmen og starter på nytt, og den går i 10–15 minutter før den alarmer igjen. Vi har allerede byttet én av pumpene, og erstatningen gjør det samme. Det vekker pasientene, og personalet er frustrert."
+  urgency: medium
+  context:
+    - "Tre B. Braun Infusomat Space-pumper berørt"
+    - "Alle kjører NaCl ved 100–125 mL/t"
+    - "Okklusjonsalarmer hvert 10.–15. minutt"
+    - "Slangene er visuelt frie, klemmer åpne"
+    - "Én pumpe allerede byttet — erstatningen har samme problem"
+    - "Nytt parti IV-administrasjonssett levert forrige uke"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "Flere pumper viser samme falske okklusjonsalarm, inkludert en erstatningsenhet. Problemet følger settene, ikke pumpene. Hva er din første hypotese?"
+    hint: "Når det samme problemet opptrer på flere enheter, tenk på hva de har felles — forbruksmateriell, miljø eller konfigurasjon."
+    choices:
+      - text: "Et parti defekte IV-administrasjonssett — feil slangediameter eller materiale"
+        correct: true
+        feedback: "Riktig — når flere pumper (inkludert en erstatning) viser det samme problemet med ulike pasienter, er fellesnevneren forbruksmateriellet. Et nytt parti sett med litt annen slangeelastisitet eller diameter kan forårsake systematisk trykkoppbygging som utløser okklusjonsalarmer."
+      - text: "Miljøproblem — temperaturen på sengeposten påvirker pumpeytelsen"
+        correct: false
+        feedback: "Temperatur kan påvirke strømningshastigheten litt, men ville ikke forårsake okklusjonsalarmer på flere pumper samtidig."
+      - text: "Alle tre pumpene trenger rekalibrering — de har driftet sammen"
+        correct: false
+        feedback: "At tre pumper drifter identisk til samme tid er ekstremt usannsynlig. At erstatningspumpen viser det samme problemet bekrefter at det ikke er et pumpeproblem."
+      - text: "Sykepleierne laster settene feil"
+        correct: false
+        feedback: "Mulig for én pumpe, men usannsynlig for tre pumper med ulike sykepleiere. Og erstatningspumpen ble antagelig lastet av noen som var klar over problemet."
+  - type: multiple-choice
+    id: investigation
+    question: "Du tar med én av de berørte pumpene og et sett fra det nye partiet til verkstedet. Du tar også med et sett fra det forrige partiet (funnet på lageret). Hvilken test gjør du?"
+    hint: "Du må sammenligne pumpens oppførsel med de gamle settene mot de nye settene, og måle det faktiske trykket alarmen utløses ved."
+    choices:
+      - text: "Kjør begge settene ved 100 mL/t og mål nedstrømstrykket med IDA-5"
+        correct: true
+        feedback: "Riktig — IDA-5 i trykkmodus vil vise deg det faktiske trykket som genereres under infusjon. Hvis de nye settene genererer høyere mottrykk ved samme strømningshastighet, har du funnet årsaken."
+      - text: "Mål innvendig slangediameter på begge settene med skyvelære"
+        correct: false
+        feedback: "Nyttig som støttende dokumentasjon, men slangeelastisitet betyr like mye som diameter. IDA-5-testen vil vise den funksjonelle effekten."
+      - text: "Last det nye settet og kjør pumpens selvtest"
+        correct: false
+        feedback: "Selvtesten sjekker pumpemekanismens funksjon, ikke settkompatibilitet. Du må måle faktisk infusjonstrykk."
+      - text: "Kontakt B. Braun for å sjekke om det finnes et servicevarsel for Infusomat Space"
+        correct: false
+        feedback: "Verdt å gjøre parallelt, men du trenger diagnostiske data først. Problemet er sannsynligvis settrelatert, ikke pumperelatert."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Bruk IDA-5 Infusion Device Analyzer og kjør B. Braun Infusomat Space ved 100 mL/t med både det gamle og det nye partiet sett. Registrer nedstrømstrykk under stabil infusjon og trykket der okklusjonsalarmen utløses."
+    simulated_data:
+      tool: "IDA-5 Infusion Device Analyzer — Trykk- og strømningstest"
+      readings:
+        - setting: "Innstilling: Gammelt parti sett @ 100 mL/t — stabilt trykk"
+          delivered: "285 mmHg"
+          status: pass
+          spec: "< 500 mmHg"
+        - setting: "Innstilling: Gammelt parti sett @ 100 mL/t — okklusjonsalarm"
+          delivered: "Ingen alarm i løpet av 60 min"
+          status: pass
+        - setting: "Innstilling: Nytt parti sett @ 100 mL/t — stabilt trykk"
+          delivered: "465 mmHg"
+          status: warning
+          error: "63 % høyere enn gammelt sett"
+        - setting: "Innstilling: Nytt parti sett @ 100 mL/t — okklusjonsalarm"
+          delivered: "Alarm ved 502 mmHg etter 12 min"
+          status: fail
+          spec: "Alarmterskel satt til 500 mmHg"
+        - setting: "Innstilling: Nytt parti sett — slangeveggtykkelse"
+          delivered: "0,9 mm (gammelt parti: 0,7 mm)"
+          status: warning
+          error: "Tykkere vegger reduserer elastisitet"
+  - type: multiple-choice
+    id: diagnosis
+    question: "De nye settene genererer 63 % høyere mottrykk (465 mot 285 mmHg), som utløser okklusjonsalarmen ved 500 mmHg. Slangeveggen er 0,9 mm mot 0,7 mm. Hva er rotårsaken og korrigerende tiltak?"
+    choices:
+      - text: "De nye settene har stivere (mindre elastisk) slange som genererer høyere trykk i pumpemekanismen — sett partiet i karantene og gå tilbake til forrige leverandør/parti"
+        correct: true
+        feedback: "Riktig — de tykkere slangeveggene er mindre elastiske, så den peristaltiske mekanismen genererer høyere trykk for å oppnå samme strømning. Når dette trykket nærmer seg okklusjonsalarmterskelen, utløser normale trykksvingninger falske alarmer. Sett partiet i karantene, bytt tilbake, og send en kvalitetsrapport til leverandøren."
+      - text: "Hev okklusjonsalarmterskelen til 700 mmHg for å tilpasse de nye settene"
+        correct: false
+        feedback: "Å heve terskelen maskerer problemet og forsinker deteksjon av reelle okklusjoner. Høye terskeler øker også bolus ved utløsning, noe som er en pasientsikkerhetsrisiko (IEC 60601-2-24)."
+      - text: "Pumpemekanismen må justeres for å fungere med den nye slangen"
+        correct: false
+        feedback: "Pumpen er designet for sett som oppfyller bestemte elastisitetsspesifikasjoner. Å justere pumpen for å kompensere for sett utenfor spesifikasjon ville påvirke nøyaktigheten med alle andre sett."
+      - text: "Begge settene er akseptable — alarmterskelen trenger rekalibrering"
+        correct: false
+        feedback: "Alarmterskelen er korrekt. De nye settene opererer for nært terskelen, noe som er et settkvalitetsproblem, ikke et pumpekalibreringsproblem."
+learning_points:
+  - text: "Når flere pumper viser det samme problemet, se på forbruksmateriellet først. Endringer i administrasjonssett (ny leverandør, nytt parti, annet slangemateriale) er en vanlig årsak til flåteomfattende infusjonspumpeproblemer."
+  - text: "Slangeelastisitet påvirker pumpens mottrykk betydelig. En tilsynelatende liten endring i veggtykkelse (0,2 mm) forårsaket en trykkøkning på 63 % — nok til å utløse falske okklusjonsalarmer."
+    source: "IEC 60601-2-24 §201.12.1 — nøyaktighetskrav testes med produsentspesifiserte administrasjonssett"
+    source_type: standard
+  - text: "Hev aldri okklusjonsalarmterskeler for å kompensere for settinkompatibilitet. Høyere terskeler forsinker deteksjon av reelle okklusjoner og øker bolus ved utløsning — begge deler er pasientsikkerhetsrisikoer."
+    source: "IEC 60601-2-24 §201.12.4.4 — bolus etter okklusjonsutløsning skal ikke overskride spesifiserte grenser"
+    source_type: standard
+  - text: "Når du etterforsker flåteomfattende alarmer, test alltid med IDA-5 med både det mistenkte forbruksmateriellet og en kjent god referanse. Sammenligningsdata er mer overbevisende enn en enkeltmåling når du kommuniserer funn til innkjøp og sykepleierledelse."
+    source_type: best-practice
+  - text: "Send en kvalitetsrapport til leverandøren og involver innkjøpsavdelingen. Klinisk ingeniørarbeid har en kritisk portvaktrolle for forbruksmateriellets kvalitet — en endring som virker kosmetisk for innkjøp kan ha betydelig klinisk konsekvens."
+    source_type: best-practice

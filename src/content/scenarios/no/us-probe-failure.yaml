@@ -1,0 +1,104 @@
+id: us-probe-failure
+title: Feilsøking av probefeil
+device: GE LOGIQ E10
+category: ultrasound
+level: 2
+estimated_time: 18min
+has_lab_handoff: true
+briefing:
+  caller: Dr. Strand, Akuttmottaket
+  location: Ultralydstasjon, Akuttmottaket
+  facility: Stavanger universitetssjukehus
+  time: "Lørdag 20:00"
+  message: "Lineærproben på ultralydapparatet vårt i akuttmottaket gir ikke bilde i det hele tatt — bare en grå skjerm med støy. Jeg trenger den for en mistenkt DVT-undersøkelse. Kurvilineærproben fungerer fint på samme maskin. Vi har bare én lineærprobe og det er lørdag kveld. Er det noen sjanse for at du kan fikse den, eller må vi låne fra radiologisk avdeling?"
+  urgency: high
+  context:
+    - "GE LOGIQ E10 i akuttmottaket — lineærprobe (L3-12) ikke funksjonell"
+    - "Grå skjerm med støy, intet gjenkjennelig bilde"
+    - "Kurvilineærprobe (C1-6) fungerer normalt på samme system"
+    - "Lørdag kveld — begrenset tilgang på deler/prober"
+    - "Klinisk behov: mistenkt DVT-undersøkelse"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "Lineærproben viser intet bilde, men kurvilineærproben fungerer fint på samme system. Dette bekrefter at problemet er proben, ikke systemet. Hva er det mest sannsynlige feilpunktet?"
+    hint: "Komplett bildetap (ikke bare bortfall) tyder på et totalt tilkoblingsproblem snarere enn gradvis elementdegradring."
+    choices:
+      - text: "Probekontaktproblem — skadede pinner, dårlig kontakt eller kabelbrudd nær kontakten som hindrer signal fra å nå systemet"
+        correct: true
+        feedback: "Riktig — komplett bildetap (kun støy) indikerer vanligvis et totalt signalveibrudd. Det vanligste feilpunktet er kontakten (bøyde/knekte pinner, korrosjon) eller et kabelbrudd nær trekkavlastningen. Elementdegradring forårsaker delvis bildetap (mørke linjer), ikke total svikt."
+      - text: "Alle piezoelektriske elementer har sviktet samtidig"
+        correct: false
+        feedback: "Samtidig svikt av alle elementer er ekstremt usannsynlig. Selv kraftige fall skader vanligvis en del av arrayen, ikke alle elementene."
+      - text: "Proben er ikke kompatibel med denne LOGIQ E10"
+        correct: false
+        feedback: "L3-12 er en standardprobe for LOGIQ E10. Hvis den var inkompatibel, ville systemet vist en feilmelding, ikke støy."
+      - text: "Probens interne EEPROM er korrupt"
+        correct: false
+        feedback: "EEPROM-korrupsjon kan føre til at systemet ikke gjenkjenner proben (viser feilmelding), men det ville ikke generert et støybilde. Systemet mottar noe signal — det er bare ikke brukbart."
+  - type: multiple-choice
+    id: investigation
+    question: "Du inspiserer L3-12-proben. Den akustiske linsen ser intakt ut, men du legger merke til at kabelen har en skarp bøy nær trekkavlastningen der den kommer ut av probehuset. Når du retter ut kabelen, vises bildet kort og forsvinner deretter. Hva forteller dette deg?"
+    hint: "En intermitterende tilkobling som responderer på kabelposisjon indikerer et spesifikt feilsted."
+    choices:
+      - text: "Kabelen har et internt brudd ved trekkavlastningen — lederne er brukket, men den ytre kappen er intakt"
+        correct: true
+        feedback: "Riktig — kabelbøyeutmatting ved trekkavlastningen er det vanligste stedet for probekabelsvikt. Den ytre kappen er fleksibel og intakt, men de tynne interne lederne (128–256 individuelle ledninger) brytes av gjentatt bøying. Oppførselen «fungerer kort når den rettes ut» er klassisk for denne feilen."
+      - text: "Kontaktpinnene trenger rengjøring — kabelbøyen er tilfeldig"
+        correct: false
+        feedback: "Hvis bildet kommer tilbake når du retter ut kabelen ved trekkavlastningen, er tilkoblingen i kontaktenden irrelevant. Feilen er ved bøyepunktet."
+      - text: "Probehuset er sprukket og fuktighet har trengt inn"
+        correct: false
+        feedback: "Fuktighetsinntrenging ville forårsaket gradvis degradring eller feil på elektrisk sikkerhetstest, ikke den posisjonsavhengige intermitterende feilen du observerer."
+      - text: "Proben trenger rekalibrering av systemet"
+        correct: false
+        feedback: "Rekalibrering fikser ikke et fysisk kabelbrudd. Den intermitterende tilkoblingen er en mekanisk feil."
+  - type: lab-handoff
+    id: measurement
+    instruction: "På arbeidsbenken, utfør en elektrisk sikkerhetstest på L3-12-proben, deretter test kabelkontinuitet. For sikkerhetstesten, bruk Fluke ESA615 til å måle pasientlekkasjestrøm. For kontinuitet, bøy kabelen forsiktig ved trekkavlastningen mens du overvåker bildet på LOGIQ E10."
+    simulated_data:
+      tool: "Fluke ESA615 Sikkerhetstest + Kabelkontinuitetsvurdering"
+      readings:
+        - setting: "Pasientlekkasjestrøm — L3-12-probe (BF tilkoblingsdel)"
+          delivered: "85 µA"
+          status: warning
+          spec: "≤ 100 µA normalforhold"
+          error: "Nær grensen — kabelskade kan kompromittere isolasjonen"
+        - setting: "Kabelkontinuitet — statisk (kabel rett)"
+          delivered: "Intermitterende — bilde vises/forsvinner"
+          status: fail
+        - setting: "Kabelkontinuitet — dynamisk (bøying ved trekkavlastning)"
+          delivered: "Totalt tap ved bøying > 30°"
+          status: fail
+          error: "Intern lederbrudd ved trekkavlastning"
+        - setting: "Kurvilineær C1-6-probe — lekkasjestrøm (sammenligning)"
+          delivered: "22 µA"
+          status: pass
+          spec: "≤ 100 µA normalforhold"
+  - type: multiple-choice
+    id: resolution
+    question: "L3-12 har et bekreftet kabelbrudd ved trekkavlastningen og grenseverdi lekkasjestrøm (85 µA). Det er lørdag kveld. Hva er den umiddelbare og langsiktige planen?"
+    choices:
+      - text: "Umiddelbart: lån en kompatibel lineærprobe fra radiologisk avdeling for helgen. Langsiktig: send L3-12 til kabelreparasjon (tredjeparts probereparasjonstjeneste), og inspiser alle hyppig brukte prober for trekkavlastningsskade."
+        correct: true
+        feedback: "Riktig — det kliniske behovet er akutt (DVT-undersøkelse), så ordne en låneprobr. L3-12 trenger profesjonell kabelreparasjon — de brutte lederne og forhøyet lekkasjestrøm betyr at den ikke er trygg for pasientbruk selv om den midlertidig fungerer. Inspiser andre mye brukte prober fordi kabelutmatting ved trekkavlastningen er en risiko for hele utstyrsparken."
+      - text: "Tape kabelen i rett posisjon som en midlertidig løsning for helgen"
+        correct: false
+        feedback: "En probe med kompromittert isolasjon (85 µA lekkasje, nær 100 µA-grensen) er ikke trygg for pasientbruk uavhengig av kabelposisjon. Lekkasjestrømmen alene diskvalifiserer den."
+      - text: "Bestill en ny L3-12-probe og bruk kun kurvilineærproben til den ankommer"
+        correct: false
+        feedback: "En ny probe koster €8 000–15 000 og tar uker å levere. Kabelreparasjon er mye billigere (€1 000–3 000) og raskere (dager). Det kliniske behovet er i kveld — lån fra radiologisk avdeling."
+      - text: "Proben er ikke mulig å reparere — anbefal kjøp av erstatning"
+        correct: false
+        feedback: "Kabelbrudd ved trekkavlastningen er en standardreparasjon for tredjeparts probeserviceselskaper. Erstatning er kun nødvendig hvis selve transduserarrayen er skadet."
+learning_points:
+  - text: "Kabelbøyeutmatting ved trekkavlastningen er den vanligste årsaken til probesvikt. De tynne interne lederne brytes av gjentatt bøying mens den ytre kappen forblir intakt. Det presenterer seg som intermitterende eller totalt bildetap."
+  - text: "Probekabler inneholder 128–256 individuelle mikrokoaksialledere. De er den mest mekanisk sårbare delen av proben. Korrekt kabelhåndtering (ingen stram kveiling, ikke heng prober etter kabelen, ikke kjør over kabler med vognhjul) forlenger probens levetid betydelig."
+    source_type: best-practice
+  - text: "Utfør alltid en elektrisk sikkerhetstest på en skadet probe før den settes tilbake i drift. Kabelskade kan kompromittere isolasjonen og heve pasientlekkasjestrømmen over sikre grenseverdier."
+    source: "IEC 62353 — periodisk test etter reparasjon"
+    source_type: standard
+  - text: "Tredjeparts probereparasjonstjenester kan reparere kabelbrudd, bytte akustiske linser og renovere kontaktmonteringer til 20–40 % av kostnaden for en ny probe. Kliniske ingeniøravdelinger bør etablere et forhold til en anerkjent tjenesteleverandør."
+    source_type: best-practice
+  - text: "Når en kritisk probe svikter utenfor arbeidstid, ha en plan: vit hvilke avdelinger som har kompatible prober som kan lånes, og oppretthold et probelånelager for høybruksspesialiteter."
+    source_type: best-practice

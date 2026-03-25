@@ -77,6 +77,8 @@ Utfør ved intervallet spesifisert av produsenten og fasilitetsens PM-program (v
 
 Øv på å diagnostisere defibrillatorfeil med veiledede simuleringsscenarioer:
 
-- [Defibrillator lader ikke — LIFEPAK 15](/no/scenarios/defib-wont-charge/) *(Nivå 2)*
-- [Batterisvikt midt i hjerte-lungeredning](/no/scenarios/defib-battery-failure/) *(Nivå 3)*
+- [Defibrillatoren som ikke vil lade — LIFEPAK 15](/no/scenarios/defib-wont-charge/) *(Nivå 1)*
+- [Batterisvikt midt i gjenopplivning](/no/scenarios/defib-battery-failure/) *(Nivå 2)*
 - [EKG-støy under overvåking](/no/scenarios/ecg-noise-defib/) *(Nivå 1)*
+- [Synkronisert kardioversjon vil ikke utløse](/no/scenarios/defib-sync-failure/) *(Nivå 2)*
+- [«Kontroller pads»-varsel med pads tilkoblet](/no/scenarios/defib-pad-alert/) *(Nivå 1)*

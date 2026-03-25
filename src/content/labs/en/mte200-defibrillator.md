@@ -34,6 +34,8 @@ By the end of this lab you will be able to:
 - Wear insulating gloves when connecting the oscilloscope probe across the analyser's output terminals.
 - If you observe smoke, unusual odour, or sparks, immediately press the shock button to safely discharge the capacitor into the tester, then power off and notify the supervising technician.
 - All tests in this lab are performed at **5 J** unless the procedure explicitly states otherwise.
+- Use only low energy levels (5 J) while getting familiar with the device, to avoid draining the battery unnecessarily. After completing the lab, set the defibrillators to charge so the battery is ready for the next group.
+- Leakage current measurements would normally be part of the safety check but will be covered in a separate electrical safety lab.
 
 ---
 
@@ -112,7 +114,7 @@ Perform the following tests in order. For each test, record the selected setting
 
 ### Part 3 — Defibrillator Waveform Output Test (45 min)
 
-This procedure follows the waveform verification described in the LIFEPAK 15 service manual.
+This procedure follows the "Test and Calibration Procedures" in the LIFEPAK 15 service manual (pages 203–205).
 
 **3.1 Oscilloscope Setup**
 
@@ -131,17 +133,22 @@ Confirm the Keysight InfiniiVision is configured:
 
 **3.3 Waveform Analysis**
 
-Record the following measurements from the oscilloscope display or its automatic measurement functions:
+Record the following measurements from the oscilloscope display or its automatic measurement functions. Use the cursors or built-in measurement tools to determine peak current (I = V / 50 Ω) and pulse widths.
 
-| Measurement | Your Value | Expected (biphasic truncated exponential) |
-|---|---|---|
-| Phase 1 peak voltage (V) | | Positive, higher amplitude |
-| Phase 1 duration (ms) | | Typically 6–12 ms |
-| Phase 2 peak voltage (V) | | Negative, lower amplitude than phase 1 |
-| Phase 2 duration (ms) | | Typically 4–8 ms |
-| Total waveform duration (ms) | | Typically < 20 ms |
+| Parameter | Your Value | Min (service manual) | Max (service manual) |
+|---|---|---|---|
+| Phase 1 Peak Current (A) | | 35 A | 42 A |
+| Phase 1 Pulse Width (ms) | | 6.9 ms | 7.8 ms |
+| Phase 2 Pulse Width (ms) | | 4.5 ms | 5.4 ms |
+| Phase 1 peak voltage (V) | | — | — |
+| Phase 2 peak voltage (V) | | — | — |
+| Total waveform duration (ms) | | — | — |
 
-**3.4** Sketch the captured waveform in your lab notebook, labelling Phase 1, Phase 2, the polarity reversal point, and the truncation point.
+> **Note:** The peak current is calculated from the peak voltage using Ohm's law and the 50 Ω test load: I = V / 50 Ω. For example, a peak voltage of 1900 V corresponds to 38 A.
+
+**3.4** Verify that your measured values fall within the service manual specifications in the table above. If any parameter is out of range, note this in your report and discuss possible causes.
+
+**3.5** Sketch the captured waveform in your lab notebook, labelling Phase 1, Phase 2, the polarity reversal point, and the truncation point.
 
 ---
 

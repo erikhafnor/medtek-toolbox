@@ -1,0 +1,105 @@
+id: defib-sync-failure
+title: Synkronisert kardioversjon vil ikke avfyre
+device: LIFEPAK 15
+category: defibrillator
+level: 2
+estimated_time: 20min
+has_lab_handoff: true
+briefing:
+  caller: Dr. Nilsen, kardiologisk avdeling
+  location: Hjertekateteriseringslaboratoriet
+  facility: Stavanger universitetssjukehus
+  time: "Onsdag 11:30"
+  message: "Jeg prøver å kardiovertere en pasient med atrieflutter, men LIFEPAK 15 lader opp helt fint og jeg trykker på sjokkknappen — og ingenting skjer. Den bare sitter der fulladet. Jeg har prøvd tre ganger. Usynkronisert sjokk fungerer hvis jeg slår av SYNC, men jeg trenger synkronisert levering for denne pasienten. Er det noe galt med SYNC-funksjonen?"
+  urgency: high
+  context:
+    - "Pasient med atrieflutter som trenger synkronisert kardioversjon"
+    - "Serienummer: 45892319"
+    - "Enheten lader til valgt energi uten problemer"
+    - "Sjokk leveres normalt i usynkronisert (DEFIB) modus"
+    - "SYNC-modus — enheten lader men avfyrer ikke når sjokkknappen trykkes"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "Kardiologen er frustrert og pasienten er sedert og venter. Du må feilsøke raskt. Hva er din første vurdering?"
+    hint: "I SYNC-modus venter enheten på en R-takk-deteksjon før den tillater utlading. Hva kan forhindre R-takk-deteksjon?"
+    choices:
+      - text: "SYNC-kretsen er defekt — bytt enheten med en reserveenhet"
+        correct: false
+        feedback: "Før du antar en maskinvarefeil, sjekk signalet. SYNC krever at enheten detekterer R-takker — den vanligste årsaken til SYNC-svikt er et signalproblem, ikke en maskinvarefeil."
+      - text: "Sjekk EKG-kurven på LIFEPAK-skjermen — se etter synkroniseringsmarkører på R-takkene og sjekk signalamplituden"
+        correct: true
+        feedback: "Riktig — i SYNC-modus må enheten detektere R-takker og markerer dem på skjermen. Hvis du ikke ser synkroniseringsmarkører, kan ikke enheten finne R-takken, noe som forklarer hvorfor den ikke avfyrer."
+      - text: "Prøv å slå SYNC av og på igjen for å tilbakestille synkroniseringsalgoritmen"
+        correct: false
+        feedback: "Verdt å prøve som et raskt steg, men se først om enheten i det hele tatt detekterer R-takker. Å sykle SYNC hjelper ikke hvis det underliggende signalet er utilstrekkelig."
+      - text: "Sjekk om enhetens fastvare er oppdatert"
+        correct: false
+        feedback: "Fastvarekontroll er ikke passende feilsøking i en tidskritisk klinisk situasjon. Fokuser på signalkjeden."
+  - type: multiple-choice
+    id: investigation
+    question: "Du ser på skjermen: EKG-en viser atrieflutter med en frekvens på ~150 slag/min. Det er INGEN synkroniseringsmarkører synlige på kurven. Avledningsvelgeren er satt til avledning III, og R-takk-amplituden er veldig lav (< 0,3 mV). Hva er problemet og den umiddelbare løsningen?"
+    hint: "SYNC-algoritmen trenger en tilstrekkelig høy R-takk å låse seg på. Atrieflutter har ofte sagtannbølger som kan forvirre R-takk-deteksjonen."
+    choices:
+      - text: "Bytt til en avledning med høyere R-takk — prøv avledning II eller juster forsterkningen, og sjekk på nytt for synkroniseringsmarkører"
+        correct: true
+        feedback: "Riktig — avledning II har typisk den høyeste R-takken. Ved atrieflutter kan sagtann-F-bølgene være større enn R-takkene i noen avledninger, noe som forvirrer synkroniseringsalgoritmen. Å bytte avledning løser ofte problemet umiddelbart."
+      - text: "Øk EKG-forsterkningsinnstillingen for å forsterke signalet"
+        correct: false
+        feedback: "Å øke forsterkningen forsterker alt — inkludert flutterbølger og støy. Enhetens synkroniseringsalgoritme jobber med det faktiske signalet, ikke skalering av visningen. Avledningsvalg er den primære løsningen."
+      - text: "Sett på nye elektroder for bedre signalkvalitet"
+        correct: false
+        feedback: "Elektrodekvalitet påvirker signalstøy, ikke hvilken avledning som har høyest R-takk. Problemet er avledningsvalg, ikke elektrodekontakt."
+      - text: "Enheten er defekt — SYNC-kretsen klarer ikke å detektere R-takker ved denne hjertefrekvensen"
+        correct: false
+        feedback: "LIFEPAK 15 SYNC-funksjonen fungerer ved frekvenser godt over 150 slag/min. Problemet er R-takk-amplituden i den valgte avledningen, ikke frekvensen."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Tilbake på verkstedet, verifiser SYNC-funksjonen: koble LIFEPAK 15 til Fluke Impulse 7000DP. Bruk den innebygde EKG-simulatoren til å generere en 60 slag/min normal sinusrytme. Test synkroniseringsforsinkelse ved 50J. Test deretter med simulert atrieflutter ved 150 slag/min for å reprodusere det kliniske scenarioet."
+    simulated_data:
+      tool: "Fluke Impulse 7000DP — Synkroniseringsforsinkelsestest"
+      load: "50 Ω"
+      readings:
+        - setting: "Innstilling: 60 slag/min NSR, avledning II, 50J — synkroniseringsforsinkelse"
+          delivered: "38 ms"
+          status: pass
+          spec: "≤60 ms"
+        - setting: "Innstilling: 60 slag/min NSR, avledning II, 50J — synkroniseringsmarkører"
+          delivered: "Til stede på alle R-takker"
+          status: pass
+        - setting: "Innstilling: 150 slag/min atrieflutter, avledning III, 50J — synkroniseringsmarkører"
+          delivered: "Fraværende — ingen R-takk-deteksjon"
+          status: fail
+          error: "F-bølger overskrider R-takk-amplituden i avledning III"
+        - setting: "Innstilling: 150 slag/min atrieflutter, avledning II, 50J — synkroniseringsforsinkelse"
+          delivered: "42 ms"
+          status: pass
+          spec: "≤60 ms"
+  - type: multiple-choice
+    id: diagnosis
+    question: "Enheten består alle SYNC-tester når en adekvat R-takk er til stede. Den klarer ikke å detektere R-takker i atrieflutter på avledning III fordi flutterbølgene overskrider R-takk-amplituden i den avledningen. Hva er din konklusjon og anbefaling?"
+    choices:
+      - text: "Enheten fungerer innenfor spesifikasjon — det kliniske problemet var avledningsvalg. Gi opplæring til det kliniske teamet om å optimalisere avledningsvalg for SYNC-modus."
+        correct: true
+        feedback: "Riktig — dette er et bruksrelatert problem, ikke en enhetsfeil. SYNC-algoritmen fungerte korrekt — den krever en identifiserbar R-takk. Ved atrieflutter er avledningsvalg avgjørende. Dokumenter funnet, gi opplæring til teamet, og foreslå å legge til et feilsøkingstips i avdelingens kardioversjonsjekkliste."
+      - text: "Enheten har en marginal SYNC-algoritme — eskaler til produsenten for fastvareforbedring"
+        correct: false
+        feedback: "Synkroniseringsfunksjonen oppfyller kravene i IEC 60601-2-4. Ingen enhet kan synkronisere på en avledning der R-takkene er mindre enn artefakter. Dette er en mulighet for brukeropplæring."
+      - text: "Bytt enheten — en defibrillator bør kunne synkronisere uavhengig av avledningsvalg"
+        correct: false
+        feedback: "Ingen defibrillator kan synkronisere på en avledning med utilstrekkelig R-takk-amplitude. Dette er en grunnleggende begrensning for alle synkroniseringsalgoritmer, ikke en enhetsspesifikk feil."
+      - text: "Legg til en ekstern EKG-trigger — den interne EKG-en er ikke pålitelig nok for kardioversjon"
+        correct: false
+        feedback: "Den interne EKG-en er pålitelig når riktig avledning er valgt. En ekstern trigger legger til kompleksitet uten å adressere rotårsaken."
+learning_points:
+  - text: "SYNC-modussvikt skyldes oftest et signalproblem, ikke en enhetsfeil. Defibrillatoren trenger en tydelig identifiserbar R-takk for å synkronisere — hvis R-takken er for liten eller skjult av arytmi, vil SYNC ikke avfyre."
+  - text: "Ved atrieflutter kan sagtann-F-bølgene være større enn R-takkene i visse avledninger (spesielt avledning III). Prøv alltid avledning II først ved synkronisert kardioversjon — den har typisk den høyeste R-takken."
+    source_type: best-practice
+  - text: "IEC 60601-2-4 §201.12.4.3 krever synkroniseringsforsinkelse ≤ 60 ms etter R-takk-topp. Men standarden pålegger ikke R-takk-deteksjon i alle avledninger under alle arytmier — adekvat signal er en forutsetning."
+    source: "IEC 60601-2-4 §201.12.4.3"
+    source_type: standard
+  - text: "Kliniske ingeniører har en unik opplæringsrolle: når en «enhetsfeil» viser seg å være et bruksproblem, dokumenter det og meld det tilbake til klinisk opplæring. Dette forhindrer gjentatte henvendelser og forbedrer pasientsikkerheten."
+    source_type: best-practice
+  - text: "Omtrent 15–20 % av klager på medisinsk utstyr som undersøkes av kliniske ingeniører, viser seg å være bruksrelaterte snarere enn reelle enhetsfeil."
+    source: "ECRI Institute-analyse av klageundersøkelser for medisinsk utstyr"
+    source_type: incident-data

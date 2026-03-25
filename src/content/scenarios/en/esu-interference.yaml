@@ -1,0 +1,99 @@
+id: esu-interference
+title: ESU Interference With Patient Monitoring
+device: Erbe VIO 300 D
+category: electrosurgery
+level: 2
+estimated_time: 15min
+has_lab_handoff: false
+briefing:
+  caller: Anesthesiologist Dr. Berg
+  location: Operating Room 1
+  facility: Stavanger University Hospital
+  time: "Tuesday 10:00"
+  message: "Every time the surgeon activates the ESU, the patient monitor goes haywire — the ECG shows what looks like VF, the SpO₂ drops to zero, and we get a burst of false alarms. It's been happening all morning across three different cases. We've been ignoring the monitor during ESU activation, but I'm uncomfortable with that — what if there really is an arrhythmia during cautery? Can you help us sort this out?"
+  urgency: medium
+  context:
+    - "ECG shows artifact resembling VF during ESU activation"
+    - "SpO₂ reading drops to zero during activation"
+    - "Problem occurs across multiple patients (three cases today)"
+    - "Same OR, same ESU (Erbe VIO 300 D), same monitor (Philips IntelliVue MX800)"
+    - "Anesthesiologist has been ignoring monitor during ESU use — uncomfortable with this"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "ESU interference with monitoring is extremely common. The concern is valid — you can't just ignore the monitor during cautery. What causes ESU interference with ECG and SpO₂?"
+    hint: "The ESU operates at high frequency (350 kHz) with significant power. The monitoring system operates at much lower frequencies. How does high-frequency energy couple into the monitoring circuit?"
+    choices:
+      - text: "The ESU's high-frequency current couples into the ECG leads via capacitive and radiative coupling, overwhelming the monitor's input amplifiers with artifact"
+        correct: true
+        feedback: "Correct — the ESU radiates a strong electromagnetic field and also injects high-frequency current through the patient's body. ECG leads act as antennas, picking up this energy. The monitor's input filters are designed to reject some HF interference, but high-power ESU activation can overwhelm them. SpO₂ is affected because the HF current modulates the optical path."
+      - text: "The ESU is defective and generating excessive electromagnetic radiation"
+        correct: false
+        feedback: "Some interference is normal and expected with all ESUs. The question is whether the level of interference is excessive or whether mitigation measures can reduce it."
+      - text: "The patient monitor needs a firmware update to handle ESU frequencies"
+        correct: false
+        feedback: "Modern monitors have ESU artifact rejection built in, but no filter can perfectly eliminate all interference from a device delivering hundreds of watts of HF energy through the same patient."
+      - text: "The ESU and monitor are plugged into the same electrical outlet, causing conducted interference"
+        correct: false
+        feedback: "Conducted interference through the mains is unlikely — both devices have mains input filters. The coupling is through the patient and through radiation."
+  - type: multiple-choice
+    id: investigation
+    question: "You inspect the OR setup. The ECG leads are bundled together with the ESU active electrode cable along the patient's right side. The return electrode pad is on the left thigh, and the SpO₂ sensor is on the left index finger. What changes can reduce the interference?"
+    hint: "Think about the current path through the patient and how to minimise coupling between the ESU circuit and the monitoring circuit."
+    choices:
+      - text: "Separate the ECG leads from the ESU cable (different sides of the patient), position the return electrode so the HF current path avoids the monitoring electrodes, and move SpO₂ to the same side as the return electrode"
+        correct: true
+        feedback: "Correct — three key principles: (1) Physical separation of ESU and monitoring cables reduces radiative coupling. (2) The HF current flows from active electrode to return electrode — positioning the return electrode so this path doesn't cross the ECG electrodes reduces conducted interference. (3) SpO₂ on the same side as the return electrode is in a lower-impedance path and less affected."
+      - text: "Replace the ECG leads with shielded cables"
+        correct: false
+        feedback: "Shielded ECG cables help but are rarely available in the OR. Cable routing and electrode placement are more practical and often more effective."
+      - text: "Reduce the ESU power to the minimum needed for the procedure"
+        correct: false
+        feedback: "Reducing power helps marginally, but the surgeon needs adequate power. Cable routing and electrode positioning are more effective interventions."
+      - text: "Add a notch filter at 350 kHz to the monitor's input"
+        correct: false
+        feedback: "You can't add external filters to a medical monitor — this would void the certification and potentially affect signal quality. Use the monitor's built-in ESU artifact rejection."
+  - type: multiple-choice
+    id: mitigation
+    question: "After rerouting cables and adjusting the return electrode position, the interference is significantly reduced but still present during high-power coagulation. What additional monitor-side settings can help?"
+    hint: "Modern monitors have ESU artifact rejection modes and filter settings designed for the OR."
+    choices:
+      - text: "Enable the monitor's ESU/surgery mode (filters ECG for artifact, extends SpO₂ averaging time, suspends arrhythmia alarms during ESU activation)"
+        correct: true
+        feedback: "Correct — the Philips IntelliVue has a 'Surgery' or 'ESU filter' mode that applies aggressive HF filtering to the ECG, extends the SpO₂ signal averaging to bridge short artifacts, and can suspend nuisance arrhythmia alarms during brief ESU activations. This is the intended operating mode for OR use."
+      - text: "Switch the ECG to monitoring bandwidth (0.5–40 Hz) to filter out high-frequency artifact"
+        correct: false
+        feedback: "Monitoring bandwidth helps reject artifact but also hides ST-segment changes. In surgery, where ischemia monitoring is important, the ESU-specific filter mode is better because it's designed to preserve clinically relevant signal components."
+      - text: "Disable all ECG alarms during the procedure"
+        correct: false
+        feedback: "Disabling all alarms is dangerous — you need to detect real arrhythmias between ESU activations. The ESU filter mode intelligently manages alarms rather than disabling them."
+      - text: "Switch to invasive arterial blood pressure monitoring as the primary vital sign"
+        correct: false
+        feedback: "Arterial monitoring is useful for hemodynamic assessment but doesn't replace ECG rhythm monitoring. Address the ECG interference rather than abandoning it."
+  - type: multiple-choice
+    id: resolution
+    question: "With cables rerouted and the monitor's ESU mode enabled, interference is now minimal. The anesthesiologist is satisfied. What do you recommend long-term?"
+    choices:
+      - text: "Document the optimal cable routing and monitor settings for this OR, ensure all ORs have the same setup, and include ESU-mode configuration in the monitor PM checklist"
+        correct: true
+        feedback: "Correct — standardise the solution across all ORs. Create a brief reference card for the OR showing optimal cable routing, return electrode placement relative to monitoring electrodes, and how to enable the ESU filter mode on the Philips IntelliVue. Add ESU-mode verification to the monitor PM checklist."
+      - text: "File a complaint against Erbe for excessive electromagnetic emissions"
+        correct: false
+        feedback: "The ESU operates within IEC 60601-2-2 emission limits. Some interference is inherent to electrosurgery — it's managed through proper setup, not by complaining to the manufacturer."
+      - text: "Request that procurement purchases ESU-hardened monitoring cables for all ORs"
+        correct: false
+        feedback: "ESU-hardened cables can help but are expensive. Proper cable routing and monitor configuration are more effective and have zero cost."
+      - text: "No further action — the problem is solved for this OR"
+        correct: false
+        feedback: "If the same equipment is in all ORs, the same interference exists in all ORs. Standardise the solution."
+learning_points:
+  - text: "ESU interference with patient monitoring is inherent to electrosurgery — high-frequency current through the patient's body and electromagnetic radiation from the ESU couple into monitoring leads. It cannot be fully eliminated but can be effectively managed."
+  - text: "Three physical measures reduce ESU interference: (1) separate ESU cables from monitoring leads, (2) route the HF current path (active to return electrode) away from monitoring electrodes, (3) use the shortest possible monitoring lead lengths."
+    source_type: best-practice
+  - text: "Modern patient monitors have ESU artifact rejection modes ('Surgery mode', 'ESU filter'). These should be enabled for all OR monitoring. They apply HF filtering, extend signal averaging, and intelligently manage alarms during ESU activation."
+    source_type: best-practice
+  - text: "IEC 60601-2-2 specifies electromagnetic emission limits for ESUs, and IEC 60601-2-27 specifies immunity requirements for ECG monitors. In practice, the specified immunity level may not prevent all artifact during high-power ESU activation."
+    source: "IEC 60601-2-2 §202 (EMC) and IEC 60601-2-27 §202"
+    source_type: standard
+  - text: "Never accept 'ignore the monitor during ESU use' as a solution. Clinical engineers should work with the surgical team to optimise the setup so that monitoring remains reliable even during electrosurgery."
+    source_type: best-practice

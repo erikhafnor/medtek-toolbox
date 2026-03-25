@@ -1,0 +1,91 @@
+id: us-image-artifacts
+title: Image Artifacts and Element Dropout
+device: GE LOGIQ E10
+category: ultrasound
+level: 1
+estimated_time: 15min
+has_lab_handoff: true
+briefing:
+  caller: Sonographer Anne, Radiology
+  location: Ultrasound Room 3
+  facility: Stavanger University Hospital
+  time: "Tuesday 11:00"
+  message: "I'm seeing dark vertical lines in the image on the LOGIQ E10 in room 3 — they're visible on all presets and on both the abdominal and curved probes. I thought it was the C1-6 probe at first, but now I'm seeing them with the C2-9 as well. The images are degraded enough that I'm not confident in my diagnoses. Can you come check?"
+  urgency: medium
+  context:
+    - "Dark vertical lines visible in B-mode image"
+    - "Present on both C1-6 and C2-9 curved probes"
+    - "Lines visible on all presets and clinical applications"
+    - "GE LOGIQ E10, serial: LOGIQ-22847"
+    - "Sonographer concerned about diagnostic confidence"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "Dark vertical lines in the ultrasound image that appear with multiple probes. This could be a probe problem or a system problem. How do you determine which?"
+    hint: "If the lines appear in the same position with different probes, the problem is in the system. If they move or change with different probes, the problem is in the probes."
+    choices:
+      - text: "Compare the line positions with each probe — if lines are in different positions, it's the probes; if identical position, it's the system's receive electronics"
+        correct: true
+        feedback: "Correct — element dropout in a probe creates lines at the position of the dead element(s), which is physically fixed in the transducer array. If two different probes show lines in the exact same screen position, the problem is in the system's receive channels, not the probes. If the lines are in different positions, both probes have independent element damage."
+      - text: "Test each probe on a different LOGIQ E10 to see if the lines follow the probe"
+        correct: false
+        feedback: "This is a valid diagnostic step, but it requires another system and takes longer. Comparing line positions with different probes on the same system is faster and equally informative."
+      - text: "Run the system's built-in diagnostic self-test"
+        correct: false
+        feedback: "Self-tests are useful but often check only basic system function, not image quality. A phantom scan or in-air test is more sensitive for detecting element dropout."
+      - text: "Clean the probe faces — gel residue can cause image artifacts"
+        correct: false
+        feedback: "Gel residue causes acoustic coupling artifacts (bright spots, shadows), not the systematic dark vertical lines that indicate element dropout."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Perform an in-air test and a phantom scan with each probe. For the in-air test: apply gel to the probe face, image into air, and count the dark vertical lines (element dropouts). For the phantom test: scan the CIRS 040GSE phantom and evaluate uniformity, resolution, and depth of penetration."
+    simulated_data:
+      tool: "In-Air Element Check + CIRS 040GSE Phantom QA"
+      readings:
+        - setting: "C1-6 probe — in-air test, element dropout count"
+          delivered: "4 dropout lines (elements 78, 79, 112, 113)"
+          status: warning
+          spec: "< 5% of elements (< 10 of 192)"
+        - setting: "C1-6 probe — phantom uniformity"
+          delivered: "Dark band at element 78–79 position, otherwise uniform"
+          status: warning
+        - setting: "C2-9 probe — in-air test, element dropout count"
+          delivered: "12 dropout lines (clustered at elements 45–56)"
+          status: fail
+          error: "6.25% dropout — exceeds 5% threshold"
+        - setting: "C2-9 probe — phantom depth of penetration"
+          delivered: "14 cm (baseline: 18 cm)"
+          status: fail
+          spec: "Within 1 cm of baseline"
+        - setting: "C1-6 on different LOGIQ E10 — same dropout positions"
+          delivered: "Same 4 lines at elements 78, 79, 112, 113"
+          status: warning
+          error: "Lines follow the probe — confirmed probe damage"
+  - type: multiple-choice
+    id: diagnosis
+    question: "Both probes have element dropout, but the C2-9 is worse (12 elements, 6.25%, clustered) with reduced penetration. The lines follow the probes when tested on a different system. What's the action plan?"
+    choices:
+      - text: "C2-9: remove from service for probe repair (exceeds 5% dropout threshold). C1-6: flag for monitoring at next QA (below threshold but trending). Investigate cause of damage (handling, drops, cleaning)."
+        correct: true
+        feedback: "Correct — the 5% element dropout threshold is a common QA benchmark. Above 5%, image quality is diagnostically compromised. The C2-9 with clustered dropout and reduced penetration needs repair. The C1-6 is borderline — document and monitor at the next quarterly QA. Investigate the cause: dropped probes, improper cleaning, or cable stress are common culprits."
+      - text: "Replace both probes immediately"
+        correct: false
+        feedback: "Probes are expensive (€5,000–20,000 each). The C1-6 with 4 scattered dropouts is still clinically usable. Replace/repair the C2-9 and monitor the C1-6."
+      - text: "Send both probes to GE for element repair"
+        correct: false
+        feedback: "Only the C2-9 needs immediate repair. The C1-6 is below the action threshold. Third-party probe repair services are often available at lower cost than OEM repair."
+      - text: "Both probes are still usable — document and continue monitoring"
+        correct: false
+        feedback: "The C2-9 has lost 22% of its penetration depth and exceeds the 5% dropout threshold. It's not suitable for clinical use."
+learning_points:
+  - text: "Dark vertical lines in an ultrasound image indicate element dropout — dead piezoelectric elements in the transducer array. To determine if the problem is the probe or the system, compare line positions with different probes."
+  - text: "A common QA threshold for probe element dropout is 5% of total elements. Below 5% (scattered): monitor at next QA cycle. Above 5% or clustered: remove from service for repair. Clustered dropout is more clinically significant than scattered."
+    source: "AIUM Practice Parameter — Ultrasound Equipment QA"
+    source_type: best-practice
+  - text: "Probe damage is the most expensive maintenance issue in ultrasound — a single probe costs €5,000–20,000. Handling training for clinical staff (proper cable management, no drops, correct cleaning) is the most cost-effective preventive measure."
+    source_type: best-practice
+  - text: "In-air testing is a quick, no-phantom method for detecting element dropout. Apply gel, image into air, and look for vertical dark lines. It takes 30 seconds per probe and should be part of every PM visit."
+    source_type: best-practice
+  - text: "IEC 60601-2-37 addresses acoustic output safety (MI, TI) but does not specify image quality requirements. Image QA is governed by institutional protocols and professional guidelines (AIUM, EFSUMB)."
+    source: "IEC 60601-2-37; AIUM QA guidelines"
+    source_type: standard

@@ -1,0 +1,105 @@
+id: vent-leak-alarm
+title: Kretslekkasje-alarm på intensivrespiratoren
+device: Dräger Evita V500
+category: ventilator
+level: 1
+estimated_time: 15min
+has_lab_handoff: true
+briefing:
+  caller: Sykepleier Hilde, medisinsk intensiv
+  location: Intensiv seng 8
+  facility: Stavanger universitetssjukehus
+  time: "Søndag 03:20"
+  message: "Evita V500 på seng 8 alarmerer hele tiden for kretslekkasje — den viser lekkasje på 400 mL, og alarmen går hvert 30. sekund. Pasienten er på volumstyrt ventilasjon med 500 mL tidalvolum og virker grei, men ekspirert volum viser bare 320 mL. Jeg har sjekket kretsen og finner ingenting som er åpenbart frakoblet. Kan du komme og se?"
+  urgency: high
+  context:
+    - "Pasient på volumstyrt ventilasjon, Vt 500 mL, PEEP 8, FiO₂ 0,4"
+    - "Lekkasje-alarm: 400 mL lekkasje (inspirert minus ekspirert)"
+    - "Ekspirert Vt på display: 320 mL (burde vært ~500 mL)"
+    - "Ingen synlig frakobling i kretsen"
+    - "Aktiv oppvarmet befukter (Fisher & Paykel MR850)"
+    - "Nattevakt — begrenset bemanning tilgjengelig"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "Du ankommer sengen. Respiratoren viser Vt inspirert 510 mL, Vt ekspirert 320 mL, lekkasje 37 %. Pasientens SpO₂ er 94 % (var 97 %). Hva er din systematiske tilnærming for å finne lekkasjen?"
+    hint: "Arbeid fra respiratoren utover gjennom kretsen til pasienten. En så stor lekkasje bør være hørbar eller kjennes."
+    choices:
+      - text: "Begynn med å sjekke den ekspiratoriske flowsensoren — en defekt sensor kan vise en falsk lekkasje"
+        correct: false
+        feedback: "SpO₂-fallet tyder på at en reell lekkasje foreligger, ikke bare en sensorfeil. Sjekk kretsen først."
+      - text: "Systematisk sjekk av hver kobling fra respiratorutgangen gjennom kretsen til pasienten: respiratorport, befukterinngang/-utgang, kretskoblinger ved Y-stykket, endotrakealtubemansjett"
+        correct: true
+        feedback: "Riktig — arbeid metodisk fra respiratoren utover. Sjekk hver kobling ved å kjenne (lekkende gass) og lytte (hvesing). Det fallende SpO₂ bekrefter at dette er en reell lekkasje som påvirker ventilasjonen."
+      - text: "Bytt hele pustekretsen med en ny"
+        correct: false
+        feedback: "Å bytte hele kretsen klokken tre om natten er tidkrevende og er kanskje ikke nødvendig. En systematisk sjekk identifiserer det spesifikke lekkasjepunktet raskere."
+      - text: "Øk tidalvolumet til 700 mL for å kompensere for lekkasjen"
+        correct: false
+        feedback: "Å kompensere for en lekkasje uten å fikse den er utrygt — lekkasjen kan forverres, og overtrykksetting av en utett krets sløser gass uten å ventilere pasienten pålitelig."
+  - type: multiple-choice
+    id: investigation
+    question: "Du sjekker alle synlige koblinger — de er stramme. Du lytter langs kretsen og hører en svak hvesing nær befukteren. Fisher & Paykel MR850-befukterkammeret har en hårfin sprekk i bunnen der det sitter i varmeplaten. Hva er umiddelbar handling?"
+    hint: "Pasienten trenger fortsatt ventilasjon. Hva er den raskeste måten å gjenopprette kretsintegriteten på?"
+    choices:
+      - text: "Bytt befukterkammeret med et nytt fra avdelingens lager"
+        correct: true
+        feedback: "Riktig — befukterkamre er lett tilgjengelige forbruksvarer. Bytt det ut, koble til igjen, og verifiser at lekkasjen er løst. Det sprukne kammeret er den vanligste årsaken til 'usynlige' kretslekkasjer fordi sprekken er skjult under varmeplaten."
+      - text: "Tett sprekken med medisinsk tape som en midlertidig løsning"
+        correct: false
+        feedback: "Å tape et sprukket befukterkammer er ikke akseptabelt — tapen vil ikke tette pålitelig under trykk, og limet kan kontaminere gassbanen. Kamre er billige og lett tilgjengelige."
+      - text: "Forbigå befukteren midlertidig med et HME-filter (heat-moisture exchanger)"
+        correct: false
+        feedback: "Et HME-filter er et gyldig alternativ, men siden erstatningskamre er tilgjengelige på avdelingen, er et direkte bytte raskere og gjenoppretter den tiltenkte befuktningsmetoden."
+      - text: "Slå av befuktervarmeren for å redusere trykkforskjellen og redusere lekkasjen"
+        correct: false
+        feedback: "Å slå av varmeren fikser ikke sprekken. Lekkasjen skyldes den fysiske brekken i kammerveggen, ikke oppvarmingen."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Etter å ha byttet befukterkammeret, verifiser kretsintegriteten. Okkluder pasient-Y-stykket og kjør respiratorens innebygde lekkasjetest. Bekreft deretter gassleveransenøyaktigheten ved å måle levert tidalvolum med Fluke VT900A ved pasient-Y-stykket."
+    simulated_data:
+      tool: "Dräger Evita V500 kretslekkasjetest + Fluke VT900A-verifisering"
+      readings:
+        - setting: "Innstilling: Kretslekkasjetest (okkludert Y-stykke, 60 cmH₂O)"
+          delivered: "45 mL/min"
+          status: pass
+          spec: "< 200 mL/min"
+        - setting: "Innstilling: Vt levert ved pasient-Y-stykke (innstilt 500 mL)"
+          delivered: "495 mL"
+          status: pass
+          spec: "450–550 mL (±10 %)"
+        - setting: "Innstilling: Vt ekspirert (respiratordisplay)"
+          delivered: "488 mL"
+          status: pass
+        - setting: "Innstilling: Lekkasje (respiratordisplay)"
+          delivered: "12 mL (2 %)"
+          status: pass
+          spec: "< 10 % for klinisk akseptabilitet"
+  - type: multiple-choice
+    id: diagnosis
+    question: "Lekkasjen er løst — kretslekkasjetesten bestått, levert Vt er nøyaktig, og pasientens SpO₂ er tilbake til 97 %. Hva bør du dokumentere og anbefale?"
+    choices:
+      - text: "Dokumenter feilen, anbefal at avdelingen sjekker befukterkamre under daglige kretssjekker, og inspiser gjenværende kamre på lager for lignende sprekker"
+        correct: true
+        feedback: "Riktig — dokumenter rotårsaken (sprukket befukterkammer), anbefal å legge til kammerinspeksjon i den daglige respiratorkretssjekken, og inspiser gjenværende lager. Hårfine sprekker i befukterkamre er et kjent problem, spesielt hvis kamre er reprosessert eller hardhendt behandlet under oppsett."
+      - text: "Dokumenter reparasjonen og lukk saken — dette er en rutine forbrukssak"
+        correct: false
+        feedback: "En kretslekkasje på en ventilert pasient er aldri 'rutine'. Lekkasjen på 37 % forårsaket klinisk signifikant desaturasjon. Dokumenter det ordentlig og legg til en forebyggende anbefaling."
+      - text: "Send en produsentrapport mot Fisher & Paykel for det sprukne kammeret"
+        correct: false
+        feedback: "Et enkelt sprukket kammer skyldes sannsynligvis håndtering eller alder, ikke en produksjonsfeil. Sjekk lageret først — hvis du finner et mønster av sprekker i samme batch, er en produsentrapport berettiget."
+      - text: "Anbefal å bytte til HME-filtre i stedet for aktiv befuktning for å eliminere denne feilmoden"
+        correct: false
+        feedback: "Aktiv befuktning er klinisk foretrukket for de fleste intensivpasienter, spesielt de på langvarig ventilasjon. Å eliminere en klinisk fordel for å unngå et vedlikeholdsproblem er uforholdsmessig."
+learning_points:
+  - text: "Sprekker i befukterkamre er en av de vanligste årsakene til 'usynlige' respirator-kretslekkasjer. Sprekken er ofte skjult under varmeplaten og ikke synlig uten å fjerne kammeret."
+  - text: "En stor kretslekkasje reduserer levert tidalvolum, noe som kan forårsake hypoksi og hyperkapni. Respiratoralarmen er en kritisk sikkerhetsfunksjon — aldri ignorer den uten å undersøke."
+    source: "IEC 60601-2-12 §201.13 — alarmkrav for respiratorer"
+    source_type: standard
+  - text: "Ved feilsøking av kretslekkasjer, arbeid systematisk fra respiratoren utover: respiratorport → befukterinngang → befukterkammer → befukterutgang → inspiratorisk slange → Y-stykke → ekspiratorisk slange → ekspirasjonsventil → endotrakealtubemansjett."
+    source_type: best-practice
+  - text: "Kretslekkasje-alarmer utgjør omtrent 25 % av alle respiratorrelaterte henvendelser til klinisk ingeniøravdeling. De fleste skyldes løse koblinger eller skadede forbruksvarer, ikke respiratorfeil."
+    source: "ECRI Institute — håndtering av respiratoralarmer"
+    source_type: incident-data
+  - text: "Verifiser alltid løsningen med både respiratorens innebygde lekkasjetest OG en uavhengig måling (VT900A) ved pasient-Y-stykket. Den innebygde testen bekrefter kretsintegritet; den uavhengige målingen bekrefter leveringsnøyaktighet."
+    source_type: best-practice

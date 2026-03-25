@@ -1,0 +1,91 @@
+id: us-image-artifacts
+title: Bildeartifakter og elementbortfall
+device: GE LOGIQ E10
+category: ultrasound
+level: 1
+estimated_time: 15min
+has_lab_handoff: true
+briefing:
+  caller: Sonograf Anne, Radiologisk avdeling
+  location: Ultralydrom 3
+  facility: Stavanger universitetssjukehus
+  time: "Tirsdag 11:00"
+  message: "Jeg ser mørke vertikale linjer i bildet på LOGIQ E10 i rom 3 — de er synlige på alle forhåndsinnstillinger og på både abdominal- og kurvet probe. Jeg trodde først det var C1-6-proben, men nå ser jeg dem med C2-9 også. Bildene er så forringet at jeg ikke er trygg på diagnosene mine. Kan du komme og sjekke?"
+  urgency: medium
+  context:
+    - "Mørke vertikale linjer synlige i B-modus-bildet"
+    - "Til stede på både C1-6 og C2-9 kurvede prober"
+    - "Linjer synlige på alle forhåndsinnstillinger og kliniske applikasjoner"
+    - "GE LOGIQ E10, serienummer: LOGIQ-22847"
+    - "Sonograf bekymret for diagnostisk pålitelighet"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "Mørke vertikale linjer i ultralydbildet som vises med flere prober. Dette kan være et probeproblem eller et systemproblem. Hvordan avgjør du hvilket?"
+    hint: "Hvis linjene vises på samme posisjon med ulike prober, er problemet i systemet. Hvis de flytter seg eller endres med ulike prober, er problemet i probene."
+    choices:
+      - text: "Sammenlign linjeposisjonene med hver probe — hvis linjene er på forskjellige posisjoner, er det probene; hvis identisk posisjon, er det systemets mottakerelektronikk"
+        correct: true
+        feedback: "Riktig — elementbortfall i en probe skaper linjer ved posisjonen til det døde elementet/elementene, som er fysisk fastlåst i transduserarrayen. Hvis to ulike prober viser linjer på nøyaktig samme skjermposisjon, er problemet i systemets mottakerkanaler, ikke probene. Hvis linjene er på forskjellige posisjoner, har begge probene uavhengig elementskade."
+      - text: "Test hver probe på en annen LOGIQ E10 for å se om linjene følger proben"
+        correct: false
+        feedback: "Dette er et gyldig diagnostisk steg, men det krever et annet system og tar lengre tid. Å sammenligne linjeposisjoner med ulike prober på samme system er raskere og like informativt."
+      - text: "Kjør systemets innebygde diagnostiske selvtest"
+        correct: false
+        feedback: "Selvtester er nyttige, men sjekker ofte bare grunnleggende systemfunksjon, ikke bildekvalitet. En fantomskan eller lufttest er mer sensitiv for å oppdage elementbortfall."
+      - text: "Rengjør probeflatene — gelrester kan forårsake bildeartifakter"
+        correct: false
+        feedback: "Gelrester forårsaker akustisk koblingsartifakter (lyse flekker, skygger), ikke de systematiske mørke vertikale linjene som indikerer elementbortfall."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Utfør en lufttest og en fantomskan med hver probe. For lufttesten: påfør gel på probeflaten, bildetolk mot luft, og tell mørke vertikale linjer (elementbortfall). For fantomtesten: skann CIRS 040GSE-fantomet og evaluer uniformitet, oppløsning og inntrengningsdybde."
+    simulated_data:
+      tool: "Lufttest elementkontroll + CIRS 040GSE Fantom-QA"
+      readings:
+        - setting: "C1-6-probe — lufttest, elementbortfalltelling"
+          delivered: "4 bortfalllinjer (element 78, 79, 112, 113)"
+          status: warning
+          spec: "< 5 % av elementer (< 10 av 192)"
+        - setting: "C1-6-probe — fantomuniformitet"
+          delivered: "Mørkt bånd ved element 78–79-posisjon, ellers uniform"
+          status: warning
+        - setting: "C2-9-probe — lufttest, elementbortfalltelling"
+          delivered: "12 bortfalllinjer (gruppert ved element 45–56)"
+          status: fail
+          error: "6,25 % bortfall — overskrider 5 %-terskel"
+        - setting: "C2-9-probe — fantom inntrengningsdybde"
+          delivered: "14 cm (baseline: 18 cm)"
+          status: fail
+          spec: "Innenfor 1 cm av baseline"
+        - setting: "C1-6 på annen LOGIQ E10 — samme bortfallposisjoner"
+          delivered: "Samme 4 linjer ved element 78, 79, 112, 113"
+          status: warning
+          error: "Linjene følger proben — bekreftet probeskade"
+  - type: multiple-choice
+    id: diagnosis
+    question: "Begge probene har elementbortfall, men C2-9 er verre (12 elementer, 6,25 %, gruppert) med redusert inntrengning. Linjene følger probene ved testing på et annet system. Hva er handlingsplanen?"
+    choices:
+      - text: "C2-9: ta ut av drift for probereparasjon (overskrider 5 %-terskel for bortfall). C1-6: flagg for overvåking ved neste QA (under terskel men med trend). Undersøk årsaken til skaden (håndtering, fall, rengjøring)."
+        correct: true
+        feedback: "Riktig — 5 %-terskelen for elementbortfall er en vanlig QA-referanse. Over 5 % er bildekvaliteten diagnostisk kompromittert. C2-9 med gruppert bortfall og redusert inntrengning trenger reparasjon. C1-6 er på grensen — dokumenter og overvåk ved neste kvartalsvise QA. Undersøk årsaken: proben er droppet, feil rengjøring eller kabelbelastning er vanlige årsaker."
+      - text: "Bytt begge probene umiddelbart"
+        correct: false
+        feedback: "Prober er dyre (€5 000–20 000 per stykk). C1-6 med 4 spredte bortfall er fortsatt klinisk brukbar. Bytt/reparer C2-9 og overvåk C1-6."
+      - text: "Send begge probene til GE for elementreparasjon"
+        correct: false
+        feedback: "Bare C2-9 trenger umiddelbar reparasjon. C1-6 er under handlingsterskelen. Tredjeparts probereparasjonstjenester er ofte tilgjengelige til lavere kostnad enn OEM-reparasjon."
+      - text: "Begge probene er fortsatt brukbare — dokumenter og fortsett overvåking"
+        correct: false
+        feedback: "C2-9 har mistet 22 % av inntrengningsdybden og overskrider 5 %-terskelen for bortfall. Den er ikke egnet for klinisk bruk."
+learning_points:
+  - text: "Mørke vertikale linjer i et ultralydbilde indikerer elementbortfall — døde piezoelektriske elementer i transduserarrayen. For å avgjøre om problemet er proben eller systemet, sammenlign linjeposisjoner med ulike prober."
+  - text: "En vanlig QA-terskel for probeelementbortfall er 5 % av totalt antall elementer. Under 5 % (spredt): overvåk ved neste QA-syklus. Over 5 % eller gruppert: ta ut av drift for reparasjon. Gruppert bortfall er mer klinisk betydningsfullt enn spredt."
+    source: "AIUM Practice Parameter — Ultrasound Equipment QA"
+    source_type: best-practice
+  - text: "Probeskade er det dyreste vedlikeholdsproblemet innen ultralyd — en enkelt probe koster €5 000–20 000. Opplæring i håndtering for klinisk personale (korrekt kabelhåndtering, unngå fall, riktig rengjøring) er det mest kostnadseffektive forebyggende tiltaket."
+    source_type: best-practice
+  - text: "Lufttesting er en rask metode uten fantom for å oppdage elementbortfall. Påfør gel, bildetolk mot luft, og se etter vertikale mørke linjer. Det tar 30 sekunder per probe og bør være del av hvert forebyggende vedlikeholdsbesøk."
+    source_type: best-practice
+  - text: "IEC 60601-2-37 omhandler akustisk utgangssikkerhet (MI, TI) men spesifiserer ikke krav til bildekvalitet. Bilde-QA reguleres av institusjonelle protokoller og faglige retningslinjer (AIUM, EFSUMB)."
+    source: "IEC 60601-2-37; AIUM QA-retningslinjer"
+    source_type: standard

@@ -1,0 +1,105 @@
+id: ecg-noise-defib
+title: EKG-støy under overvåking
+device: LIFEPAK 15
+category: defibrillator
+level: 1
+estimated_time: 15min
+has_lab_handoff: true
+briefing:
+  caller: Sykepleier Inger, telemetriavdeling 4B
+  location: Avdeling 4B, rom 412
+  facility: Stavanger universitetssjukehus
+  time: "Mandag 10:15"
+  message: "LIFEPAK 15 på rom 412 viser et veldig støyfullt EKG — det er så mye fuzz på kurven at vi ikke kan se om pasientens rytme endrer seg. Vi har prøvd forskjellige avledninger på pasienten, og det ser fortsatt likt ut. Pasienten er post-MI og vi trenger pålitelig overvåking. Kan du komme og ta en titt?"
+  urgency: medium
+  context:
+    - "Post-MI-pasient som krever kontinuerlig EKG-overvåking"
+    - "Serienummer: 45892315"
+    - "Støy på alle avledninger"
+    - "Personalet har allerede prøvd å flytte elektrodene"
+    - "Rom 412 ligger nær serviceheisen"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "Du ankommer avdelingen og ser en bredbåndet, uklar grunnlinje på EKG-skjermen. Sykepleieren sier de allerede har byttet elektrodene. Hva er din systematiske tilnærming?"
+    hint: "EKG-støy har tre hovedkilder: pasient/elektrode-grensesnittet, kabel/enhet og omgivelsene. Jobb fra pasienten og utover."
+    choices:
+      - text: "Bytt LIFEPAK 15 med en reserveenhet for å se om støyen følger enheten"
+        correct: false
+        feedback: "Å bytte hele enheten er et gyldig feilsøkingssteg, men det er ikke systematisk — du lærer ikke hva som forårsaker støyen."
+      - text: "Sjekk hudprep for elektrodene, deretter bytt EKG-kabelen, deretter test med en EKG-simulator for å isolere pasient kontra enhet kontra omgivelser"
+        correct: true
+        feedback: "Riktig — systematisk isolering: (1) pasientgrensesnitt, (2) kabel, (3) enhetens inngang, (4) omgivelser. Hvert bytte innsnevrer kilden."
+      - text: "Slå av utstyr i nærheten for å sjekke for elektromagnetisk interferens"
+        correct: false
+        feedback: "EMI er verdt å undersøke, men å hoppe rett til omgivelsene hopper over vanligere årsaker — kabelfeil er langt hyppigere enn miljøinterferens."
+      - text: "Gå inn i enhetens filterinnstillinger og aktiver 50 Hz-filtrering"
+        correct: false
+        feedback: "Hakk-filteret fjerner nettfrekvensinterferens, men sykepleieren beskrev bredbåndsstøy. Et filter fikser ikke en kabelfeil, og det skjuler diagnostisk informasjon."
+  - type: multiple-choice
+    id: investigation
+    question: "Du sjekker hudprepen (ren, god kontakt) og bytter den 5-leder EKG-kabelen med en kjent god kabel fra lageret. Støyen forsvinner helt. Hva bør du gjøre videre?"
+    hint: "Du har isolert feilen til kabelen. Men hvilken del av kabelen er defekt, og hvordan verifiserer du det?"
+    choices:
+      - text: "Kast den defekte kabelen og avslutt saken"
+        correct: false
+        feedback: "Ikke kast den ennå — dokumenter feilen og test den ordentlig. Du må bekrefte feilmodusen og vurdere om det er en enkelthendelse eller et partiproblem."
+      - text: "Merk den defekte kabelen, ta den med til verkstedet og test kontinuitet på hver ledertråd"
+        correct: true
+        feedback: "Riktig — en kontinuitetstest vil identifisere hvilken tråd som er brutt og om bruddet er intermitterende (bøyningsavhengig). Dette gir informasjon om andre kabler av samme alder/type bør inspiseres."
+      - text: "Send kabelen til produsenten for analyse"
+        correct: false
+        feedback: "Produsentanalyse tar uker. Du kan diagnostisere en kabelfeil internt på noen minutter."
+      - text: "Sjekk om kabelen er innenfor utskiftingsintervallet og bestill en ny"
+        correct: false
+        feedback: "Kabler svikter fra bruk, ikke alder. Et utskiftingsintervall forklarer ikke denne feilen. Test først, deretter avgjør."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Koble den defekte EKG-kabelen til et multimeter. Test kontinuitet på hver ledertråd ved å måle motstand fra kabeltilkoblingens pinne til tilhørende elektrodeklemme. Bøy kabelen ved stresspunkter (tilkoblingspunkt, kabelforgrening) under målingen."
+    simulated_data:
+      tool: "Multimeter — EKG-kabel kontinuitetstest"
+      readings:
+        - setting: "Avledning I (RA pinne → RA klemme)"
+          delivered: "1,2 Ω"
+          status: pass
+        - setting: "Avledning II (LA pinne → LA klemme)"
+          delivered: "1,1 Ω"
+          status: pass
+        - setting: "Avledning III (LL pinne → LL klemme)"
+          delivered: "∞ (åpen) ved bøyning i forgreningspunktet"
+          status: fail
+          error: "Intermitterende åpen krets ved bøyning"
+        - setting: "Avledning V (V pinne → V klemme)"
+          delivered: "1,3 Ω"
+          status: pass
+        - setting: "Avledning RL (RL pinne → RL klemme)"
+          delivered: "0,9 Ω"
+          status: pass
+  - type: multiple-choice
+    id: diagnosis
+    question: "LL-ledertråden (venstre bein) har en intermitterende åpen krets i kabelforgreningspunktet. Denne ene brutte tråden forårsaket støy på ALLE viste avledninger. Hvorfor?"
+    choices:
+      - text: "LL-elektroden er referansejord for Einthovens trekant — hvis den er åpen, mister alle avledningsberegninger (I, II, III, aVR, aVL, aVF) sin felles referanse"
+        correct: true
+        feedback: "Riktig — LL-elektroden er del av Wilsons sentrale terminal og brukes som referanse i de fleste avledningsberegninger. Når den blir åpen krets, kollapser felles-modus-undertrykkingsforholdet (CMRR), og miljøstøy overvelder det differensielle EKG-signalet på alle avledninger."
+      - text: "Den brutte tråden skaper en kortslutning som injiserer strøm inn i alle andre avledninger"
+        correct: false
+        feedback: "En åpen krets skaper ikke en kortslutning — den fjerner en referanse, og derfor dukker støy opp på alle avledninger i stedet for bare én."
+      - text: "LL-tråden fører driven-right-leg-signalet som kansellerer felles-modus-støy"
+        correct: false
+        feedback: "Nesten — men driven-right-leg (DRL)-signalet føres typisk av RL-elektroden, ikke LL. LL-problemet handler om å miste målereferansen."
+      - text: "Enheten oppdager feilen og deaktiverer inngangsfiltrene som et sikkerhetstiltak"
+        correct: false
+        feedback: "Enheten deaktiverer ikke filtre med vilje. Støyen oppstår fordi referanseelektroden er mistet, noe som ødelegger CMRR."
+learning_points:
+  - text: "En enkelt brutt EKG-ledertråd kan forårsake støy på ALLE viste avledninger, ikke bare avledningen som bruker den elektroden. Dette skyldes at EKG-avledninger beregnes fra kombinasjoner av elektroder — å miste én referanse påvirker alle beregninger."
+  - text: "EKG-kabler er den hyppigst utskiftede forbruksvaren i pasientovervåking. Intermitterende brudd ved bøyningspunkter (tilkoblingspunkt, forgreningspunkt) er den vanligste feilmodusen."
+    source: "ECRI Institute — EKG-kabel- og ledertråd-problemer"
+    source_type: incident-data
+  - text: "IEC 60601-2-27 krever en CMRR på minst 89 dB ved 50/60 Hz. En åpen elektrode kan redusere effektiv CMRR til nær null, slik at enheten ikke kan oppfylle denne spesifikasjonen selv om enheten i seg selv ikke er defekt."
+    source: "IEC 60601-2-27 §201.12.1.101.3"
+    source_type: standard
+  - text: "Test alltid kabelkontinuitet MENS DU BØYER kabelen ved kjente stresspunkter. En statisk motstandsmåling kan vise normale verdier mens et intermitterende brudd bare viser seg under bevegelse."
+    source_type: best-practice
+  - text: "Ved feilsøking av EKG-støy forhindrer systematisk isolering (pasient → kabel → enhet → omgivelser) unødvendige enhetsbytter. De fleste EKG-støyklager skyldes kabel- eller elektrodeproblemer, ikke enhetsfeil."
+    source_type: best-practice

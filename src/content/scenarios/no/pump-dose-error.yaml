@@ -1,0 +1,103 @@
+id: pump-dose-error
+title: Dosefeil i medikamentbiblioteket
+device: B. Braun Infusomat Space
+category: infusion-pump
+level: 2
+estimated_time: 18min
+has_lab_handoff: false
+briefing:
+  caller: Farmasøyt Thomas, klinisk farmasi
+  location: Medisinsk-teknisk kontor
+  facility: Stavanger universitetssjukehus
+  time: "Onsdag 14:00"
+  message: "Vi hadde en nestenhendelse i går — en sykepleier på barneavdelingen programmerte en noradrenalininfusjon på 0,5 mcg/kg/min for et barn på 12 kg. Pumpens medikamentbibliotek godkjente innstillingen uten noen advarsel, men vår apotekprotokoll sier at makshastigheten for pediatrisk noradrenalin er 0,3 mcg/kg/min. Hun oppdaget det selv før det nådde pasienten, men medikamentbiblioteket burde ha varslet. Kan du sjekke om biblioteket er korrekt?"
+  urgency: medium
+  context:
+    - "Nestenhendelse: noradrenalin 0,5 mcg/kg/min programmert for 12 kg pediatrisk pasient"
+    - "Pumpens medikamentbibliotek varslet IKKE om at dosen overskred grensen"
+    - "Apotekprotokoll maks: 0,3 mcg/kg/min for pediatrisk noradrenalin"
+    - "Sykepleier oppdaget feilen før infusjonen startet"
+    - "B. Braun Infusomat Space med SpaceCom medikamentbibliotek v3.2"
+    - "Medikamentbiblioteket sist oppdatert for 8 måneder siden"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "Dette er et styringsproblem for medikamentbiblioteket. Sikkerhetsgrensene fanget ikke en dose som overskrider sykehusets protokoll. Hva er ditt første steg?"
+    hint: "Medikamentbiblioteket er et sikkerhetssystem — når det ikke varsler, må du forstå hvilke grenser som er programmert og sammenligne dem med gjeldende apotekprotokoll."
+    choices:
+      - text: "Sjekk medikamentbibliotekversjonen på pumpen og sammenlign noradrenalingrensene med gjeldende apotekprotokoll"
+        correct: true
+        feedback: "Riktig — du må se nøyaktig hvilke grenser som er programmert i biblioteket og sammenligne dem linje for linje med gjeldende apotekprotokoll. Bibliotekversjonen og siste oppdateringsdato forteller deg om biblioteket samsvarer med gjeldende protokoll."
+      - text: "Kontakt B. Braun for å rapportere en feil i medikamentbiblioteket"
+        correct: false
+        feedback: "Grensene i medikamentbiblioteket konfigureres av sykehuset, ikke av B. Braun. Produsenten leverer plattformen; sykehusets apotek definerer grensene."
+      - text: "Tilbakestill medikamentbiblioteket til fabrikkinnstillinger"
+        correct: false
+        feedback: "Fabrikkinnstillinger er generiske — sykehusets protokoller er spesifikke. Tilbakestilling ville fjerne alle tilpassede grenser."
+      - text: "Ta pumpen ut av drift til biblioteket er verifisert"
+        correct: false
+        feedback: "Pumpen fungerer korrekt i seg selv. Problemet er bibliotekskonfigurasjonen. Å ta pumpen ut av drift fikser ikke rotårsaken og reduserer tilgjengelig utstyr."
+  - type: multiple-choice
+    id: investigation
+    question: "Du sjekker SpaceCom-medikamentbiblioteket (v3.2, sist oppdatert for 8 måneder siden). Noradrenalinoppføringen for pediatri viser: hard maks 2,0 mcg/kg/min, myk maks 1,0 mcg/kg/min. Gjeldende apotekprotokoll (revidert for 3 måneder siden) sier: hard maks 0,5 mcg/kg/min, myk maks 0,3 mcg/kg/min. Hva har skjedd?"
+    hint: "Bibliotekgrensene er langt mer romslige enn gjeldende protokoll. Protokollen ble oppdatert mer nylig enn biblioteket."
+    choices:
+      - text: "Apotekprotokollen ble oppdatert for 3 måneder siden, men medikamentbiblioteket ble ikke oppdatert tilsvarende — biblioteket er 5 måneder utdatert i forhold til protokollen"
+        correct: true
+        feedback: "Riktig — dette er en styringssvikt for biblioteket. Når apoteket reviderer legemiddelprotokoller, må medikamentbiblioteket oppdateres samtidig. Gapet på 5 måneder betyr at pumpene har operert med utdaterte sikkerhetsgrenser. Dette gjelder ikke bare ett legemiddel — du må revidere hele biblioteket."
+      - text: "Noen har manuelt overstyrt bibliotekgrensene på denne spesifikke pumpen"
+        correct: false
+        feedback: "Grensene samsvarer med den gamle protokollen (v3.2), ikke en manuell overstyring. Dette er et systematisk oppdateringsgap, ikke en enkelthendelse."
+      - text: "Biblioteket ble korruptert under en programvareoppdatering"
+        correct: false
+        feedback: "Bibliotekverdiene samsvarer med den forrige protokollversjonen. Dette er et konfigurasjonsstyringsproblem, ikke datakorrupsjon."
+      - text: "Apotekprotokollen er feil — medikamentbibliotekgrensene er klinisk riktige"
+        correct: false
+        feedback: "Apotekprotokoller er den autoritative kilden for dosegrenser. Medikamentbiblioteket må samsvare med gjeldende godkjente protokoll."
+  - type: multiple-choice
+    id: process-review
+    question: "Dette er et styringsgap: ingen formell prosess sikrer at medikamentbiblioteket oppdateres når apotekprotokoller endres. Hvordan forhindrer du at dette skjer igjen?"
+    hint: "Tenk på arbeidsflyten: hvem initierer endringen, hvem godkjenner den, hvem implementerer den, og hvem verifiserer den?"
+    choices:
+      - text: "Opprett en kvartalsvis plan for å sammenligne medikamentbiblioteket med apotekprotokollen"
+        correct: false
+        feedback: "Kvartalsvise sjekker tillater fortsatt måneder med avvik. Oppdateringen må utløses av selve protokollendringen, ikke av en kalender."
+      - text: "Etabler en formell endringskontrollprosess: apoteket varsler medisinsk-teknisk avdeling når protokoller endres, MTU oppdaterer biblioteket, apoteket verifiserer oppdateringen før utrulling"
+        correct: true
+        feedback: "Riktig — oppdateringen av medikamentbiblioteket må utløses av protokollendringen og verifiseres før utrulling. Dette skaper en lukket sløyfe: protokollendring → bibliotekoppdatering → apotekverifisering → utrulling til flåten. Legg dette til i sykehusets endringsstyringssystem med signering ved hvert steg."
+      - text: "Gi apoteket direkte tilgang til å oppdatere medikamentbiblioteket selv"
+        correct: false
+        feedback: "Apoteket bør definere grensene, men medisinsk-teknisk avdeling bør implementere og verifisere den tekniske konfigurasjonen. Oppgavedeling forhindrer feil."
+      - text: "Still pumpen til å kreve manuell bekreftelse for alle høyrisikolegemidler, uavhengig av bibliotekgrenser"
+        correct: false
+        feedback: "Dette skaper alarmtretthet — sykepleiere som bekrefter hver dose vil begynne å ignorere bekreftelsene. Bibliotekgrensene må være korrekte, ikke forbigås."
+  - type: multiple-choice
+    id: corrective-action
+    question: "Hva er den komplette planen for korrigerende tiltak?"
+    choices:
+      - text: "Umiddelbart: revider ALLE oppføringer i medikamentbiblioteket mot gjeldende apotekprotokoller. Kortsiktig: oppdater biblioteket og rul ut til alle pumper. Langsiktig: etabler en endringskontrollprosess som knytter protokolloppdateringer til bibliotekoppdateringer."
+        correct: true
+        feedback: "Riktig — noradrenalinavviket ble oppdaget ved en tilfeldighet. Andre legemidler kan også ha avvik. En full revisjon er nødvendig før du kan stole på bibliotekets sikkerhetsgrenser. Etter oppdatering forhindrer endringskontrollprosessen fremtidige gap."
+      - text: "Oppdater kun noradrenalinoppføringen og gå videre"
+        correct: false
+        feedback: "Hvis ett legemiddel er utdatert, er andre det sannsynligvis også. En delvis fiks gir falsk tillit til resten av biblioteket."
+      - text: "Deaktiver medikamentbiblioteket til det kan bli fullstendig verifisert"
+        correct: false
+        feedback: "Å deaktivere biblioteket fjerner ALLE sikkerhetsgrenser — også de som er korrekte. Risikoen ved å kjøre uten noen grenser er større enn å kjøre med delvis utdaterte grenser."
+      - text: "Rapporter hendelsen til B. Braun og vent på deres veiledning"
+        correct: false
+        feedback: "Bibliotekinnholdet er sykehusets ansvar, ikke produsentens. B. Braun leverer plattformen; dere konfigurerer grensene."
+learning_points:
+  - text: "Styring av medikamentbibliotek er et delt ansvar mellom apotek (definerer grenser), medisinsk-teknisk avdeling (implementerer og ruller ut) og sykepleietjenesten (bruker sikkerhetsgrensene). Et sammenbrudd i ethvert ledd kan tillate dosefeil."
+  - text: "Når et avvik i medikamentbiblioteket oppdages, revider HELE biblioteket — ikke bare legemiddelet som utløste etterforskningen. Hvis én oppføring er utdatert, er andre sannsynligvis det også."
+    source_type: best-practice
+  - text: "IEC 60601-2-24 krever at infusjonspumper støtter dose- og hastighetsgrenser og varsler. Men standarden omhandler plattformens kapabilitet — nøyaktigheten av grensene avhenger helt av sykehusets konfigurasjon og vedlikehold."
+    source: "IEC 60601-2-24 §201.12"
+    source_type: standard
+  - text: "Avvik i medikamentbibliotek er en anerkjent pasientsikkerhetsrisiko. ECRI Institute og ISMP rangerer konsekvent dosefeil knyttet til infusjonspumper blant de største teknologirelaterte sikkerhetsbekymringene."
+    source: "ISMP (Institute for Safe Medication Practices) — Smart pump drug library management"
+    source_type: incident-data
+  - text: "Endringskontroll for medikamentbibliotek bør følge samme strenghet som programvareendringsstyring: endringsforespørsel → gjennomgang → implementering → verifisering → utrulling. Dokumenter hver oppdatering med versjonsnummer, datoer og signeringer."
+    source_type: best-practice
+  - text: "Nestenhendelser er gratis lærdommer. Denne sykepleieren oppdaget feilen — neste gang må sikkerhetsgrensene fange den. Behandle nestenhendelser med samme etterforskningsgrundighet som faktiske skadehendelser."
+    source_type: best-practice

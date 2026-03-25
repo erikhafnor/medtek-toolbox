@@ -1,0 +1,110 @@
+id: esu-no-cut
+title: ESU Won't Cut During Surgery
+device: Erbe VIO 300 D
+category: electrosurgery
+level: 1
+estimated_time: 12min
+has_lab_handoff: true
+briefing:
+  caller: Scrub nurse Astrid, OR 5
+  location: Operating Room 5
+  facility: Stavanger University Hospital
+  time: "Monday 13:45"
+  message: "The surgeon is trying to make an incision with the Erbe VIO but there's no cutting effect — she can hear the activation tone but nothing happens when she touches tissue. We've tried turning the power up to 80 watts and it's still not cutting. The patient is prepped and draped. Can you come now?"
+  urgency: high
+  context:
+    - "Erbe VIO 300 D, serial: VIO-38921"
+    - "Cut mode selected, power set to 80 W"
+    - "Activation tone audible — generator is activating"
+    - "No tissue effect at the active electrode"
+    - "Patient prepped and draped, surgery in progress"
+    - "Return electrode pad applied to right thigh"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "The generator activates (you hear the tone) but there's no tissue effect. The generator is producing output — something is wrong in the circuit between the generator and the patient. What do you check first?"
+    hint: "The ESU circuit is: generator → active electrode cable → handpiece → tissue → return electrode pad → return cable → generator. Identify the most likely point of failure."
+    choices:
+      - text: "Check the return electrode pad — is it properly adhered to the patient with full contact?"
+        correct: true
+        feedback: "Correct — the return electrode is the most common cause of 'no output' complaints. If the pad has poor contact (partially peeled, gel dried, placed over hair or bony prominence), the circuit impedance is too high for effective current flow. Check the REM indicator on the generator — it may be showing a warning or have been silenced."
+      - text: "Open the generator and check the internal power amplifier"
+        correct: false
+        feedback: "The generator is activating (you hear the tone), so the internal electronics are likely working. The problem is almost certainly in the external circuit — cables, connections, or return electrode."
+      - text: "Replace the active electrode handpiece"
+        correct: false
+        feedback: "Worth trying if the return electrode checks out, but the return electrode is a far more common failure point."
+      - text: "Check the generator's power output setting in the service menu"
+        correct: false
+        feedback: "The power is set to 80 W and the generator activates. The setting is unlikely to be the issue — the circuit path is."
+  - type: multiple-choice
+    id: investigation
+    question: "You check the Erbe VIO display: the REM indicator shows a yellow warning triangle, but no audible alarm was heard in the noisy OR. You inspect the return electrode pad — it's a split-pad electrode applied to the right thigh. The upper half of the pad has peeled away from the skin due to perspiration. What's the issue?"
+    hint: "REM (Return Electrode Monitoring) measures the impedance between the two halves of a split pad. What happens when contact area decreases?"
+    choices:
+      - text: "The reduced contact area increases current density at the pad site, and the REM system has detected the high impedance and reduced output power"
+        correct: true
+        feedback: "Correct — the Erbe VIO's REM system (called CQM — Contact Quality Monitoring) continuously measures impedance between the two halves of the split pad. When half the pad peels off, the impedance rises and the system reduces or disables output to prevent a return electrode burn. The visual warning was displayed but the audible alarm wasn't heard."
+      - text: "The pad has expired and the gel has degraded"
+        correct: false
+        feedback: "The gel may contribute, but the primary issue is mechanical — the pad has physically peeled off due to perspiration. Even a new pad can fail if skin prep is inadequate."
+      - text: "The pad type is incompatible with this generator"
+        correct: false
+        feedback: "Pad incompatibility would prevent activation entirely. The system activated but reduced output because it detected the high impedance."
+      - text: "Perspiration has created a short circuit between the pad halves"
+        correct: false
+        feedback: "A short between pad halves would lower impedance, not raise it. The issue is loss of skin contact on one half."
+  - type: lab-handoff
+    id: measurement
+    instruction: "After resolving the clinical issue (new pad applied, surgery proceeds), take the Erbe VIO 300 D to the workshop and verify the CQM/REM function using the Fluke QA-ES III. Also verify output power accuracy in cut mode."
+    simulated_data:
+      tool: "Fluke QA-ES III ESU Analyzer — REM and Power Test"
+      load: "200 Ω"
+      readings:
+        - setting: "CQM alarm threshold — impedance at alarm"
+          delivered: "Alarm at 137 Ω"
+          status: pass
+          spec: "135 ± 10 Ω"
+        - setting: "CQM response — output disabled at alarm"
+          delivered: "Output disabled within 0.5 s"
+          status: pass
+          spec: "< 1 s"
+        - setting: "Cut mode 30 W — measured output"
+          delivered: "28 W"
+          status: pass
+          spec: "24–36 W (±20%)"
+        - setting: "Cut mode 80 W — measured output"
+          delivered: "76 W"
+          status: pass
+          spec: "64–96 W (±20%)"
+        - setting: "Cut mode 200 W — measured output"
+          delivered: "192 W"
+          status: pass
+          spec: "160–240 W (±20%)"
+  - type: multiple-choice
+    id: diagnosis
+    question: "The generator passes all tests — CQM alarm and output power are within spec. The problem was inadequate return electrode contact. What corrective action prevents recurrence?"
+    choices:
+      - text: "Educate the OR team: ensure return electrode skin is clean/dry before application, verify CQM indicator is green after pad application, and ensure the audible alarm volume is not set too low"
+        correct: true
+        feedback: "Correct — this was a use-related issue, not a device fault. The CQM system worked correctly but the visual warning was missed in a noisy OR. Recommendations: (1) check the alarm volume setting on all VIO units, (2) reinforce skin prep before pad application, (3) add CQM status check to the surgical safety checklist."
+      - text: "Replace all return electrode pads with a newer adhesive formulation"
+        correct: false
+        feedback: "Better adhesive may help, but skin prep is the primary factor. Even the best adhesive fails on wet or hairy skin."
+      - text: "Increase the CQM alarm threshold to allow more tolerance"
+        correct: false
+        feedback: "Raising the threshold delays detection of dangerous pad conditions. The threshold exists to prevent patient burns."
+      - text: "Add an external visual alarm indicator (tower light) to all ESU generators"
+        correct: false
+        feedback: "An external indicator might help in some cases, but it adds complexity. The simpler fix is ensuring the existing alarm is audible and the CQM status is checked at setup."
+learning_points:
+  - text: "Return electrode problems are the most common cause of 'ESU won't cut' complaints. The return electrode monitoring (REM/CQM) system protects against burns by detecting poor pad contact — but only if the alarm is noticed."
+  - text: "Skin preparation is critical for return electrode adhesion. Clean, dry, hair-free skin over a well-vascularised muscle mass provides the best contact. Perspiration, lotions, and bony prominences all reduce pad adhesion and increase impedance."
+    source_type: best-practice
+  - text: "IEC 60601-2-2 requires ESUs to include a means of monitoring the return electrode contact quality. The system must alarm and disable output when contact impedance exceeds the threshold."
+    source: "IEC 60601-2-2 §201.12.4.4"
+    source_type: standard
+  - text: "In noisy operating rooms, visual alarms on ESU generators are easily missed. Clinical engineering should verify that alarm volumes are set appropriately during PM and recommend adding CQM status to the surgical safety checklist."
+    source_type: best-practice
+  - text: "When a 'no output' complaint is resolved by fixing the return electrode, always test the generator afterward to confirm it's functioning correctly. Don't assume the pad was the only issue."
+    source_type: best-practice

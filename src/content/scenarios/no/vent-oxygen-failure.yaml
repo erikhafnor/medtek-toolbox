@@ -1,0 +1,106 @@
+id: vent-oxygen-failure
+title: FiO₂-leveringssvikt
+device: Dräger Evita V500
+category: ventilator
+level: 2
+estimated_time: 18min
+has_lab_handoff: true
+briefing:
+  caller: Lungeterapeut Lena
+  location: Nevrokirurgisk intensiv, seng 3
+  facility: Stavanger universitetssjukehus
+  time: "Fredag 07:15"
+  message: "Jeg stilte FiO₂ til 0,60 på Evita V500 for en pasient med ARDS, men pasientens SpO₂ er bare 85 %. Jeg har økt til 0,80, deretter 1,0 — knapt noen bedring i SpO₂. Respiratorens display viser FiO₂ 1,0, men jeg mistenker at den ikke faktisk leverer det. Jeg sjekket veggoksygenet — manometeret viser normalt trykk. Noe er galt med denne respiratorens oksygenleveranse."
+  urgency: high
+  context:
+    - "ARDS-pasient som krever høy FiO₂"
+    - "SpO₂ 85 % til tross for at respiratoren viser FiO₂ 1,0"
+    - "Vegg-O₂-trykk virker normalt på uttaksmanometeret"
+    - "Respiratorens display viser at innstilt FiO₂ leveres"
+    - "Serienummer: EV-59041"
+    - "O₂-celle sist byttet for 14 måneder siden"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "Pasienten er kritisk hypoksisk. Respiratoren sier den leverer 100 % oksygen, men pasientens SpO₂ responderer ikke adekvat. Hva er din umiddelbare tilnærming?"
+    hint: "Du må avgjøre om problemet er oksygenleveransen eller pasientens tilstand. En uavhengig FiO₂-måling vil fortelle deg hvilken."
+    choices:
+      - text: "Anta at det er et respiratorproblem og bytt til reserverespirator umiddelbart"
+        correct: false
+        feedback: "Å bytte respirator er rimelig hvis du bekrefter et oksygenleveringsproblem, men du bør verifisere først — hvis problemet er pasientens lungesykdom, hjelper det ikke å bytte, og du kaster bort kritisk tid."
+      - text: "Mål den faktiske FiO₂ ved pasient-Y-stykket med en uavhengig oksygenanalysator for å verifisere hva pasienten faktisk mottar"
+        correct: true
+        feedback: "Riktig — en uavhengig FiO₂-måling ved pasient-Y-stykket forteller deg om respiratoren leverer det den hevder. Hvis målt FiO₂ er vesentlig lavere enn vist, er problemet respiratorens oksygensystem. Hvis den samsvarer, er problemet pasientens gassutveksling."
+      - text: "Sjekk O₂-cellens kalibreringsdato og rekalibrer"
+        correct: false
+        feedback: "Rekalibrering tar flere minutter og pasienten er kritisk hypoksisk. Mål den faktiske FiO₂ først for å bekrefte at det er et respiratorproblem, deretter feilsøk."
+      - text: "Øk tidalvolumet og respirasjonsfrekvensen for å levere mer oksygen per minutt"
+        correct: false
+        feedback: "Hvis oksygenkonsentrasjonen er feil, løser det ikke problemet å levere mer volum av feil blanding. Verifiser FiO₂ først."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Bruk Fluke VT900A med sin innebygde oksygenanalysator til å måle den faktiske FiO₂ ved pasient-Y-stykket. Verifiser også vegg-O₂-forsyningstrykket ved respiratorens gassinntak."
+    simulated_data:
+      tool: "Fluke VT900A — FiO₂-måling + gassforsyningsverifisering"
+      readings:
+        - setting: "Innstilling: Respirator display FiO₂"
+          delivered: "1,00 (100 %)"
+          status: warning
+        - setting: "Innstilling: VT900A målt FiO₂ ved pasient-Y-stykke"
+          delivered: "0,38 (38 %)"
+          status: fail
+          error: "62 % lavere enn vist — respiratorens O₂-overvåking er unøyaktig"
+        - setting: "Innstilling: Vegg-O₂-forsyningstrykk ved respiratorinntak"
+          delivered: "4,2 bar"
+          status: pass
+          spec: "3,5–5,5 bar"
+        - setting: "Innstilling: Vegg-luftforsyningstrykk ved respiratorinntak"
+          delivered: "4,1 bar"
+          status: pass
+          spec: "3,5–5,5 bar"
+  - type: multiple-choice
+    id: investigation
+    question: "VT900A bekrefter bare 38 % FiO₂ ved pasient-Y-stykket til tross for at respiratoren viser 100 %. Gassforsyningstrykket er normalt. Respiratorens O₂-celle viser 100 % — men den tar feil. Hva er den mest sannsynlige årsaken?"
+    hint: "O₂-cellen er en galvanisk sensor som degraderes over tid. Hva skjer når den ikke lenger kan måle oksygen nøyaktig?"
+    choices:
+      - text: "O₂-cellen er utarmet — den leser 100 % fordi den ikke lenger kan generere et korrekt signal, og respiratorens blandingsalgoritme bruker denne falske avlesningen til å styre blenderen"
+        correct: true
+        feedback: "Riktig — galvaniske O₂-celler degraderes med alder (typisk levetid 12–18 måneder). En helt utarmet celle kan gi et fast høyt signal som respiratoren tolker som høy FiO₂. Blandingsalgoritmen reduserer da den faktiske O₂-andelen fordi den 'tror' blandingen allerede er på mål. Resultatet: displayet viser 100 % FiO₂ mens det faktisk leveres mye mindre."
+      - text: "Oksygenblanderventilen sitter mekanisk fast"
+        correct: false
+        feedback: "En fastlåst blanderventil ville typisk levere en fast FiO₂ uavhengig av innstilt verdi, men respiratoren ville fortsatt måle den faktiske FiO₂ korrekt hvis O₂-cellen var funksjonell. Den falske displayavlesningen peker mot et sensorproblem."
+      - text: "Vegg-O₂-tilkoblingen leverer luft i stedet for oksygen"
+        correct: false
+        feedback: "Vegg-O₂-trykket er normalt (4,2 bar), og medisinske gassuttak bruker pin-indekserte eller NIST-koblinger for å forhindre krysskobling. En krysskobling er svært usannsynlig."
+      - text: "Respiratorens programvare har en feil i FiO₂-visningen"
+        correct: false
+        feedback: "Programvaren viser O₂-cellens avlesning — hvis cellen leser 100 %, viser displayet 100 %. Problemet er sensoren, ikke programvaren."
+  - type: multiple-choice
+    id: corrective-action
+    question: "O₂-cellen er utarmet (14 måneder gammel, typisk levetid 12–18 måneder). Hva er korrigerende tiltak?"
+    choices:
+      - text: "Bytt O₂-cellen umiddelbart, kalibrer ved romluft (20,9 %), deretter verifiser FiO₂-leveranse ved 0,60 og 1,0 med VT900A"
+        correct: true
+        feedback: "Riktig — bytt cellen, kalibrer ved 20,9 % (romluft), deretter verifiser hele området. Mens cellen byttes, sørg for at pasienten mottar adekvat oksygenering via reserverespirator eller manuell ventilering. Etter verifisering, dokumenter hendelsen og anbefal å legge til aldersovervåking av O₂-celler i PM-planen."
+      - text: "Rengjør O₂-cellens kontakter og rekalibrer — cellen kan fortsatt være brukbar"
+        correct: false
+        feedback: "En utarmet galvanisk celle kan ikke gjenopprettes ved rengjøring. Den elektrokjemiske reaksjonen som genererer signalet er oppbrukt. Bytte er eneste løsning."
+      - text: "Forbigå O₂-cellen og kjør respiratoren med manuell FiO₂-overvåking ved hjelp av VT900A"
+        correct: false
+        feedback: "Å kjøre en respirator uten funksjonell O₂-overvåking er utrygt — det er ingen kontinuerlig alarmbeskyttelse hvis FiO₂ avviker. Bytt cellen."
+      - text: "Flytt pasienten til reserverespiratoren og planlegg O₂-cellebytte til neste PM-besøk"
+        correct: false
+        feedback: "La ikke en respirator med en kjent sikkerhetsfeil stå i intensivavdelingen. Bytt cellen nå — det tar 5 minutter. Å utsette til PM betyr at respiratoren er utilgjengelig eller utrygg inntil da."
+learning_points:
+  - text: "En utarmet O₂-celle kan få respiratoren til å vise en falskt høy FiO₂ mens den leverer mye mindre oksygen. Dette er en farlig feilmodus fordi klinikeren ser betryggende tall mens pasienten er hypoksisk."
+  - text: "Galvaniske O₂-celler har en begrenset levetid (typisk 12–18 måneder). De degraderes gradvis, og en utarmet celle kan lese høyt i stedet for lavt, noe som er motintuitivt og farlig."
+    source: "Dräger sikkerhetsmelding — overvåking og bytte av oksygensensor"
+    source_type: best-practice
+  - text: "IEC 60601-2-12 krever kontinuerlig FiO₂-overvåking med alarmer for høy og lav oksygenkonsentrasjon. En utarmet sensor som leser falskt høyt omgår dette sikkerhetskravet."
+    source: "IEC 60601-2-12 §201.12.4"
+    source_type: standard
+  - text: "Registrer installasjonsdatoer for O₂-celler i utstyrsstyringssystemet og sett proaktive byttevarsler ved 12 måneder. Ikke vent på feil — en utarmet celle i en nødsituasjon er en pasientsikkerhetskrise."
+    source_type: best-practice
+  - text: "Oksygenleveringssvikt er blant de mest kritiske respiratorhendelsene. FDA MAUDE-data viser at O₂-relaterte respiratorklager inkluderer både overoksygenering (toksisitet) og underoksygenering (hypoksi), med sensorfeil som en ledende årsak."
+    source: "FDA MAUDE-databasen — uønskede hendelser med oksygenleveranse i respiratorer"
+    source_type: incident-data

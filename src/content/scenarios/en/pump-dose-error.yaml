@@ -1,0 +1,103 @@
+id: pump-dose-error
+title: Drug Library Dose Error Investigation
+device: B. Braun Infusomat Space
+category: infusion-pump
+level: 2
+estimated_time: 18min
+has_lab_handoff: false
+briefing:
+  caller: Pharmacist Thomas, Clinical Pharmacy
+  location: Clinical Engineering Office
+  facility: Stavanger University Hospital
+  time: "Wednesday 14:00"
+  message: "We had a near-miss yesterday — a nurse on the paediatric ward programmed a norepinephrine infusion at 0.5 mcg/kg/min for a 12 kg child. The pump's drug library approved the setting without any warning, but our pharmacy protocol says the max rate for paediatric norepinephrine is 0.3 mcg/kg/min. She caught it herself before it reached the patient, but the drug library should have flagged it. Can you check if the library is correct?"
+  urgency: medium
+  context:
+    - "Near-miss: norepinephrine 0.5 mcg/kg/min programmed for 12 kg paediatric patient"
+    - "Pump drug library did NOT flag the dose as exceeding maximum"
+    - "Pharmacy protocol max: 0.3 mcg/kg/min for paediatric norepinephrine"
+    - "Nurse caught the error before infusion started"
+    - "B. Braun Infusomat Space with SpaceCom drug library v3.2"
+    - "Drug library last updated 8 months ago"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "This is a drug library governance issue. The guardrails didn't catch a dose that exceeds the hospital's protocol. What's your first step?"
+    hint: "The drug library is a safety system — when it fails to alert, you need to understand what limits are currently programmed and compare them to the current pharmacy protocol."
+    choices:
+      - text: "Check the drug library version on the pump and compare the norepinephrine limits to the current pharmacy protocol"
+        correct: true
+        feedback: "Correct — you need to see exactly what limits are programmed in the library and compare them line-by-line with the current pharmacy protocol. The library version and last update date tell you whether the library matches the current protocol."
+      - text: "Contact B. Braun to report a drug library defect"
+        correct: false
+        feedback: "The drug library limits are configured by the hospital, not B. Braun. The manufacturer provides the platform; the hospital's pharmacy defines the limits."
+      - text: "Reset the drug library to factory defaults"
+        correct: false
+        feedback: "Factory defaults are generic — your hospital's protocols are specific. Resetting would remove all customised limits."
+      - text: "Pull the pump from service until the library is verified"
+        correct: false
+        feedback: "The pump itself is functioning correctly. The issue is the library configuration. Pulling the pump doesn't fix the root cause and reduces available equipment."
+  - type: multiple-choice
+    id: investigation
+    question: "You check the SpaceCom drug library (v3.2, last updated 8 months ago). The norepinephrine entry for paediatrics shows: hard max 2.0 mcg/kg/min, soft max 1.0 mcg/kg/min. The current pharmacy protocol (revised 3 months ago) says: hard max 0.5 mcg/kg/min, soft max 0.3 mcg/kg/min. What happened?"
+    hint: "The library limits are far more permissive than the current protocol. The protocol was updated more recently than the library."
+    choices:
+      - text: "The pharmacy protocol was updated 3 months ago but the drug library was not updated to match — the library is 5 months out of date relative to the protocol"
+        correct: true
+        feedback: "Correct — this is a library governance failure. When pharmacy revises drug protocols, the drug library must be updated simultaneously. The 5-month gap means the pumps have been operating with outdated guardrails. This isn't just one drug — you need to audit the entire library."
+      - text: "Someone manually overrode the library limits on this specific pump"
+        correct: false
+        feedback: "The limits are consistent with the old protocol (v3.2), not a manual override. This is a systematic update gap, not a one-off change."
+      - text: "The library was corrupted during a software update"
+        correct: false
+        feedback: "The library values match the previous protocol version. This is a configuration management issue, not data corruption."
+      - text: "The pharmacy protocol is wrong — the drug library limits are clinically appropriate"
+        correct: false
+        feedback: "Pharmacy protocols are the authoritative source for dose limits. The drug library must match the current approved protocol."
+  - type: multiple-choice
+    id: process-review
+    question: "This is a governance gap: no formal process ensures the drug library is updated when pharmacy protocols change. How do you prevent this from happening again?"
+    hint: "Think about the workflow: who initiates the change, who approves it, who implements it, and who verifies it?"
+    choices:
+      - text: "Create a quarterly schedule to compare the drug library against the pharmacy protocol"
+        correct: false
+        feedback: "Quarterly checks still allow months of misalignment. The update must be triggered by the protocol change itself, not by a calendar."
+      - text: "Establish a formal change control process: pharmacy notifies clinical engineering when protocols change, CE updates the library, pharmacy verifies the update before deployment"
+        correct: true
+        feedback: "Correct — the drug library update must be triggered by the protocol change and verified before deployment. This creates a closed loop: protocol change → library update → pharmacy verification → deployment to fleet. Add this to the hospital's change management system with sign-off at each step."
+      - text: "Give pharmacy direct access to update the drug library themselves"
+        correct: false
+        feedback: "Pharmacy should define the limits, but clinical engineering should implement and verify the technical configuration. Separation of duties prevents errors."
+      - text: "Set the pump to require manual confirmation for all high-risk drugs, regardless of library limits"
+        correct: false
+        feedback: "This creates alarm fatigue — nurses confirming every dose will start ignoring confirmations. The library guardrails need to be correct, not bypassed."
+  - type: multiple-choice
+    id: corrective-action
+    question: "What's the complete corrective action plan?"
+    choices:
+      - text: "Immediate: audit ALL drug library entries against current pharmacy protocols. Short-term: update the library and deploy to all pumps. Long-term: establish a change control process linking protocol updates to library updates."
+        correct: true
+        feedback: "Correct — the norepinephrine gap was found by chance. Other drugs may also be misaligned. A full audit is essential before you can trust any of the library's guardrails. After updating, the change control process prevents future gaps."
+      - text: "Update only the norepinephrine entry and move on"
+        correct: false
+        feedback: "If one drug is out of date, others likely are too. A partial fix gives false confidence in the rest of the library."
+      - text: "Disable the drug library until it can be fully verified"
+        correct: false
+        feedback: "Disabling the library removes ALL guardrails — even the ones that are correct. The risk of running without any limits is greater than running with partially outdated limits."
+      - text: "Report the incident to B. Braun and wait for their guidance"
+        correct: false
+        feedback: "The library content is the hospital's responsibility, not the manufacturer's. B. Braun provides the platform; you configure the limits."
+learning_points:
+  - text: "Drug library governance is a shared responsibility between pharmacy (defining limits), clinical engineering (implementing and deploying), and nursing (using the guardrails). A breakdown in any link can allow dose errors."
+  - text: "When a drug library discrepancy is found, audit the ENTIRE library — not just the drug that triggered the investigation. If one entry is outdated, others are likely outdated too."
+    source_type: best-practice
+  - text: "IEC 60601-2-24 requires infusion pumps to support dose-rate limits and alerts. But the standard addresses the platform capability — the accuracy of the limits depends entirely on hospital configuration and maintenance."
+    source: "IEC 60601-2-24 §201.12"
+    source_type: standard
+  - text: "Drug library mismatches are a recognised patient safety risk. ECRI Institute and ISMP consistently rank infusion pump dose errors among the top technology-related safety concerns."
+    source: "ISMP (Institute for Safe Medication Practices) — Smart pump drug library management"
+    source_type: incident-data
+  - text: "Change control for drug libraries should follow the same rigour as software change management: change request → review → implementation → verification → deployment. Document every update with version numbers, dates, and sign-offs."
+    source_type: best-practice
+  - text: "Near-misses are free lessons. This nurse caught the error — next time, the guardrails must catch it. Treat near-misses with the same investigative rigour as actual harm events."
+    source_type: best-practice

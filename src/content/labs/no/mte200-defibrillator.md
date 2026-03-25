@@ -34,6 +34,8 @@ Etter denne labøvelsen skal du kunne:
 - Bruk isolerende hansker når du kobler oscilloskopproben over testerens utgangsterminaler.
 - Hvis du observerer røyk, uvanlig lukt eller gnister: trykk umiddelbart på sjokkknappen for å lade ut kondensatoren trygt i testeren, slå deretter av og varsle den veiledende teknikeren.
 - Alle tester i dette laboratoriet gjennomføres ved **5 J** med mindre prosedyren eksplisitt angir noe annet.
+- Bruk kun lave energinivåer (5 J) mens du gjør deg kjent med enheten, for å unngå unødvendig tapping av batteriet. Etter at labøvelsen er fullført, sett defibrillatorene til lading slik at batteriet er klart for neste gruppe.
+- Lekkasjestrømmålinger ville normalt vært en del av sikkerhetskontrollen, men dekkes i en egen lab om elektrisk sikkerhet.
 
 ---
 
@@ -112,7 +114,7 @@ Utfør følgende tester i rekkefølge. For hver test, registrer valgt innstillin
 
 ### Del 3 — Defibrillatorbølgeform-utgangstest (45 min)
 
-Denne prosedyren følger bølgeformverifiseringen beskrevet i LIFEPAK 15 service manual.
+Denne prosedyren følger «Test and Calibration Procedures» i LIFEPAK 15 service manual (side 203–205).
 
 **3.1 Oscilloskop-oppsett**
 
@@ -131,17 +133,22 @@ Bekreft at Keysight InfiniiVision er konfigurert:
 
 **3.3 Bølgeformanalyse**
 
-Registrer følgende målinger fra oscilloskopets display eller automatiske målefunksjoner:
+Registrer følgende målinger fra oscilloskopets display eller automatiske målefunksjoner. Bruk markører eller innebygde måleverktøy for å bestemme toppstrøm (I = V / 50 Ω) og pulsbredder.
 
-| Måling | Din verdi | Forventet (bifasisk avkuttet eksponentiell) |
-|---|---|---|
-| Fase 1 topppenning (V) | | Positiv, høyere amplitude |
-| Fase 1 varighet (ms) | | Typisk 6–12 ms |
-| Fase 2 topppenning (V) | | Negativ, lavere amplitude enn fase 1 |
-| Fase 2 varighet (ms) | | Typisk 4–8 ms |
-| Total bølgeformvarighet (ms) | | Typisk < 20 ms |
+| Parameter | Din verdi | Min (service manual) | Maks (service manual) |
+|---|---|---|---|
+| Fase 1 toppstrøm (A) | | 35 A | 42 A |
+| Fase 1 pulsbredde (ms) | | 6,9 ms | 7,8 ms |
+| Fase 2 pulsbredde (ms) | | 4,5 ms | 5,4 ms |
+| Fase 1 toppspenning (V) | | — | — |
+| Fase 2 toppspenning (V) | | — | — |
+| Total bølgeformvarighet (ms) | | — | — |
 
-**3.4** Skisser den registrerte bølgeformen i labnotatboken, og merk Fase 1, Fase 2, polaritetsreverseringspunktet og avskjæringspunktet.
+> **Merk:** Toppstrømmen beregnes fra toppspenningen ved bruk av Ohms lov og 50 Ω testlast: I = V / 50 Ω. For eksempel tilsvarer en toppspenning på 1900 V en strøm på 38 A.
+
+**3.4** Verifiser at dine målte verdier faller innenfor spesifikasjonene fra service manual i tabellen over. Hvis en parameter er utenfor området, noter dette i rapporten og diskuter mulige årsaker.
+
+**3.5** Skisser den registrerte bølgeformen i labnotatboken, og merk Fase 1, Fase 2, polaritetsreverseringspunktet og avskjæringspunktet.
 
 ---
 

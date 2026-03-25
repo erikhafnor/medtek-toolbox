@@ -1,0 +1,128 @@
+id: esu-patient-burn
+title: Pasientbrannskade ved returelektrodested
+device: Erbe VIO 300 D
+category: electrosurgery
+level: 3
+estimated_time: 25min
+has_lab_handoff: true
+briefing:
+  caller: Operasjonsavdelingsleder Tone
+  location: Medisinsk-teknisk avdeling
+  facility: Stavanger universitetssjukehus
+  time: "Onsdag 08:00"
+  message: "Vi hadde en pasientbrannskadehendelse i går på operasjonsstue 3. Under en laparoskopisk kolecystektomi fikk pasienten en andregrads brannskade ved returelektrodestedet på venstre lår. Operasjonsteamet sier at REM-alarmen aldri gikk. Pasienten er stabil, men trenger sårbehandling. Risikostyring ønsker en full utstyrsundersøkelse i dag. Generatoren og alt tilbehør er beslaglagt og venter på deg i verkstedet."
+  urgency: high
+  context:
+    - "Pasient fikk andregrads brannskade ved returelektrodested under laparoskopisk kolecystektomi"
+    - "Operasjonsvarighet: 2 timer og 15 minutter"
+    - "REM-alarm ble rapportert å ikke ha aktivert"
+    - "Generator: Erbe VIO 300 D, serienr. VIO-38945"
+    - "Returelektrode: Erbe NESSY splittet pad, lot 2025-08-143"
+    - "Alt utstyr beslaglagt for undersøkelse"
+steps:
+  - type: multiple-choice
+    id: evidence-preservation
+    question: "Generatoren, kablene, returelektrodepaden og den aktive elektroden er i verkstedet. Hvordan begynner du undersøkelsen?"
+    hint: "Dette er en hendelse med pasientskade. Bevishandtering er viktig — funnene dine kan bli nødvendige for en regulatorisk rapport eller juridisk gjennomgang."
+    choices:
+      - text: "Fotografer alt utstyr slik det er mottatt, dokumenter serienumre, lotnumre og tilstand, og utvikle deretter en strukturert testplan"
+        correct: true
+        feedback: "Riktig — dokumenter alt før du rører noe. Fotografer returelektrodepaden (begge sider), kabelkontaktene, generatorens skjerm/innstillinger og eventuell synlig skade. Registrer all identifiserende informasjon. Dette skaper en beviskjede for den regulatoriske rapporten."
+      - text: "Test CQM-funksjonen umiddelbart for å se om den virker"
+        correct: false
+        feedback: "Ikke test ennå — du må dokumentere tilstanden slik den ble funnet først. Testing kan endre bevisenes tilstand (f.eks. slette feillogger, endre innstillinger)."
+      - text: "Intervju operasjonsteamet først for å forstå hva som skjedde"
+        correct: false
+        feedback: "Intervjuer er viktige, men bør skje parallelt med bevissikring. De fysiske bevisene må dokumenteres før de forringes — padlimet tørker ut, kontakttilstander endres."
+      - text: "Send generatoren direkte til Erbe for produsentanalyse"
+        correct: false
+        feedback: "Du må gjøre din egen undersøkelse først. Produsentanalyse tar uker, og du trenger foreløpige funn i dag."
+  - type: multiple-choice
+    id: investigation
+    question: "Du har fotografert alt. Returelektrodepaden viser: full vedheft på den mediale halvdelen, men den laterale halvdelen har en brett — paden ble foldet under påføring, noe som reduserte det effektive kontaktarealet med omtrent 40 %. CQM-kontakten på padkabelen viser ingen synlig skade. Hva undersøker du videre?"
+    hint: "Den foldede paden reduserte kontaktarealet. Spørsmålet er: hvorfor detekterte ikke CQM dette og alarmerte?"
+    choices:
+      - text: "Test CQM-kretsen: detekterer generatoren riktig høy impedans og alarmerer når returelektrodekontakten er kompromittert?"
+        correct: true
+        feedback: "Riktig — det kritiske spørsmålet er om CQM var funksjonell. En foldet pad med 40 % mindre kontaktareal burde ha hevet impedansen over CQM-terskelen. Enten sviktet CQM, eller så holdt de gjenværende 60 % kontaktareal impedansen under alarmterskelen, samtidig som det tillot farlig strømtetthet."
+      - text: "Mål utgangseffekten for å se om den var satt for høyt"
+        correct: false
+        feedback: "Effektinnstilling er en medvirkende faktor å vurdere, men det primære spørsmålet er hvorfor sikkerhetssystemet (CQM) ikke forhindret brannskaden."
+      - text: "Sjekk om padlotten har vært gjenstand for en tilbakekalling"
+        correct: false
+        feedback: "Verdt å sjekke parallelt, men de fysiske bevisene (foldet pad) antyder et påføringsproblem, ikke en produksjonsfeil i paden."
+      - text: "Send paden til et laboratorium for gelledningsevneanalyse"
+        correct: false
+        feedback: "Laboratorieanalyse tar dager, og gelen holder allerede på å tørke. Den synlige folden er den mest sannsynlige medvirkende faktoren. Test CQM-systemet først."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Test Erbe VIO 300 D sin CQM-funksjon ved hjelp av Fluke QA-ES III. Test ved flere returelektrodeimpedansnivåer for å kartlegge alarmterskelen. Simuler deretter hendelsesforholdene: test med 60 % kontaktareal (ved hjelp av QA-ES III sin variable impedans)."
+    simulated_data:
+      tool: "Fluke QA-ES III — CQM-funksjon og terskelkartlegging"
+      load: "200 Ω"
+      readings:
+        - setting: "CQM-alarmterskel — full kontakt (20 Ω padimpedans)"
+          delivered: "Ingen alarm — CQM-indikator grønn"
+          status: pass
+        - setting: "CQM-alarmterskel — 50 % kontakt (75 Ω padimpedans)"
+          delivered: "Ingen alarm — CQM-indikator grønn"
+          status: warning
+          error: "Impedans under alarmterskel"
+        - setting: "CQM-alarmterskel — 30 % kontakt (120 Ω padimpedans)"
+          delivered: "CQM-alarm ved 135 Ω"
+          status: pass
+          spec: "135 ± 10 Ω"
+        - setting: "Simulert 60 % kontakt (55 Ω padimpedans) — 80 W snitt i 5 s"
+          delivered: "Ingen alarm — men strømtetthet ved pad overskrider sikker grense"
+          status: fail
+          error: "CQM-impedans under alarm, men kontaktareal utilstrekkelig for sikker strømtetthet"
+        - setting: "HF-lekkasjestrøm — aktiv til retur"
+          delivered: "42 mA"
+          status: pass
+          spec: "≤ 150 mA"
+  - type: multiple-choice
+    id: root-cause
+    question: "CQM-systemet fungerer innenfor spesifikasjonen — det alarmerer ved 135 Ω som designet. Men med 60 % padkontakt (55 Ω) holder impedansen seg under terskelen. Brannskaden oppsto fordi strømtettheten var farlig høy i det reduserte kontaktarealet, til tross for at impedansen var innenfor det 'sikre' CQM-området. Hva er rotårsaken?"
+    choices:
+      - text: "Flerfaktor: den foldede paden reduserte kontaktarealet under sikker minimumsstørrelse, men CQM-impedansen forble under alarmterskelen. CQM overvåker impedans, ikke kontaktareal direkte — systemet har en deteksjonsbegrensning for delvis kontakttap."
+        correct: true
+        feedback: "Riktig — dette er en kjent begrensning ved impedansbaserte REM-systemer. En foldet eller sammenpresset pad kan opprettholde lav total impedans mens den konsentrerer strømmen i et mindre areal. CQM detekterte ingen problemer fordi impedansen var under terskelen, men strømtettheten i det gjenværende kontaktarealet var høy nok til å forårsake termisk skade. Rotårsaken er feil padpåføring kombinert med den iboende begrensningen i impedansbasert overvåking."
+      - text: "CQM-systemsvikt — alarmterskelen burde være lavere for å fange 60 % kontakttap"
+        correct: false
+        feedback: "CQM-terskelen er satt etter produsentens design og oppfyller IEC-kravene. Å sette den lavere ville forårsake overdrevne falske alarmer. Problemet er ikke terskelen — det er at impedans alene ikke fullt ut kan karakterisere kontaktkvalitet."
+      - text: "Kirurgfeil — effektinnstillingen var for høy for inngrepet"
+        correct: false
+        feedback: "80 W er en normal innstilling for laparoskopisk kirurgi. Effektinnstillingen er en medvirkende faktor, men ikke rotårsaken. Brannskaden ville ikke ha oppstått med korrekt padpåføring."
+      - text: "Produksjonsfeil i paden — limet var defekt på den laterale halvdelen"
+        correct: false
+        feedback: "Fotografiene viste en fold i paden, ikke en limdefekt. Paden ble mekanisk brettet under påføring."
+  - type: multiple-choice
+    id: corrective-action
+    question: "Hvilke korrigerende tiltak anbefaler du?"
+    choices:
+      - text: "Umiddelbart: visuell padkontrollprotokoll etter påføring (sjekk for folder, rynker, full kontakt). Langsiktig: legg til padpåføringsverifisering i den kirurgiske sjekklisten. Send produsenthendelsesrapport (MIR) og regulatorisk rapport."
+        correct: true
+        feedback: "Riktig — de korrigerende tiltakene adresserer den kontrollerbare faktoren (kvalitet på padpåføring) samtidig som de anerkjenner CQM-begrensningen. En visuell inspeksjon etter padpåføring tar sekunder og fanger opp folder/rynker som CQM ikke kan detektere. MIR og regulatorisk rapport sikrer at hendelsen spores og at produsenten er informert."
+      - text: "Bytt alle Erbe VIO-generatorer med en konkurrent som har mer sensitiv REM-overvåking"
+        correct: false
+        feedback: "Alle impedansbaserte REM-systemer har den samme begrensningen. Å bytte merke adresserer ikke rotårsaken (kvalitet på padpåføring)."
+      - text: "Legg til et varmekamera for å detektere varme punkter ved returelektrodestedet under kirurgi"
+        correct: false
+        feedback: "Interessant forskningskonsept, men ikke praktisk for rutinekirurgi. Den enklere intervensjonen (visuell padkontroll) adresserer rotårsaken."
+      - text: "Gi all operasjonsstupersonale opplæring i returelektrodepåføring og lukk undersøkelsen"
+        correct: false
+        feedback: "Opplæring alene er utilstrekkelig — du trenger også en prosessendring (sjekklistepunkt) og regulatorisk rapportering. Opplæring uten systemendringer har begrenset langsiktig effektivitet."
+learning_points:
+  - text: "Impedansbaserte REM/CQM-systemer overvåker total impedans, ikke kontaktareal. En delvis løsnet pad kan opprettholde impedans under alarmterskelen og samtidig tillate farlig strømtetthet. Visuell inspeksjon etter padpåføring er et essensielt ekstra beskyttelseslag."
+  - text: "Returelektrodebrannskader er blant de vanligste elektrokirurgiske skadene. De involverer typisk feil padpåføring (folder, rynker, delvis løsning) kombinert med langvarig kirurgi ved moderat til høy effekt."
+    source: "ECRI Institute — forebygging av elektrokirurgiske brannskader"
+    source_type: incident-data
+  - text: "IEC 60601-2-2 §201.12.4.4 krever returelektrodeovervåking, men anerkjenner at impedansovervåking har begrensninger. Standarden krever at systemet alarmerer når impedansen overskrider terskelen — den garanterer ikke forebygging av brannskader i alle scenarioer."
+    source: "IEC 60601-2-2 §201.12.4.4"
+    source_type: standard
+  - text: "Hendelser med pasientskade krever formell undersøkelse: bevissikring, utstyrstesting, rotårsaksanalyse, korrigerende tiltak og regulatorisk rapportering (MIR/MDR). Klinisk ingeniøravdelings undersøkelsesrapport er primærbevis."
+    source_type: best-practice
+  - text: "Ved hendelsesundersøkelser, skill mellom enhetsfeil og bruksrelaterte årsaker. I dette tilfellet fungerte enheten innenfor spesifikasjonen — sikkerhetsgapet var i påføringsprosessen. Begge typer årsaker trenger korrigerende tiltak."
+    source_type: best-practice
+  - text: "Hierarkiet av kontrolltiltak gjelder: tekniske kontroller (CQM) fanget de mest alvorlige tilfellene, men hadde et gap. Administrative kontroller (visuell inspeksjon via sjekkliste) fyller gapet. Begge lag er nødvendige."
+    source_type: best-practice

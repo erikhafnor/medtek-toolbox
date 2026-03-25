@@ -1,0 +1,128 @@
+id: pump-free-flow
+title: Etterforskning av friflytshendelse
+device: B. Braun Infusomat Space
+category: infusion-pump
+level: 3
+estimated_time: 25min
+has_lab_handoff: true
+briefing:
+  caller: Pasientsikkerhetsrådgiver Silje
+  location: Møterom, medisinsk-teknisk avdeling
+  facility: Stavanger universitetssjukehus
+  time: "Tirsdag 09:00"
+  message: "Vi hadde en alvorlig hendelse i natt på sengepost 5C. En pasient fikk en ukontrollert bolus med morfin — anslått 8 mg over 2–3 minutter i stedet for 2 mg/t. Pasienten trengte nalokson og ble overført til intensiv. Sykepleieren rapporterte at hun åpnet pumpedøren for å bytte sprøyte, og da hun lastet på nytt og lukket døren, rant væsken gjennom med gravitasjon før pumpen tok over. Vi trenger en full etterforskning før sikkerhetsmøtet klokken 11:00."
+  urgency: high
+  context:
+    - "Pasienten fikk ~8 mg morfin på 2–3 minutter (planlagt: 2 mg/t)"
+    - "Nalokson administrert, pasienten overført til intensiv, nå stabil"
+    - "Sykepleier åpnet pumpedøren for å bytte sprøyte/sett"
+    - "Væsken rant med gravitasjon før pumpen tok over"
+    - "Serienummer: SP-20941, B. Braun Infusomat Space"
+    - "Administrasjonssett: B. Braun IV standardsett med antisifonventil"
+    - "Sikkerhetsmøte klokken 11:00 — trenger foreløpige funn"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "Dette er en alvorlig pasientsikkerhetshendelse. Du har 2 timer før sikkerhetsmøtet. Hvordan strukturerer du etterforskningen?"
+    hint: "Hendelsesetterforskning krever bevissikring, testing av den spesifikke enheten og forbruksmateriellet som var involvert, og å skille utstyrssvikt fra prosessvikt."
+    choices:
+      - text: "Test pumpen umiddelbart for å sjekke om antifriflytmekanismen fungerer"
+        correct: false
+        feedback: "Ikke test ennå — du ødelegger bevis. Først må du sikre tilstanden til enheten og forbruksmateriellet nøyaktig som det ble funnet. Fotografer alt før du rører noe."
+      - text: "Intervju sykepleieren først for å forstå nøyaktig hva som skjedde steg for steg"
+        correct: false
+        feedback: "Viktig, men ikke først. Enheten og settet bør sikres og bevares før alt annet — de er dine fysiske bevis."
+      - text: "Sikre og fotografer enheten og administrasjonssettet som funnet, intervju deretter sykepleieren, test til slutt"
+        correct: true
+        feedback: "Riktig — bevissikring først: fotografer pumpen, settet, klemmeposisjoner, dørlåsen, og merk settet. Intervju deretter for å forstå hendelsesforløpet. Test først da enheten med et nytt sett for å skille utstyrssvikt fra sett-/prosessproblemer."
+      - text: "Ta enheten ut av drift og send den til B. Braun for produsentetterforskning"
+        correct: false
+        feedback: "Du trenger foreløpige funn om 2 timer. Produsentetterforskning tar uker. Test internt først, og avgjør deretter om produsentinvolvering er nødvendig."
+  - type: multiple-choice
+    id: investigation
+    question: "Du har fotografert alt. Sykepleieren forklarer: hun åpnet døren, fjernet den tomme posen, hengte opp en ny pose, tredde settet gjennom pumpen og lukket døren. Hun la merke til at væsken dryppet raskt fra dryppkammeret i omtrent 2–3 minutter før hun innså at pumpen ikke hadde startet. Du undersøker settet og ser at rulleklemmen er helt åpen. Antisifonventilen på settet ser intakt ut. Hva er det kritiske spørsmålet?"
+    hint: "Friflytsforebygging baserer seg på flere barrierer. Hvilke burde vært aktive under settbyttet?"
+    choices:
+      - text: "Hvorfor lukket ikke sykepleieren rulleklemmen før hun åpnet pumpedøren?"
+        correct: false
+        feedback: "Dette er en medvirkende faktor, men å skylde på sykepleieren overser spørsmålet på systemnivå. Pumpens antifriflytmekanisme skal forhindre gravitasjonsflyt selv om klemmen er åpen."
+      - text: "Engasjerte pumpens antifriflytsklemme (dørinterlockmekanismen) korrekt da døren ble lukket?"
+        correct: true
+        feedback: "Riktig — Infusomat Space har en innebygd antifriflytsklemme som skal komprimere slangen når døren åpnes og bare slippe når pumpen aktivt engasjerer. Hvis denne mekanismen sviktet, ville gravitasjonsflyt oppstå uavhengig av om sykepleieren lukket rulleklemmen."
+      - text: "Var antisifonventilen i administrasjonssettet defekt?"
+        correct: false
+        feedback: "Antisifonventiler forhindrer sifonering (trykkdrevet friflyt når posen er over pasienten), men de forhindrer vanligvis ikke gravitasjonsflyt når settet er helt åpent. Pumpens dørklemme er den primære barrieren."
+      - text: "Brukte sykepleieren riktig administrasjonssett for denne pumpen?"
+        correct: false
+        feedback: "Settkompatibilitet er verdt å sjekke, men selv et feil sett skal ikke tillate friflyt hvis pumpens dørinterlockmekanisme fungerer korrekt."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Test pumpens antifriflytmekanisme: med et væskefylt sett lastet, åpne pumpedøren og observer om slangen er klemt. Lukk deretter døren UTEN å starte pumpen og sjekk om gravitasjonsflyt er blokkert. Mål med IDA-5."
+    simulated_data:
+      tool: "IDA-5 + visuell inspeksjon — Test av antifriflytmekanisme"
+      readings:
+        - setting: "Innstilling: Dør åpen — antifriflytsklemme"
+          delivered: "Klemme delvis engasjert — slangen ikke fullt okkludert"
+          status: fail
+          error: "Synlig gap mellom klemmeflatene"
+        - setting: "Innstilling: Dør åpen — gravitasjonsstrømning gjennom sett"
+          delivered: "42 mL/min (ukontrollert)"
+          status: fail
+          spec: "0 mL/min (fullt okkludert)"
+        - setting: "Innstilling: Dør lukket, pumpe AV — gravitasjonsstrømning"
+          delivered: "0 mL/min"
+          status: pass
+        - setting: "Innstilling: Inspeksjon av dørlåsmekanisme"
+          delivered: "Klemmefjær korrodert, redusert spenning"
+          status: fail
+          error: "Fjærkraft utilstrekkelig til å fullt okkludere slangen"
+        - setting: "Innstilling: Pumpe i drift, dør lukket — strømningsnøyaktighet ved 2 mL/t"
+          delivered: "2,1 mL/t"
+          status: pass
+          spec: "1,9–2,1 mL/t (±5 %)"
+  - type: multiple-choice
+    id: root-cause
+    question: "Antifriflytsklemmen okkluderer ikke slangen fullstendig når døren er åpen på grunn av en korrodert fjær. Når døren er lukket og pumpen kjører, er strømningen nøyaktig. Hva er din rotårsaksanalyse?"
+    choices:
+      - text: "Rotårsak: korrodert fjær i antifriflytsklemme (utstyrssvikt). Medvirkende faktorer: sykepleier lukket ikke rulleklemmen (prosessgap), ingen uavhengig kontroll før infusjonen ble startet på nytt (systemgap)"
+        correct: true
+        feedback: "Riktig — dette er en hendelse med flere faktorer. Utstyrssvikten (korrodert fjær) satte den primære sikkerhetsbarrieren ut av spill. Den åpne rulleklemmen fjernet den sekundære barrieren. Og mangelen på et verifiseringssteg (kontroll av strømning før pumpestart) fjernet den siste muligheten til å fange feilen. Alle tre faktorene må adresseres."
+      - text: "Rotårsak: sykepleierfeil — unnlot å lukke rulleklemmen før pumpedøren ble åpnet"
+        correct: false
+        feedback: "Menneskelig feil er en medvirkende faktor, ikke en rotårsak. Antifriflytmekanismen eksisterer nettopp fordi mennesker av og til vil glemme å klemme. Å skylde på sykepleieren fikser ikke systemet."
+      - text: "Rotårsak: designfeil fra produsenten — fjæren burde være i rustfritt stål, ikke korroderbart"
+        correct: false
+        feedback: "Materialvalg er en faktor, men den korroderte fjæren burde ha blitt fanget under forebyggende vedlikehold. PM-programmet kan trenge revisjon."
+      - text: "Rotårsak: utilstrekkelig forebyggende vedlikehold — fjærkorrosjonen burde ha blitt oppdaget"
+        correct: false
+        feedback: "PM er én medvirkende faktor, men rotårsaken er den spesifikke mekanismesvikten. En komplett analyse adresserer utstyrssvikten, prosessgapet og systemgapet."
+  - type: multiple-choice
+    id: corrective-action
+    question: "Hvilke korrigerende tiltak anbefaler du for sikkerhetsmøtet?"
+    choices:
+      - text: "Umiddelbart: test ALLE Infusomat Space-pumper på sykehuset for antifriflytsklemme-funksjon. Kortsiktig: legg til inspeksjon av klemmefjær i PM-sjekklisten. Langsiktig: forsterke rulleklemmeprosedyren og legge til et verifiseringssteg etter settbytte"
+        correct: true
+        feedback: "Riktig — adresserer alle tre nivåer: (1) flåteinspeksjon fanger andre pumper med samme problem, (2) PM-sjekkliste forhindrer gjentakelse, (3) prosessforbedringer gir forsvar i dybden. Anbefal også å sende en hendelsesrapport til produsent (MIR/MDR) og sjekke for sikkerhetsvarsler."
+      - text: "Erstatt alle Infusomat Space-pumper med en nyere modell med en mer robust antifriflytdesign"
+        correct: false
+        feedback: "Å erstatte hele flåten er uforholdsmessig. Mekanismen fungerer når den vedlikeholdes — dette var et vedlikeholdsgap, ikke en grunnleggende designfeil."
+      - text: "Etterutdann alle sykepleiere i riktig prosedyre for bytte av administrasjonssett"
+        correct: false
+        feedback: "Opplæring alene adresserer ikke utstyrssvikten eller PM-gapet. Et korrigerende tiltak som kun baserer seg på menneskelig ytelse vil til slutt feile igjen."
+      - text: "Sett på et advarselskilt på hver pumpe som minner sykepleiere om å lukke rulleklemmen før døren åpnes"
+        correct: false
+        feedback: "Advarselsskilt er den svakeste formen for risikokontroll. Kontrollhierarkiet prioriterer tekniske kontroller (fiks klemmen) over administrative kontroller (skilt, opplæring)."
+learning_points:
+  - text: "Friflytsforebygging i infusjonspumper baserer seg på forsvar i dybden: pumpens antifriflytsklemme (teknisk kontroll), rulleklemmen (brukerhandling) og verifisering etter bytte (prosesskontroll). Når du etterforsker en hendelse, vurder alle barrierer."
+  - text: "IEC 60601-2-24 §201.12.4.3 krever at det skal finnes midler for å forhindre ukontrollert strømning av infusjonsvæske. Dette er et obligatorisk sikkerhetskrav — en sviktende antifriflytmekanisme er et alvorlig samsvarsbrudd."
+    source: "IEC 60601-2-24 §201.12.4.3"
+    source_type: standard
+  - text: "Friflytshendelser er konsekvent blant topp 10 helsetechnologifarer identifisert av ECRI Institute. De er nesten alltid forårsaket av flere faktorer — en utstyrssvikt kombinert med et prosessgap."
+    source: "ECRI Institute — Top 10 Health Technology Hazards"
+    source_type: incident-data
+  - text: "Ved hendelsesetterforskning, sikre bevis før testing. Fotografer enheten, settet, klemmeposisjoner og merk alt. Fotografiene er primærbevis dersom etterforskningen eskalerer til regulatorisk rapportering."
+    source_type: best-practice
+  - text: "Rotårsaksanalyse bør identifisere årsaker på systemnivå, ikke legge skyld på enkeltpersoner. Menneskelig feil er alltid en medvirkende faktor, aldri en rotårsak — spør 'hvorfor var feilen mulig?' ikke 'hvem gjorde feilen?'"
+    source_type: best-practice
+  - text: "Etter en alvorlig hendelse, test hele flåten av samme enhetsmodell. Hvis én pumpe har en korrodert fjær, har andre med samme alder og miljøforhold sannsynligvis det samme problemet."
+    source_type: best-practice

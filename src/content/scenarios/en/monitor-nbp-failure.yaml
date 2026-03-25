@@ -1,0 +1,109 @@
+id: monitor-nbp-failure
+title: NIBP Measurement Failure
+device: Philips IntelliVue MX800
+category: patient-monitor
+level: 1
+estimated_time: 12min
+has_lab_handoff: true
+briefing:
+  caller: Nurse Jonas, Post-Anaesthesia Care Unit
+  location: PACU Bay 6
+  facility: Stavanger University Hospital
+  time: "Thursday 15:00"
+  message: "The blood pressure on the MX800 in bay 6 keeps failing — it inflates the cuff, holds for a while, then shows 'NIBP measurement failed.' We've tried three different cuffs and two different patients. The other monitors in PACU measure just fine. We need this monitor working — all our bays are full post-op."
+  urgency: medium
+  context:
+    - "NIBP measurement fails consistently on this monitor"
+    - "Cuff inflates but measurement fails every time"
+    - "Tried three different cuffs and two different patients"
+    - "Other monitors in PACU work normally"
+    - "Philips IntelliVue MX800, serial: MX-44735"
+    - "PACU at full capacity"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "Multiple cuffs and patients have been tried — the problem follows the monitor. The cuff inflates (so the pump works) but the measurement fails. What's the most likely cause?"
+    hint: "The NIBP system has three main components: the air pump (inflates the cuff), the air hose (connects pump to cuff), and the pressure transducer (measures oscillometric signals). The pump works — which component is next to suspect?"
+    choices:
+      - text: "The air hose between the monitor and the cuff has a slow leak — it inflates but can't maintain stable pressure for oscillometric measurement"
+        correct: true
+        feedback: "Correct — a slow leak in the air hose allows initial inflation but causes a gradual pressure drop during the measurement phase. The monitor needs stable pressure to detect the small oscillometric variations from arterial pulsation. A leak creates a pressure drift that masks these oscillations, causing the measurement to fail."
+      - text: "The NIBP module inside the monitor has failed"
+        correct: false
+        feedback: "Possible but less common. The pump works (inflation occurs), so the module is at least partially functional. Check the simpler external components first."
+      - text: "The monitor's NIBP algorithm is corrupted and needs a software update"
+        correct: false
+        feedback: "Software corruption would typically affect all functions, not just NIBP. This is more likely a hardware issue in the pneumatic circuit."
+      - text: "The pump is too weak — it inflates but can't reach sufficient pressure"
+        correct: false
+        feedback: "If the pump were too weak, the nurse would notice incomplete inflation. The cuff inflates normally — the issue is during the measurement phase."
+  - type: multiple-choice
+    id: investigation
+    question: "You inspect the NIBP air hose — it's a coiled hose that connects from the monitor's NIBP port to the cuff. You notice the hose connector at the monitor end wiggles slightly when you push on it. What do you do?"
+    hint: "A loose or worn connector can cause a slow leak that's hard to detect by sight but sufficient to disrupt oscillometric measurement."
+    choices:
+      - text: "Replace the air hose with a new one from stock and retest"
+        correct: true
+        feedback: "Correct — NIBP air hoses are inexpensive consumables. A worn connector is the most common cause of slow leaks. Swap it out and test. If the problem persists with a new hose, then investigate the monitor's internal pneumatic circuit."
+      - text: "Apply thread seal tape to the connector to stop the leak"
+        correct: false
+        feedback: "Medical device pneumatic fittings are designed for push-fit or luer connections, not thread sealing. Tape residue can block the air path. Replace the hose."
+      - text: "Tighten the connector with pliers"
+        correct: false
+        feedback: "Forcing the connector can damage the monitor's NIBP port. These connectors are designed for finger-tight fit — if they don't seal, replace the hose."
+      - text: "Run the monitor's NIBP self-test to confirm the leak"
+        correct: false
+        feedback: "The self-test is useful but replacing a suspect hose takes seconds and immediately tests your hypothesis. Self-test after if the new hose doesn't fix it."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Replace the air hose and verify NIBP function. Use the Fluke ProSim 8's NIBP simulation to test at three blood pressure values. Also perform a pneumatic leak test using the monitor's built-in test mode."
+    simulated_data:
+      tool: "Fluke ProSim 8 — NIBP Simulation + Philips Leak Test"
+      readings:
+        - setting: "Pneumatic leak test (new hose) — pressure drop over 60 s"
+          delivered: "2 mmHg drop"
+          status: pass
+          spec: "< 6 mmHg/min"
+        - setting: "Pneumatic leak test (old hose) — pressure drop over 60 s"
+          delivered: "18 mmHg drop"
+          status: fail
+          error: "Leak at connector — 3x above spec"
+        - setting: "NIBP simulation — 120/80 mmHg"
+          delivered: "118/78 mmHg"
+          status: pass
+          spec: "±3 mmHg"
+        - setting: "NIBP simulation — 180/110 mmHg (hypertensive)"
+          delivered: "177/108 mmHg"
+          status: pass
+          spec: "±3 mmHg"
+        - setting: "NIBP simulation — 80/50 mmHg (hypotensive)"
+          delivered: "82/52 mmHg"
+          status: pass
+          spec: "±3 mmHg"
+  - type: multiple-choice
+    id: diagnosis
+    question: "The new hose passes the leak test (2 mmHg/min vs 18 mmHg/min with the old hose), and all three NIBP simulations are accurate. What do you recommend?"
+    choices:
+      - text: "Return the monitor to service with the new hose. Recommend adding NIBP hose inspection to the regular PM checklist and keeping spare hoses in the PACU supply cabinet"
+        correct: true
+        feedback: "Correct — the fix is simple but the preventive recommendation is important. NIBP hoses wear out from daily use (coiling, cuff changes, cleaning). Stock spare hoses where they're needed and inspect during PM."
+      - text: "The problem is fixed — no further action needed"
+        correct: false
+        feedback: "The immediate problem is fixed, but without a preventive recommendation, the same failure will recur when other hoses wear out."
+      - text: "Send the old hose to the manufacturer for failure analysis"
+        correct: false
+        feedback: "A worn connector is normal wear-and-tear, not a manufacturing defect. Document it and discard."
+      - text: "Replace all NIBP hoses in PACU as a precaution"
+        correct: false
+        feedback: "Replacing all hoses proactively is wasteful. Instead, add hose inspection to the PM checklist so they're replaced when worn."
+learning_points:
+  - text: "NIBP measurement failures are most commonly caused by pneumatic leaks in the air hose or cuff, not by monitor malfunction. A slow leak disrupts the oscillometric measurement by creating pressure drift that masks arterial pulsations."
+  - text: "NIBP air hoses are high-wear consumables — the connectors loosen with repeated cuff changes and daily use. Stock spares in clinical areas and inspect hoses during PM."
+    source_type: best-practice
+  - text: "IEC 60601-2-30 requires NIBP accuracy of ±3 mmHg for static pressure. Always verify accuracy after any repair to the pneumatic circuit using a calibrated NIBP simulator."
+    source: "IEC 60601-2-30 §201.12.1"
+    source_type: standard
+  - text: "When troubleshooting NIBP, the diagnostic sequence is: cuff → hose → monitor connections → internal pneumatic valve → NIBP module. Work from the cheapest/simplest component outward."
+    source_type: best-practice
+  - text: "The monitor's built-in pneumatic leak test is a valuable diagnostic tool. It pressurises the system and measures pressure drop over time — a drop > 6 mmHg/min indicates a leak in the hose, connector, or internal valves."
+    source_type: best-practice

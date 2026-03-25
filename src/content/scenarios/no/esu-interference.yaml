@@ -1,0 +1,99 @@
+id: esu-interference
+title: ESU-interferens med pasientovervåking
+device: Erbe VIO 300 D
+category: electrosurgery
+level: 2
+estimated_time: 15min
+has_lab_handoff: false
+briefing:
+  caller: Anestesilege dr. Berg
+  location: Operasjonsstue 1
+  facility: Stavanger universitetssjukehus
+  time: "Tirsdag 10:00"
+  message: "Hver gang kirurgen aktiverer ESU-en, går pasientmonitoren i spinn — EKG-et viser noe som ser ut som VF, SpO₂ faller til null, og vi får en haglskur av falske alarmer. Det har pågått hele morgenen gjennom tre forskjellige inngrep. Vi har ignorert monitoren under ESU-aktivering, men jeg er ukomfortabel med det — hva om det faktisk oppstår en arytmi under kauterisering? Kan du hjelpe oss med å løse dette?"
+  urgency: medium
+  context:
+    - "EKG viser artefakt som ligner VF under ESU-aktivering"
+    - "SpO₂-avlesning faller til null under aktivering"
+    - "Problemet oppstår på tvers av flere pasienter (tre inngrep i dag)"
+    - "Samme operasjonsstue, samme ESU (Erbe VIO 300 D), samme monitor (Philips IntelliVue MX800)"
+    - "Anestesilegen har ignorert monitoren under ESU-bruk — er ukomfortabel med dette"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "ESU-interferens med overvåking er svært vanlig. Bekymringen er berettiget — du kan ikke bare ignorere monitoren under kauterisering. Hva forårsaker ESU-interferens med EKG og SpO₂?"
+    hint: "ESU-en opererer ved høy frekvens (350 kHz) med betydelig effekt. Overvåkingssystemet opererer ved mye lavere frekvenser. Hvordan kobler høyfrekvent energi seg inn i overvåkingskretsen?"
+    choices:
+      - text: "ESU-ens høyfrekvente strøm kobler seg inn i EKG-ledningene via kapasitiv og radiativ kobling, og overvelder monitorens inngangforsterkere med artefakt"
+        correct: true
+        feedback: "Riktig — ESU-en utstråler et sterkt elektromagnetisk felt og injiserer også høyfrekvent strøm gjennom pasientens kropp. EKG-ledninger fungerer som antenner og fanger opp denne energien. Monitorens inngangsfiltre er designet for å avvise noe HF-interferens, men høyeffekts ESU-aktivering kan overvelde dem. SpO₂ påvirkes fordi HF-strømmen modulerer den optiske banen."
+      - text: "ESU-en er defekt og genererer overdreven elektromagnetisk stråling"
+        correct: false
+        feedback: "Noe interferens er normalt og forventet med alle ESU-er. Spørsmålet er om interferensnivået er overdrevent, eller om avbøtende tiltak kan redusere det."
+      - text: "Pasientmonitoren trenger en fastvareoppdatering for å håndtere ESU-frekvenser"
+        correct: false
+        feedback: "Moderne monitorer har innebygd ESU-artefaktavvisning, men ingen filtre kan helt eliminere all interferens fra en enhet som leverer hundrevis av watt HF-energi gjennom samme pasient."
+      - text: "ESU-en og monitoren er koblet til samme stikkontakt, noe som forårsaker ledet interferens"
+        correct: false
+        feedback: "Ledet interferens gjennom nettspenningen er usannsynlig — begge enhetene har nettinngangsfiltre. Koblingen skjer gjennom pasienten og gjennom stråling."
+  - type: multiple-choice
+    id: investigation
+    question: "Du inspiserer oppsettet i operasjonsstuen. EKG-ledningene er buntet sammen med ESU-ens aktive elektrodekabel langs pasientens høyre side. Returelektroden er på venstre lår, og SpO₂-sensoren er på venstre pekefinger. Hvilke endringer kan redusere interferensen?"
+    hint: "Tenk på strømbanen gjennom pasienten og hvordan du kan minimere kobling mellom ESU-kretsen og overvåkingskretsen."
+    choices:
+      - text: "Separer EKG-ledningene fra ESU-kabelen (forskjellige sider av pasienten), plasser returelektroden slik at HF-strømbanen unngår overvåkingselektrodene, og flytt SpO₂ til samme side som returelektroden"
+        correct: true
+        feedback: "Riktig — tre nøkkelprinsipper: (1) Fysisk separasjon av ESU- og overvåkingskabler reduserer radiativ kobling. (2) HF-strømmen flyter fra aktiv elektrode til returelektrode — plassering av returelektroden slik at denne banen ikke krysser EKG-elektrodene reduserer ledet interferens. (3) SpO₂ på samme side som returelektroden er i en lavere impedansbane og påvirkes mindre."
+      - text: "Bytt EKG-ledningene med skjermede kabler"
+        correct: false
+        feedback: "Skjermede EKG-kabler hjelper, men er sjelden tilgjengelige på operasjonsstuen. Kabelruting og elektrodeplassering er mer praktisk og ofte mer effektivt."
+      - text: "Reduser ESU-effekten til minimum som trengs for inngrepet"
+        correct: false
+        feedback: "Å redusere effekten hjelper marginalt, men kirurgen trenger tilstrekkelig effekt. Kabelruting og elektrodeplassering er mer effektive intervensjoner."
+      - text: "Legg til et kjernefilter ved 350 kHz på monitorens inngang"
+        correct: false
+        feedback: "Du kan ikke legge til eksterne filtre på en medisinsk monitor — dette ville ugyldiggjøre sertifiseringen og potensielt påvirke signalkvaliteten. Bruk monitorens innebygde ESU-artefaktavvisning."
+  - type: multiple-choice
+    id: mitigation
+    question: "Etter omruting av kabler og justering av returelektrodens posisjon er interferensen betydelig redusert, men fortsatt til stede under høyeffekts koagulering. Hvilke ytterligere monitorinnstillinger kan hjelpe?"
+    hint: "Moderne monitorer har ESU-artefaktavvisningsmodus og filterinnstillinger designet for operasjonsstuen."
+    choices:
+      - text: "Aktiver monitorens ESU/kirurgimodus (filtrerer EKG for artefakt, forlenger SpO₂-midlingstid, suspenderer arytmialarmer under ESU-aktivering)"
+        correct: true
+        feedback: "Riktig — Philips IntelliVue har en 'Surgery'- eller 'ESU filter'-modus som bruker aggressiv HF-filtrering på EKG-et, forlenger SpO₂-signalmidlingen for å bygge bro over korte artefakter, og kan suspendere forstyrrende arytmialarmer under korte ESU-aktiveringer. Dette er den tiltenkte driftsmodusen for bruk på operasjonsstuen."
+      - text: "Bytt EKG til overvåkingsbåndbredde (0,5–40 Hz) for å filtrere bort høyfrekvent artefakt"
+        correct: false
+        feedback: "Overvåkingsbåndbredde hjelper å avvise artefakt, men skjuler også ST-segmentendringer. Under kirurgi, der iskemiovervåking er viktig, er den ESU-spesifikke filtermodusen bedre fordi den er designet for å bevare klinisk relevante signalkomponenter."
+      - text: "Deaktiver alle EKG-alarmer under inngrepet"
+        correct: false
+        feedback: "Å deaktivere alle alarmer er farlig — du trenger å oppdage reelle arytmier mellom ESU-aktiveringer. ESU-filtermodusen håndterer alarmer intelligent i stedet for å deaktivere dem."
+      - text: "Bytt til invasiv arteriell blodtrykksmåling som primært vitaltegn"
+        correct: false
+        feedback: "Arteriell overvåking er nyttig for hemodynamisk vurdering, men erstatter ikke EKG-rytmeovervåking. Løs EKG-interferensen i stedet for å gi opp den."
+  - type: multiple-choice
+    id: resolution
+    question: "Med omrutede kabler og monitorens ESU-modus aktivert er interferensen nå minimal. Anestesilegen er fornøyd. Hva anbefaler du på lang sikt?"
+    choices:
+      - text: "Dokumenter optimal kabelruting og monitorinnstillinger for denne operasjonsstuen, sørg for at alle operasjonsstuer har samme oppsett, og inkluder ESU-moduskonfigurasjon i monitorens PM-sjekkliste"
+        correct: true
+        feedback: "Riktig — standardiser løsningen på tvers av alle operasjonsstuer. Lag et kort referansekort for operasjonsstuen som viser optimal kabelruting, returelektrodeplassering i forhold til overvåkingselektroder, og hvordan ESU-filtermodusen aktiveres på Philips IntelliVue. Legg til ESU-modusverifisering i monitorens PM-sjekkliste."
+      - text: "Send en klage til Erbe for overdrevne elektromagnetiske utslipp"
+        correct: false
+        feedback: "ESU-en opererer innenfor IEC 60601-2-2 sine utslippsgrenser. Noe interferens er iboende i elektrokirurgi — det håndteres gjennom riktig oppsett, ikke ved å klage til produsenten."
+      - text: "Be innkjøp om å kjøpe ESU-herdede overvåkingskabler til alle operasjonsstuer"
+        correct: false
+        feedback: "ESU-herdede kabler kan hjelpe, men er dyre. Riktig kabelruting og monitorkonfigurasjon er mer effektivt og har ingen kostnad."
+      - text: "Ingen ytterligere tiltak — problemet er løst for denne operasjonsstuen"
+        correct: false
+        feedback: "Hvis det samme utstyret finnes i alle operasjonsstuer, eksisterer den samme interferensen i alle operasjonsstuer. Standardiser løsningen."
+learning_points:
+  - text: "ESU-interferens med pasientovervåking er iboende i elektrokirurgi — høyfrekvent strøm gjennom pasientens kropp og elektromagnetisk stråling fra ESU-en kobler seg inn i overvåkingsledningene. Det kan ikke elimineres fullstendig, men kan håndteres effektivt."
+  - text: "Tre fysiske tiltak reduserer ESU-interferens: (1) separer ESU-kabler fra overvåkingsledninger, (2) rut HF-strømbanen (aktiv til returelektrode) bort fra overvåkingselektrodene, (3) bruk kortest mulige overvåkingsledninger."
+    source_type: best-practice
+  - text: "Moderne pasientmonitorer har ESU-artefaktavvisningsmodus ('Surgery mode', 'ESU filter'). Disse bør aktiveres for all overvåking på operasjonsstuen. De bruker HF-filtrering, forlenger signalmidling og håndterer alarmer intelligent under ESU-aktivering."
+    source_type: best-practice
+  - text: "IEC 60601-2-2 spesifiserer grenseverdier for elektromagnetiske utslipp for ESU-er, og IEC 60601-2-27 spesifiserer immunitetskrav for EKG-monitorer. I praksis er det spesifiserte immunitetsnivået ikke alltid tilstrekkelig for å forhindre all artefakt under høyeffekts ESU-aktivering."
+    source: "IEC 60601-2-2 §202 (EMC) og IEC 60601-2-27 §202"
+    source_type: standard
+  - text: "Aksepter aldri 'ignorer monitoren under ESU-bruk' som en løsning. Kliniske ingeniører bør samarbeide med operasjonsteamet for å optimalisere oppsettet slik at overvåkingen forblir pålitelig selv under elektrokirurgi."
+    source_type: best-practice
