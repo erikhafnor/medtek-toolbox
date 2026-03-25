@@ -27,7 +27,7 @@ const pageDescription = description ?? t(locale, 'site.tagline');
   </head>
   <body class="min-h-screen flex flex-col bg-white text-gray-900">
     <Nav />
-    <main class="flex-1">
+    <main class="flex-1" data-pagefind-body>
       <slot />
     </main>
     <footer class="border-t border-gray-200 py-6 mt-12">
