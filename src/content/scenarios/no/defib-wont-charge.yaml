@@ -1,0 +1,102 @@
+id: defib-wont-charge
+title: Defibrillatoren som ikke vil lade
+device: LIFEPAK 15
+category: defibrillator
+level: 1
+estimated_time: 15min
+has_lab_handoff: true
+briefing:
+  caller: Sykepleier Kari, intensivavdeling
+  location: Intensiv rom 3
+  facility: Stavanger universitetssjukehus
+  time: "Tirsdag 08:45"
+  message: "Vi har en LIFEPAK 15 i rom 3 som viste 'Service Required' da dr. Hansen forsøkte å gjøre en kardioversjon i morges. Batteriet ser fint ut, den sto på laderen hele natten. Vi har en pasient som kan trenge kardioversjon i løpet av timen — kan du komme og se på den med en gang?"
+  urgency: high
+  context:
+    - "Pasient kan trenge kardioversjon i løpet av timen"
+    - "Serienummer: 45892301"
+    - "Batteriindikator: 82%"
+    - "Sto på laderen over natten"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "Du ankommer intensivavdelingen. Hva er din første handling?"
+    hint: "Begynn alltid med den minst inngripende tilnærmingen — samle informasjon før du rører utstyret."
+    choices:
+      - text: "Åpne utstyret og sjekk innvendige komponenter"
+        correct: false
+        feedback: "For invasivt som første steg — begynn alltid med observasjon og informasjonsinnsamling."
+      - text: "Snakk med sykepleieren, reproduser feilen, sjekk det grunnleggende (strøm, batteri, kabler, pads)"
+        correct: true
+        feedback: "Riktig — systematisk tilnærming: samle info, observer, sjekk det åpenbare før du går dypere."
+      - text: "Erstatt med en reserveenhet og ta denne til verkstedet"
+        correct: false
+        feedback: "Du bør ha en erstatning klar, men diagnostiser på stedet først — det kan være en enkel feil."
+  - type: multiple-choice
+    id: investigation
+    question: "Feilen reproduseres. Batteri 82%, pads tilkoblet og innenfor holdbarhet, AC-strøm tilkoblet. Hva nå?"
+    hint: "'Service Required' under lading peker vanligvis på høyspentladekretsen. Hvilket testverktøy kan verifisere utgangen?"
+    choices:
+      - text: "Åpne enheten og se visuelt etter kondensator med buling eller lekkasje"
+        correct: false
+        feedback: "Visuell inspeksjon alene bekrefter sjelden kondensatordegradring — du trenger målinger."
+      - text: "Bytt til et kjent godt batteri og test på nytt"
+        correct: false
+        feedback: "Rimelig steg, men batteriindikatoren er konsistent — følg ladekretsen først."
+      - text: "Ta til verkstedet, test med Fluke Impulse 7000DP på flere energinivåer"
+        correct: true
+        feedback: "Riktig — karakteriser feilen ved å teste over energiområdet for å identifisere mønsteret."
+      - text: "Sjekk servicehistorikken i utstyrsstyringssystemet"
+        correct: false
+        feedback: "God praksis, men vil ikke diagnostisere den nåværende feilen — gjør dette parallelt."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Koble LIFEPAK 15 til Fluke Impulse 7000DP. Kjør levert energitest ved 50J, 100J, 150J, 200J. Registrer levert energi og ladetid for hvert innstilling."
+    simulated_data:
+      tool: "Fluke Impulse 7000DP — Levert energitest"
+      load: "50 Ω"
+      readings:
+        - setting: "Innstilling: 50J → Levert"
+          delivered: "47J"
+          status: pass
+        - setting: "Innstilling: 100J → Levert"
+          delivered: "96J"
+          status: pass
+          charge_time: "8,2s"
+          spec: "≤6s"
+        - setting: "Innstilling: 150J → Levert"
+          delivered: null
+          status: fail
+          error: "Service Required-feil"
+        - setting: "Innstilling: 200J → Levert"
+          delivered: null
+          status: fail
+          error: "Service Required-feil"
+  - type: multiple-choice
+    id: diagnosis
+    question: "Basert på målingsmønsteret (fungerer ved lav energi, feiler ved høy energi, langsom ladetid), hva er rotårsaken?"
+    choices:
+      - text: "Defekte laderele-kontakter"
+        correct: false
+        feedback: "Ville sannsynligvis forårsake total ladefeil på alle energinivåer, ikke bare høye."
+      - text: "Degradert høyspanningskondensator"
+        correct: true
+        feedback: "Riktig — delvis ladekapasitet + langsom ladetid = kondensator som mister kapasitet. Den kan lagre noe ladning men kan ikke nå nominell energi."
+      - text: "Programvarefeil som krever fastvareoppdatering"
+        correct: false
+        feedback: "Programvare ville ikke forårsake progressiv energiavhengig feil med degraderte ladetider."
+      - text: "Skadet HV-transformator"
+        correct: false
+        feedback: "Mulig men mye sjeldnere — kondensatordegradring er den vanligste årsaken til dette feilvmønsteret."
+learning_points:
+  - text: "Fungerer ved lav energi + feiler ved høy energi = kondensatordegradring. Kondensatoren kan fortsatt lagre delvis ladning men kan ikke nå nominell energi."
+  - text: "Langsom ladetid er et tidlig varseltegn på kondensatorproblemer, selv før total feil."
+    source: "IEC 60601-2-4 §201.12.1"
+    source_type: standard
+  - text: "Kondensatorrelaterte feil utgjør omtrent 12% av defibrillator-servicehendelser."
+    source: "FDA MAUDE-databaseanalyse"
+    source_type: incident-data
+  - text: "Gi alltid en erstatningsenhet til klinisk avdeling før du fjerner defekt utstyr for reparasjon."
+    source_type: best-practice
+  - text: "Dokumenter: feilbeskrivelse, testresultater, rotårsak, korrigerende tiltak. Merk for gjennomgang av forebyggende vedlikeholdsplan."
+    source_type: best-practice

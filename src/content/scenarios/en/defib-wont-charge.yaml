@@ -1,0 +1,102 @@
+id: defib-wont-charge
+title: The Defibrillator That Won't Charge
+device: LIFEPAK 15
+category: defibrillator
+level: 1
+estimated_time: 15min
+has_lab_handoff: true
+briefing:
+  caller: Nurse Kari, ICU
+  location: ICU Bay 3
+  facility: Stavanger University Hospital
+  time: "Tuesday 08:45"
+  message: "We have a LIFEPAK 15 in bay 3 that showed 'Service Required' when Dr. Hansen tried to do a cardioversion this morning. Battery looks fine, it was on the charger all night. We've got a patient who might need cardioversion within the hour — can you come look at it right away?"
+  urgency: high
+  context:
+    - "Patient may need cardioversion within the hour"
+    - "Device serial: 45892301"
+    - "Battery indicator: 82%"
+    - "Was on charger overnight"
+steps:
+  - type: multiple-choice
+    id: assessment
+    question: "You arrive at the ICU. What's your first action?"
+    hint: "Always start with the least invasive approach — gather information before touching the device."
+    choices:
+      - text: "Open the device casing and check internal components"
+        correct: false
+        feedback: "Too invasive as a first step — always start with observation and information gathering."
+      - text: "Talk to the nurse, reproduce the error, check basics (power, battery, cables, pads)"
+        correct: true
+        feedback: "Correct — systematic approach: gather info, observe, check the obvious before going deeper."
+      - text: "Replace with a spare unit and take this one to the workshop"
+        correct: false
+        feedback: "You'll want a replacement ready, but diagnose on-site first — it might be a simple fix."
+  - type: multiple-choice
+    id: investigation
+    question: "Error reproduces. Battery 82%, pads connected and in date, AC power connected. What next?"
+    hint: "'Service Required' during charge usually points to the high-voltage charging circuit. What test tool can verify the output?"
+    choices:
+      - text: "Open device and visually inspect capacitor for bulging or leakage"
+        correct: false
+        feedback: "Visual inspection alone rarely confirms capacitor degradation — you need measurements."
+      - text: "Swap to a known-good battery and retest"
+        correct: false
+        feedback: "Reasonable step, but battery indicator is consistent — pursue the charge circuit first."
+      - text: "Bring to workshop, test with Fluke Impulse 7000DP at multiple energy levels"
+        correct: true
+        feedback: "Correct — characterize the failure by testing across the energy range to identify the pattern."
+      - text: "Check the service history in the equipment management system"
+        correct: false
+        feedback: "Good practice, but won't diagnose the current fault — do this in parallel."
+  - type: lab-handoff
+    id: measurement
+    instruction: "Connect LIFEPAK 15 to Fluke Impulse 7000DP. Run delivered energy test at 50J, 100J, 150J, 200J. Record delivered energy and charge time for each setting."
+    simulated_data:
+      tool: "Fluke Impulse 7000DP — Delivered Energy Test"
+      load: "50 Ω"
+      readings:
+        - setting: "Setting: 50J → Delivered"
+          delivered: "47J"
+          status: pass
+        - setting: "Setting: 100J → Delivered"
+          delivered: "96J"
+          status: pass
+          charge_time: "8.2s"
+          spec: "≤6s"
+        - setting: "Setting: 150J → Delivered"
+          delivered: null
+          status: fail
+          error: "Service Required error"
+        - setting: "Setting: 200J → Delivered"
+          delivered: null
+          status: fail
+          error: "Service Required error"
+  - type: multiple-choice
+    id: diagnosis
+    question: "Based on the measurement pattern (works at low energy, fails at high energy, slow charge time), what is the root cause?"
+    choices:
+      - text: "Faulty charge relay contacts"
+        correct: false
+        feedback: "Would likely cause total charge failure at all energy levels, not just high ones."
+      - text: "Degraded high-voltage capacitor"
+        correct: true
+        feedback: "Correct — partial charge capability + slow charge time = capacitor losing capacity. It can store some charge but can't reach rated energy."
+      - text: "Software error requiring firmware update"
+        correct: false
+        feedback: "Software wouldn't cause progressive energy-dependent failure with degraded charge times."
+      - text: "Damaged HV transformer"
+        correct: false
+        feedback: "Possible but much rarer — capacitor degradation is the most common cause of this failure pattern."
+learning_points:
+  - text: "Works at low energy + fails at high energy = capacitor degradation. The capacitor can still store partial charge but can't reach full rated capacity."
+  - text: "Slow charge time is an early warning sign of capacitor issues, even before total failure."
+    source: "IEC 60601-2-4 §201.12.1"
+    source_type: standard
+  - text: "Capacitor-related failures account for approximately 12% of defibrillator service events."
+    source: "FDA MAUDE database analysis"
+    source_type: incident-data
+  - text: "Always provide a replacement unit to the clinical department before removing faulty equipment for repair."
+    source_type: best-practice
+  - text: "Document: fault description, test results, root cause, corrective action. Flag for preventive maintenance schedule review."
+    source_type: best-practice

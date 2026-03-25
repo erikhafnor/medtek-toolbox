@@ -1,0 +1,21 @@
+---
+import ScenarioLayout from '../../../layouts/ScenarioLayout.astro';
+import ScenarioPlayer from '../../../components/scenario/ScenarioPlayer.svelte';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allScenarios = await getCollection('scenarios');
+  const enScenarios = allScenarios.filter((entry) => entry.id.startsWith('en/'));
+
+  return enScenarios.map((entry) => ({
+    params: { slug: entry.id.replace(/^en\//, '') },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+---
+
+<ScenarioLayout title={entry.data.title}>
+  <ScenarioPlayer scenario={entry.data} locale="en" client:load />
+</ScenarioLayout>
