@@ -1,0 +1,65 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import LabChecklist from '../components/LabChecklist.astro';
+
+interface ChecklistGroup {
+  title: string;
+  items: string[];
+}
+interface Props {
+  title: string;
+  description?: string;
+  checklist?: ChecklistGroup[];
+  storageKey?: string;
+  lang?: 'en' | 'no';
+}
+
+const { title, description, checklist, storageKey, lang = 'en' } = Astro.props;
+const hasChecklist = Array.isArray(checklist) && checklist.length > 0;
+
+const labels =
+  lang === 'no'
+    ? {
+        title: 'Sjekkliste',
+        reset: 'Nullstill',
+        hint: 'Huk av etter hvert som du jobber deg gjennom — fremdriften lagres i denne nettleseren.',
+      }
+    : {
+        title: 'Checklist',
+        reset: 'Reset',
+        hint: 'Tick things off as you go — your progress is saved in this browser.',
+      };
+---
+
+<BaseLayout title={title} description={description}>
+  {
+    hasChecklist ? (
+      <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:grid lg:grid-cols-[260px_minmax(0,1fr)] lg:items-start lg:gap-10 lg:px-8">
+        <aside class="mb-8 lg:mb-0 lg:sticky lg:top-8">
+          <LabChecklist storageKey={storageKey} groups={checklist} labels={labels} />
+        </aside>
+        <article>
+          <h1 class="mb-4 text-3xl font-bold text-gray-900">{title}</h1>
+          {description && (
+            <p class="mb-8 border-b border-gray-200 pb-6 text-lg text-gray-600">{description}</p>
+          )}
+          <div class="prose prose-slate max-w-none">
+            <slot />
+          </div>
+        </article>
+      </div>
+    ) : (
+      <div class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+        <article>
+          <h1 class="mb-4 text-3xl font-bold text-gray-900">{title}</h1>
+          {description && (
+            <p class="mb-8 border-b border-gray-200 pb-6 text-lg text-gray-600">{description}</p>
+          )}
+          <div class="prose prose-slate max-w-none">
+            <slot />
+          </div>
+        </article>
+      </div>
+    )
+  }
+</BaseLayout>

@@ -89,6 +89,16 @@ const labs = defineCollection({
     equipment: z.array(z.string()),
     prerequisites: z.array(z.string()).optional(),
     duration: z.string().optional(),
+    // Optional interactive, tick-off progress checklist shown in a sticky
+    // sidebar next to the lab. Keep item text short and conversational.
+    checklist: z
+      .array(
+        z.object({
+          title: z.string(),
+          items: z.array(z.string()),
+        })
+      )
+      .optional(),
   }),
 });
 

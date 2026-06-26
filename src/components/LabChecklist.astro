@@ -1,0 +1,133 @@
+---
+interface ChecklistGroup {
+  title: string;
+  items: string[];
+}
+interface Props {
+  storageKey?: string;
+  groups: ChecklistGroup[];
+  labels: { title: string; reset: string; hint: string };
+}
+const { storageKey = 'lab', groups, labels } = Astro.props;
+const total = groups.reduce((n, g) => n + g.items.length, 0);
+---
+
+<section
+  class="lab-checklist rounded-xl border border-gray-200 bg-gray-50 p-4 shadow-sm"
+  data-storage-key={storageKey}
+  data-pagefind-ignore
+  aria-label={labels.title}
+>
+  <div class="flex items-center justify-between gap-2">
+    <h2 class="m-0 text-sm font-semibold text-gray-900">{labels.title}</h2>
+    <span class="progress shrink-0 text-xs font-medium tabular-nums text-gray-500" data-progress>0/{total}</span>
+  </div>
+
+  <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-gray-200">
+    <div class="bar h-full w-0 rounded-full bg-emerald-500 transition-all duration-300" data-bar></div>
+  </div>
+
+  <p class="mt-2 text-xs text-gray-400">{labels.hint}</p>
+
+  <div class="mt-3 space-y-4">
+    {groups.map((group, gi) => (
+      <div>
+        <p class="m-0 mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500">{group.title}</p>
+        <ul class="m-0 list-none space-y-1.5 p-0">
+          {group.items.map((item, ii) => (
+            <li class="item">
+              <label class="flex cursor-pointer items-start gap-2 text-[13px] leading-snug text-gray-700">
+                <input
+                  type="checkbox"
+                  class="mt-0.5 h-3.5 w-3.5 shrink-0 cursor-pointer accent-emerald-600"
+                  data-item={`${gi}-${ii}`}
+                />
+                <span class="item-text">{item}</span>
+              </label>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+
+  <button
+    type="button"
+    class="reset mt-4 text-xs text-gray-400 underline underline-offset-2 hover:text-gray-600"
+    data-reset
+  >
+    {labels.reset}
+  </button>
+</section>
+
+<style>
+  .lab-checklist li.done .item-text {
+    text-decoration: line-through;
+    color: #9ca3af;
+  }
+</style>
+
+<script>
+  function initLabChecklists() {
+    const roots = document.querySelectorAll<HTMLElement>('.lab-checklist');
+    roots.forEach((root) => {
+      const key = 'lab-checklist:' + (root.getAttribute('data-storage-key') || 'lab');
+      const boxes = Array.from(
+        root.querySelectorAll<HTMLInputElement>('input[type="checkbox"][data-item]')
+      );
+      const progress = root.querySelector<HTMLElement>('[data-progress]');
+      const bar = root.querySelector<HTMLElement>('[data-bar]');
+      const total = boxes.length;
+
+      let state: Record<string, boolean> = {};
+      try {
+        state = JSON.parse(localStorage.getItem(key) || '{}') || {};
+      } catch {
+        state = {};
+      }
+
+      function render() {
+        let done = 0;
+        boxes.forEach((b) => {
+          const id = b.dataset.item || '';
+          const on = state[id] === true;
+          b.checked = on;
+          b.closest('li')?.classList.toggle('done', on);
+          if (on) done++;
+        });
+        if (progress) progress.textContent = done + '/' + total;
+        if (bar) bar.style.width = total ? Math.round((done / total) * 100) + '%' : '0%';
+      }
+
+      boxes.forEach((b) =>
+        b.addEventListener('change', () => {
+          state[b.dataset.item || ''] = b.checked;
+          try {
+            localStorage.setItem(key, JSON.stringify(state));
+          } catch {
+            /* ignore */
+          }
+          render();
+        })
+      );
+
+      root.querySelector('[data-reset]')?.addEventListener('click', () => {
+        state = {};
+        try {
+          localStorage.removeItem(key);
+        } catch {
+          /* ignore */
+        }
+        render();
+      });
+
+      render();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLabChecklists);
+  } else {
+    initLabChecklists();
+  }
+</script>
