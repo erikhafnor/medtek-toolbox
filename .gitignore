@@ -25,3 +25,5 @@ pnpm-debug.log*
 
 # project-specific
 .superpowers
+.vercel
+.env*.local
