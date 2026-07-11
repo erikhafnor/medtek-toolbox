@@ -27,3 +27,7 @@ pnpm-debug.log*
 .superpowers
 .vercel
 .env*.local
+
+# test artifacts
+test-results/
+playwright-report/

@@ -14,7 +14,7 @@ const { locale } = Astro.props;
 const labels = BOOKING_LABELS[locale];
 const labs = await getLabCatalog(locale);
 const inventory = Object.fromEntries(
-  DEVICES.map((d) => [d.key, { label: d.label, quantity: d.quantity }])
+  DEVICES.map((d) => [d.key, { label: locale === 'no' ? d.labelNo : d.label, quantity: d.quantity }])
 );
 ---
 

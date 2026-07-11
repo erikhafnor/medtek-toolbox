@@ -10,6 +10,10 @@ import type { AvailabilityResult, BookingInterval } from './logic';
 
 const ADVISORY_LOCK_KEY = 823471;
 
+// Cheap abuse guard on the auth-less API: at most this many upcoming
+// bookings per email (11 labs total, so 6 leaves room for legitimate use).
+export const MAX_ACTIVE_PER_EMAIL = 6;
+
 export interface BookingRow extends BookingInterval {
   id: string;
   date: string;
@@ -23,11 +27,16 @@ export interface CreateBookingInput {
   endHour: number;
   studentName: string;
   studentEmail: string;
+  /** Today in the lab's timezone, for the per-email active-booking cap. */
+  today: string;
 }
 
 export type CreateBookingOutcome =
   | { ok: true; booking: BookingRow; cancelToken: string }
-  | { ok: false; result: Exclude<AvailabilityResult, { ok: true }> };
+  | {
+      ok: false;
+      result: Exclude<AvailabilityResult, { ok: true }> | { ok: false; reason: 'too-many-bookings' };
+    };
 
 let pool: Pool | null = null;
 let schemaReady: Promise<void> | null = null;
@@ -116,6 +125,15 @@ export async function createBooking(
   try {
     await client.query('BEGIN');
     await client.query('SELECT pg_advisory_xact_lock($1)', [ADVISORY_LOCK_KEY]);
+
+    const { rows: countRows } = await client.query(
+      'SELECT count(*)::int AS n FROM bookings WHERE student_email = $1 AND booking_date >= $2',
+      [input.studentEmail, input.today]
+    );
+    if (countRows[0].n >= MAX_ACTIVE_PER_EMAIL) {
+      await client.query('ROLLBACK');
+      return { ok: false, result: { ok: false, reason: 'too-many-bookings' } };
+    }
 
     const { rows } = await client.query(
       `SELECT ${SELECT_FIELDS} FROM bookings WHERE booking_date = $1`,

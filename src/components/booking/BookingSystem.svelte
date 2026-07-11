@@ -88,7 +88,18 @@
       const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]');
       if (!Array.isArray(parsed)) return [];
       const today = osloToday();
-      return parsed.filter((b) => b && typeof b.date === 'string' && b.date >= today);
+      return parsed.filter(
+        (b) =>
+          b &&
+          typeof b.id === 'string' &&
+          typeof b.cancelToken === 'string' &&
+          typeof b.labTitle === 'string' &&
+          Number.isInteger(b.startHour) &&
+          Number.isInteger(b.endHour) &&
+          Number.isInteger(b.workstation) &&
+          typeof b.date === 'string' &&
+          b.date >= today
+      );
     } catch {
       return [];
     }
@@ -114,6 +125,12 @@
   let myBookings = $state(loadStoredBookings());
   let cancellingId = $state<string | null>(null);
   let cancelError = $state<string | null>(null);
+
+  /** Called when the user changes lab/date/start — stale outcomes disappear. */
+  function clearOutcome() {
+    success = null;
+    submitError = null;
+  }
 
   const selectedLab = $derived(labs.find((l) => l.id === selectedLabId) ?? labs[0]);
   const openHours = $derived(openingHoursFor(selectedDate));
@@ -226,7 +243,15 @@
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) {
-        submitError = { code: data.error ?? 'network', devices: data.devices };
+        submitError = {
+          code: data.error ?? 'network',
+          // prefer keys (localizable via inventory); fall back to server labels
+          devices: Array.isArray(data.deviceKeys)
+            ? data.deviceKeys.map((k: string) => inventory[k]?.label ?? k)
+            : data.devices,
+        };
+        // someone may have booked meanwhile — refresh the stale grid
+        if (response.status === 409) refreshTick++;
         return;
       }
       const stored: StoredBooking = {
@@ -254,10 +279,10 @@
     cancellingId = booking.id;
     cancelError = null;
     try {
-      const response = await fetch(
-        `/api/bookings/${booking.id}?token=${encodeURIComponent(booking.cancelToken)}`,
-        { method: 'DELETE' }
-      );
+      const response = await fetch(`/api/bookings/${booking.id}`, {
+        method: 'DELETE',
+        headers: { 'x-cancel-token': booking.cancelToken },
+      });
       if (response.status === 204 || response.status === 404) {
         persist(myBookings.filter((b) => b.id !== booking.id));
         if (success?.id === booking.id) success = null;
@@ -303,6 +328,7 @@
         <select
           id="booking-lab"
           bind:value={selectedLabId}
+          onchange={clearOutcome}
           class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
         >
           {#each labs as lab (lab.id)}
@@ -337,6 +363,7 @@
         <select
           id="booking-date"
           bind:value={selectedDate}
+          onchange={clearOutcome}
           class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
         >
           {#each dates as date (date)}
@@ -379,7 +406,10 @@
                 disabled={!option.result.ok || option.past}
                 aria-pressed={chosenStart === option.hour}
                 title={optionTitle(option)}
-                onclick={() => (chosenStart = option.hour)}
+                onclick={() => {
+                  chosenStart = option.hour;
+                  clearOutcome();
+                }}
                 class={`rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors ${
                   chosenStart === option.hour
                     ? 'border-blue-600 bg-blue-600 text-white'
@@ -463,7 +493,9 @@
       <h2 class="mb-3 text-sm font-semibold text-gray-900">
         {labels.gridTitle} — {formatDate(selectedDate)}
       </h2>
-      {#if bookings === null && !loadFailed}
+      {#if loadFailed}
+        <p class="text-sm text-red-600" role="alert">{labels.errors.network}</p>
+      {:else if bookings === null}
         <p class="text-sm text-gray-400">{labels.loading}</p>
       {:else if openHours}
         <div class="overflow-x-auto">
@@ -501,8 +533,8 @@
           </table>
         </div>
         <p class="mt-2 text-xs text-gray-400">
-          {WORKSTATION_COUNT - new Set(bookings?.map((b) => b.workstation)).size}/{WORKSTATION_COUNT}
-          {labels.free}
+          {labels.freeStations}: {WORKSTATION_COUNT -
+            new Set(bookings?.map((b) => b.workstation)).size}/{WORKSTATION_COUNT}
         </p>
       {/if}
     </section>

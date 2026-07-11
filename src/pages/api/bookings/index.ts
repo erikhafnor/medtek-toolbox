@@ -21,30 +21,38 @@ function json(body: unknown, status = 200): Response {
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const POST: APIRoute = async ({ request }) => {
-  let body: Record<string, unknown>;
+  let parsed: unknown;
   try {
-    body = await request.json();
+    parsed = await request.json();
   } catch {
     return json({ error: 'invalid-input' }, 400);
   }
+  if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    return json({ error: 'invalid-input' }, 400);
+  }
+  const body = parsed as Record<string, unknown>;
 
   const labId = typeof body.labId === 'string' ? body.labId : '';
   const date = typeof body.date === 'string' ? body.date : '';
   const startHour = Number(body.startHour);
   const duration = Number(body.duration);
-  const name = typeof body.name === 'string' ? body.name.trim() : '';
+  // strip control/format characters from the display name
+  const name =
+    typeof body.name === 'string' ? body.name.replace(/[\p{Cc}\p{Cf}]/gu, '').trim() : '';
   const email = typeof body.email === 'string' ? body.email.trim() : '';
 
   if (
     !labId ||
+    labId.length > 100 ||
     !Number.isInteger(startHour) ||
     !Number.isInteger(duration) ||
     duration < 1 ||
     duration > 8 ||
     name.length < 2 ||
     name.length > 80 ||
-    !EMAIL_RE.test(email) ||
-    email.length > 120
+    // length caps run before the regex so it only ever sees bounded input
+    email.length > 120 ||
+    !EMAIL_RE.test(email)
   ) {
     return json({ error: 'invalid-input' }, 400);
   }
@@ -68,7 +76,7 @@ export const POST: APIRoute = async ({ request }) => {
   const quantities = Object.fromEntries(DEVICES.map((d) => [d.key, d.quantity]));
 
   const outcome = await createBooking(
-    { ...requestInterval, studentName: name, studentEmail: email },
+    { ...requestInterval, studentName: name, studentEmail: email, today },
     (existing) => checkAvailability(requestInterval, existing, requiredByLab, quantities)
   );
 
@@ -78,6 +86,8 @@ export const POST: APIRoute = async ({ request }) => {
       return json(
         {
           error: 'device-conflict',
+          // keys let the client localize; labels keep curl responses readable
+          deviceKeys: result.devices,
           devices: result.devices.map((key) => DEVICE_MAP[key]?.label ?? key),
         },
         409

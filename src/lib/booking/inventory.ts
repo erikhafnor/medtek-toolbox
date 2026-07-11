@@ -9,34 +9,36 @@
 
 export interface Device {
   key: string;
-  /** Display name, understandable in both EN and NO contexts. */
+  /** English display name. */
   label: string;
+  /** Norwegian display name. */
+  labelNo: string;
   quantity: number;
 }
 
 export const DEVICES: Device[] = [
   // Fluke Biomedical analyzers — one of each model
-  { key: 'fluke-esa615', label: 'Fluke ESA615 Electrical Safety Analyzer', quantity: 1 },
-  { key: 'fluke-prosim8', label: 'Fluke ProSim 8 Patient Simulator', quantity: 1 },
-  { key: 'fluke-qaes3', label: 'Fluke QA-ES III Electrosurgery Analyzer', quantity: 1 },
-  { key: 'fluke-impulse7000', label: 'Fluke Impulse 7000DP Defibrillator Analyzer', quantity: 1 },
-  { key: 'fluke-ida5', label: 'Fluke IDA-5 Infusion Device Analyzer', quantity: 1 },
-  { key: 'fluke-vt900a', label: 'Fluke VT900A Gas Flow Analyzer', quantity: 1 },
+  { key: 'fluke-esa615', label: 'Fluke ESA615 Electrical Safety Analyzer', labelNo: 'Fluke ESA615 elektrisk sikkerhetsanalysator', quantity: 1 },
+  { key: 'fluke-prosim8', label: 'Fluke ProSim 8 Patient Simulator', labelNo: 'Fluke ProSim 8 pasientsimulator', quantity: 1 },
+  { key: 'fluke-qaes3', label: 'Fluke QA-ES III Electrosurgery Analyzer', labelNo: 'Fluke QA-ES III elektrokirurgianalysator', quantity: 1 },
+  { key: 'fluke-impulse7000', label: 'Fluke Impulse 7000DP Defibrillator Analyzer', labelNo: 'Fluke Impulse 7000DP defibrillatoranalysator', quantity: 1 },
+  { key: 'fluke-ida5', label: 'Fluke IDA-5 Infusion Device Analyzer', labelNo: 'Fluke IDA-5 infusjonspumpeanalysator', quantity: 1 },
+  { key: 'fluke-vt900a', label: 'Fluke VT900A Gas Flow Analyzer', labelNo: 'Fluke VT900A gasstrømanalysator', quantity: 1 },
 
   // Medical devices and other test equipment — estimated counts
-  { key: 'lifepak15', label: 'LIFEPAK 15 Defibrillator/Monitor', quantity: 2 },
-  { key: 'keysight-scope', label: 'Keysight InfiniiVision Oscilloscope', quantity: 2 },
-  { key: 'olympus-ues40', label: 'Olympus UES-40 Electrosurgical Unit', quantity: 1 },
-  { key: 'rapidvac', label: 'RapidVac Smoke Evacuator', quantity: 1 },
-  { key: 'pagewriter-tc30', label: 'Philips PageWriter TC30 Electrocardiograph', quantity: 1 },
-  { key: 'braun-infusomat', label: 'B. Braun Infusomat Space Volumetric Pump', quantity: 2 },
-  { key: 'braun-perfusor', label: 'B. Braun Perfusor Space Syringe Pump', quantity: 2 },
-  { key: 'ge-logic-s8', label: 'GE Logic S8 Ultrasound', quantity: 1 },
-  { key: 'kyoto-n365', label: 'Kyoto Kagaku N-365 Ultrasound Phantom', quantity: 1 },
-  { key: 'draeger-evita-xl', label: 'Dräger Evita XL Ventilator', quantity: 1 },
-  { key: 'phywe-xr4', label: 'PHYWE XR 4.0 Benchtop X-ray/CT Unit', quantity: 1 },
-  { key: 'alaris-cc', label: 'CareFusion Alaris CC Syringe Pump', quantity: 8 },
-  { key: 'philips-intellivue', label: 'Philips IntelliVue Patient Monitor', quantity: 1 },
+  { key: 'lifepak15', label: 'LIFEPAK 15 Defibrillator/Monitor', labelNo: 'LIFEPAK 15 defibrillator/monitor', quantity: 2 },
+  { key: 'keysight-scope', label: 'Keysight InfiniiVision Oscilloscope', labelNo: 'Keysight InfiniiVision oscilloskop', quantity: 2 },
+  { key: 'olympus-ues40', label: 'Olympus UES-40 Electrosurgical Unit', labelNo: 'Olympus UES-40 diatermiapparat', quantity: 1 },
+  { key: 'rapidvac', label: 'RapidVac Smoke Evacuator', labelNo: 'RapidVac røykavsug', quantity: 1 },
+  { key: 'pagewriter-tc30', label: 'Philips PageWriter TC30 Electrocardiograph', labelNo: 'Philips PageWriter TC30 EKG-apparat', quantity: 1 },
+  { key: 'braun-infusomat', label: 'B. Braun Infusomat Space Volumetric Pump', labelNo: 'B. Braun Infusomat Space volumetrisk pumpe', quantity: 2 },
+  { key: 'braun-perfusor', label: 'B. Braun Perfusor Space Syringe Pump', labelNo: 'B. Braun Perfusor Space sprøytepumpe', quantity: 2 },
+  { key: 'ge-logic-s8', label: 'GE Logic S8 Ultrasound', labelNo: 'GE Logic S8 ultralydapparat', quantity: 1 },
+  { key: 'kyoto-n365', label: 'Kyoto Kagaku N-365 Ultrasound Phantom', labelNo: 'Kyoto Kagaku N-365 ultralydfantom', quantity: 1 },
+  { key: 'draeger-evita-xl', label: 'Dräger Evita XL Ventilator', labelNo: 'Dräger Evita XL respirator', quantity: 1 },
+  { key: 'phywe-xr4', label: 'PHYWE XR 4.0 Benchtop X-ray/CT Unit', labelNo: 'PHYWE XR 4.0 røntgen/CT-benkenhet', quantity: 1 },
+  { key: 'alaris-cc', label: 'CareFusion Alaris CC Syringe Pump', labelNo: 'CareFusion Alaris CC sprøytepumpe', quantity: 8 },
+  { key: 'philips-intellivue', label: 'Philips IntelliVue Patient Monitor', labelNo: 'Philips IntelliVue pasientmonitor', quantity: 1 },
 ];
 
 export const DEVICE_MAP: Record<string, Device> = Object.fromEntries(

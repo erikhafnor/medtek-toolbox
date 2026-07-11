@@ -23,7 +23,7 @@ export interface BookingLabels {
   loading: string;
   gridTitle: string;
   workstation: string;
-  free: string;
+  freeStations: string;
   noStartTimes: string;
   unavailableDevice: string;
   unavailableFull: string;
@@ -62,7 +62,7 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
     loading: 'Loading availability…',
     gridTitle: 'Room overview',
     workstation: 'Station',
-    free: 'free',
+    freeStations: 'Free stations',
     noStartTimes: 'No available start times for this lab on this date.',
     unavailableDevice: 'In use:',
     unavailableFull: 'All workstations taken',
@@ -85,6 +85,8 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
       'invalid-input': 'Please check the form — some fields are missing or invalid.',
       'past-date': 'That date or time has already passed.',
       'unknown-lab': 'Unknown lab assignment.',
+      'too-many-bookings':
+        'This email already has the maximum number of upcoming bookings (6). Cancel one first.',
       'not-found': 'The booking could not be found — it may already be cancelled.',
       network: 'Could not reach the booking service. Please try again.',
     },
@@ -110,12 +112,12 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
     loading: 'Laster tilgjengelighet…',
     gridTitle: 'Romoversikt',
     workstation: 'Stasjon',
-    free: 'ledig',
+    freeStations: 'Ledige stasjoner',
     noStartTimes: 'Ingen ledige starttider for denne labben på valgt dato.',
     unavailableDevice: 'I bruk:',
     unavailableFull: 'Alle arbeidsstasjoner er opptatt',
     successTitle: 'Økt booket!',
-    successBody: 'Du har arbeidsstasjon {station} den {date}, kl. {time}.',
+    successBody: 'Du har arbeidsstasjon {station} {date} kl. {time}.',
     successKeep:
       'Bookingen er lagret i denne nettleseren under «Mine bookinger», der du kan avbestille hvis planene endrer seg.',
     myBookings: 'Mine bookinger',
@@ -133,6 +135,8 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
       'invalid-input': 'Sjekk skjemaet — noen felt mangler eller er ugyldige.',
       'past-date': 'Datoen eller tidspunktet har allerede passert.',
       'unknown-lab': 'Ukjent laboppgave.',
+      'too-many-bookings':
+        'Denne e-postadressen har allerede maks antall kommende bookinger (6). Avbestill en først.',
       'not-found': 'Fant ikke bookingen — den kan allerede være avbestilt.',
       network: 'Fikk ikke kontakt med bookingtjenesten. Prøv igjen.',
     },
