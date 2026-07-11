@@ -13,7 +13,16 @@ export const DELETE: APIRoute = async ({ params, request, url }) => {
       headers: { 'Content-Type': 'application/json' },
     });
   }
-  const deleted = await cancelBooking(id, token);
+  let deleted;
+  try {
+    deleted = await cancelBooking(id, token);
+  } catch (err) {
+    console.error('booking cancel failed:', err);
+    return new Response(JSON.stringify({ error: 'service-unavailable' }), {
+      status: 503,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
   if (!deleted) {
     return new Response(JSON.stringify({ error: 'not-found' }), {
       status: 404,

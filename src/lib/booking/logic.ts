@@ -108,6 +108,10 @@ export function assignWorkstation(
  * For every hour of the requested interval, counts units of each required
  * device claimed by overlapping bookings; a device conflicts when usage
  * would exceed its inventory quantity.
+ *
+ * An existing booking whose lab is no longer in the catalog (renamed/removed
+ * content) fails CLOSED: it is treated as holding every device, so stale
+ * bookings can never cause an over-booked analyzer.
  */
 export function findDeviceConflicts(
   request: AvailabilityRequest,
@@ -120,12 +124,11 @@ export function findDeviceConflicts(
   for (const device of required) {
     const quantity = quantities[device] ?? 0;
     for (let hour = request.startHour; hour < request.endHour; hour++) {
-      const inUse = existing.filter(
-        (b) =>
-          hour >= b.startHour &&
-          hour < b.endHour &&
-          (requiredDevicesByLab[b.labId] ?? []).includes(device)
-      ).length;
+      const inUse = existing.filter((b) => {
+        if (hour < b.startHour || hour >= b.endHour) return false;
+        const devices = requiredDevicesByLab[b.labId];
+        return devices ? devices.includes(device) : true;
+      }).length;
       if (inUse + 1 > quantity) {
         conflicts.add(device);
         break;

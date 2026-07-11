@@ -309,6 +309,19 @@
       : []
   );
 
+  // stations guaranteed free even at the day's most crowded hour
+  const minFreeStations = $derived(
+    bookings && gridHours.length > 0
+      ? Math.min(
+          ...gridHours.map(
+            (h) =>
+              WORKSTATION_COUNT -
+              bookings!.filter((b) => h >= b.startHour && h < b.endHour).length
+          )
+        )
+      : WORKSTATION_COUNT
+  );
+
   function fillTemplate(template: string, booking: StoredBooking): string {
     return template
       .replace('{station}', String(booking.workstation))
@@ -533,8 +546,7 @@
           </table>
         </div>
         <p class="mt-2 text-xs text-gray-400">
-          {labels.freeStations}: {WORKSTATION_COUNT -
-            new Set(bookings?.map((b) => b.workstation)).size}/{WORKSTATION_COUNT}
+          {labels.freeStations}: {minFreeStations}/{WORKSTATION_COUNT}
         </p>
       {/if}
     </section>

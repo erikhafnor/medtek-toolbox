@@ -3,10 +3,12 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { getLabCatalog, requiredDevicesByLab } from '../../../lib/booking/catalog';
 import { DEVICE_MAP, DEVICES } from '../../../lib/booking/inventory';
-import { createBooking } from '../../../lib/booking/db';
+import { createBooking, PG_LOCK_TIMEOUT } from '../../../lib/booking/db';
 import {
   checkAvailability,
   isBookableDate,
+  isValidDateString,
+  openingHoursFor,
   osloHour,
   osloToday,
 } from '../../../lib/booking/logic';
@@ -39,7 +41,8 @@ export const POST: APIRoute = async ({ request }) => {
   // strip control/format characters from the display name
   const name =
     typeof body.name === 'string' ? body.name.replace(/[\p{Cc}\p{Cf}]/gu, '').trim() : '';
-  const email = typeof body.email === 'string' ? body.email.trim() : '';
+  // lower-cased so the per-email booking cap can't be dodged with casing
+  const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
 
   if (
     !labId ||
@@ -57,8 +60,15 @@ export const POST: APIRoute = async ({ request }) => {
     return json({ error: 'invalid-input' }, 400);
   }
 
+  if (!isValidDateString(date)) {
+    return json({ error: 'invalid-input' }, 400);
+  }
+  if (!openingHoursFor(date)) {
+    return json({ error: 'closed' }, 400);
+  }
   const today = osloToday();
   if (!isBookableDate(date, today)) {
+    // an open weekday, but in the past or beyond the 8-week booking window
     return json({ error: 'past-date' }, 400);
   }
   if (date === today && startHour < osloHour()) {
@@ -75,10 +85,20 @@ export const POST: APIRoute = async ({ request }) => {
   const requiredByLab = requiredDevicesByLab(catalog);
   const quantities = Object.fromEntries(DEVICES.map((d) => [d.key, d.quantity]));
 
-  const outcome = await createBooking(
-    { ...requestInterval, studentName: name, studentEmail: email, today },
-    (existing) => checkAvailability(requestInterval, existing, requiredByLab, quantities)
-  );
+  let outcome;
+  try {
+    outcome = await createBooking(
+      { ...requestInterval, studentName: name, studentEmail: email, today },
+      (existing) => checkAvailability(requestInterval, existing, requiredByLab, quantities)
+    );
+  } catch (err) {
+    // infra failures surface as retryable JSON, not an HTML 500
+    if ((err as { code?: string })?.code === PG_LOCK_TIMEOUT) {
+      return json({ error: 'busy' }, 503);
+    }
+    console.error('booking create failed:', err);
+    return json({ error: 'service-unavailable' }, 503);
+  }
 
   if (!outcome.ok) {
     const { result } = outcome;

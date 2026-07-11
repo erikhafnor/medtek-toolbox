@@ -21,7 +21,13 @@ export const GET: APIRoute = async ({ url }) => {
     return json({ date, openHours: null, workstations: WORKSTATION_COUNT, bookings: [] });
   }
 
-  const bookings = await listBookingsByDate(date);
+  let bookings;
+  try {
+    bookings = await listBookingsByDate(date);
+  } catch (err) {
+    console.error('availability read failed:', err);
+    return json({ error: 'service-unavailable' }, 503);
+  }
   return json({
     date,
     openHours,

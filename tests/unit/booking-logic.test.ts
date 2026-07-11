@@ -142,6 +142,28 @@ describe('device conflicts', () => {
     ).toEqual([]);
   });
 
+  it('fails closed for bookings whose lab was renamed or removed', () => {
+    // a stale booking with an unknown labId must count as holding every device
+    const existing = [booking('lab-that-was-renamed', 9, 12, 1)];
+    expect(
+      findDeviceConflicts(
+        { labId: 'safety-lab', date: TUE, startHour: 10, endHour: 13 },
+        existing,
+        REQUIRED,
+        QUANTITIES
+      )
+    ).toEqual(['fluke-esa615']);
+    // …but not once the stale booking has ended
+    expect(
+      findDeviceConflicts(
+        { labId: 'safety-lab', date: TUE, startHour: 12, endHour: 15 },
+        existing,
+        REQUIRED,
+        QUANTITIES
+      )
+    ).toEqual([]);
+  });
+
   it('respects multi-unit quantities', () => {
     // two LIFEPAKs: two concurrent defib labs exhaust the single Impulse 7000
     // first, and a third would also exhaust the LIFEPAKs
