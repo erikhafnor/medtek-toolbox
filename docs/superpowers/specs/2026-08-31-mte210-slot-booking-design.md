@@ -195,6 +195,27 @@ Elsewhere: only the two MTE210 lab pages keep the "Book a lab session" button, s
   (which also cleans up the shared database).
 - Manual smoke test on the Vercel preview deployment before merge.
 
+## Room and calendar export
+
+All lab work runs in **KE E-455**, the medical technology lab. `src/lib/room.ts`
+holds the room number and its per-locale name, shared by the booking system and
+the lab pages, so a room change is a one-line edit. A single lab can override it
+with a `room:` field in its frontmatter; every lab page falls back to `LAB_ROOM`,
+which is why no content files needed editing.
+
+`src/lib/booking/calendar.ts` turns a booking into a calendar entry — a pure
+module, unit-tested, no DOM. Each booking in "My bookings", and the confirmation
+message, offers two routes: an `.ics` download (Outlook, Apple Calendar, and
+anything else) and a Google Calendar template link.
+
+Times are stored as Europe/Oslo wall-clock, but a calendar entry needs an
+absolute instant, so the UTC offset is read from the timezone database per date
+rather than hardcoded. The autumn 2026 window is entirely CEST (+02:00), but a
+semester moved past the October change would export as CET (+01:00) with no code
+edit; both cases are unit-tested. The `.ics` output escapes RFC 5545 reserved
+characters and folds lines at 75 **octets**, since Norwegian text costs two bytes
+a letter and a naive character count would overflow and break the import.
+
 ## Out of scope
 
 Email confirmations, staff admin UI, authentication, waiting lists. Booking stays

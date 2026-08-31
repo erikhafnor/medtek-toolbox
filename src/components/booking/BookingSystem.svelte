@@ -14,6 +14,13 @@
     type SeatBooking,
   } from '../../lib/booking/logic';
   import { CLOSED_WEEKS, SLOT } from '../../lib/booking/semester';
+  import {
+    buildIcs,
+    googleCalendarUrl,
+    icsFilename,
+    type CalendarEvent,
+  } from '../../lib/booking/calendar';
+  import { LAB_ROOM, roomLabel } from '../../lib/room';
   import type { BookingLabels } from '../../lib/booking/labels';
   import type { Locale } from '../../lib/i18n';
 
@@ -285,6 +292,36 @@
     }
   }
 
+  /** A booking as a calendar event: the fixed weekly slot, in the lab room. */
+  function toEvent(booking: StoredBooking): CalendarEvent {
+    const labPage = `${window.location.origin}/${locale}/labs/${booking.labId}/`;
+    return {
+      // stable per booking, so re-importing updates rather than duplicates
+      uid: `${booking.id}@medtek.tools`,
+      title: booking.labTitle,
+      date: booking.date,
+      start: SLOT.start,
+      end: SLOT.end,
+      location: roomLabel(locale),
+      description: `${fill(labels.group, { group: booking.group })}\n${labPage}`,
+    };
+  }
+
+  function downloadIcs(booking: StoredBooking) {
+    const blob = new Blob([buildIcs(toEvent(booking))], {
+      type: 'text/calendar;charset=utf-8',
+    });
+    const href = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = href;
+    link.download = icsFilename(booking.date);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    // revoked on the next tick: Safari reads the blob after click() returns
+    setTimeout(() => URL.revokeObjectURL(href), 0);
+  }
+
   async function cancelStored(booking: StoredBooking) {
     cancellingId = booking.id;
     cancelError = null;
@@ -307,6 +344,24 @@
     }
   }
 </script>
+
+
+{#snippet calendarLinks(booking: StoredBooking)}
+  <p class="mt-2 text-xs text-gray-400">{labels.addToCalendar}</p>
+  <div class="mt-1 flex flex-wrap items-center gap-2">
+    <button type="button" onclick={() => downloadIcs(booking)} class="rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700 transition-colors hover:border-blue-400 hover:bg-blue-100">
+      {labels.calendarFile}
+    </button>
+    <a
+      href={googleCalendarUrl(toEvent(booking))}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700 transition-colors hover:border-blue-400 hover:bg-blue-100"
+    >
+      {labels.googleCalendar}
+    </a>
+  </div>
+{/snippet}
 
 <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
   <div class="space-y-6">
@@ -416,9 +471,11 @@
             group: success.group,
             date: formatDate(success.date),
             time: `${SLOT.start}–${SLOT.end}`,
+            room: LAB_ROOM,
           })}
         </p>
         <p class="mt-1 text-emerald-700">{labels.successKeep}</p>
+        {@render calendarLinks(success)}
       </div>
     {/if}
 
@@ -426,6 +483,7 @@
     <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
       <h2 class="text-sm font-semibold text-gray-900">{labels.semester}</h2>
       <p class="mt-0.5 text-xs text-gray-500">{semesterRange}</p>
+      <p class="text-xs font-medium text-gray-600">{roomLabel(locale)}</p>
       {#if closedNote}
         <p class="text-xs text-gray-500">{closedNote}</p>
       {/if}
@@ -458,7 +516,7 @@
                   <span class="text-xs text-gray-400">{labels.weekPast}</span>
                 {:else}
                   <span class="text-xs tabular-nums text-gray-400">
-                    {SLOT.start}–{SLOT.end}
+                    {SLOT.start}–{SLOT.end} · {LAB_ROOM}
                   </span>
                 {/if}
               </div>
@@ -551,8 +609,9 @@
               {formatDate(booking.date)} · {SLOT.start}–{SLOT.end}
             </p>
             <p class="text-gray-500">
-              {fill(labels.group, { group: booking.group })}
+              {fill(labels.group, { group: booking.group })} · {labels.room} {LAB_ROOM}
             </p>
+            {@render calendarLinks(booking)}
             <button
               type="button"
               onclick={() => cancelStored(booking)}

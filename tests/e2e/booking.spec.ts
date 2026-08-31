@@ -1,9 +1,26 @@
 import { test, expect } from '@playwright/test';
+import { readFileSync } from 'node:fs';
 
 /** A name unique per run, so parallel/repeat runs never collide on the one-seat-per-lab rule. */
 const stamp = () => `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
 test.describe('booking page', () => {
+  // The Neon database is shared with production, so a test that fails before its
+  // own cleanup would leave a real seat behind. Sweep any survivors via the UI.
+  test.afterEach(async ({ page }) => {
+    try {
+      const cancels = page
+        .getByRole('region', { name: 'My bookings' })
+        .getByRole('button', { name: 'Cancel booking' });
+      for (let left = await cancels.count(); left > 0; left--) {
+        await cancels.first().click();
+        await expect(cancels).toHaveCount(left - 1, { timeout: 15_000 });
+      }
+    } catch {
+      // page already closed, or nothing to clean — nothing useful to do here
+    }
+  });
+
   test('renders bilingual booking pages', async ({ page }) => {
     await page.goto('/en/booking/');
     await expect(page.getByRole('heading', { name: /Book lab time/ })).toBeVisible();
@@ -88,6 +105,28 @@ test.describe('booking page', () => {
 
     const myBookings = page.getByRole('region', { name: 'My bookings' });
     await expect(myBookings.getByText('Hospital Networks', { exact: false })).toBeVisible();
+    // the room is shown alongside the booking
+    await expect(myBookings.getByText('KE E-455', { exact: false })).toBeVisible();
+
+    // the .ics download carries the right room and UTC instants (CEST, +02:00)
+    const downloadPromise = page.waitForEvent('download');
+    await myBookings.getByRole('button', { name: 'Calendar file' }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('mte210-lab-2026-09-09.ics');
+    const ics = readFileSync((await download.path())!, 'utf8');
+    expect(ics).toContain('BEGIN:VEVENT');
+    expect(ics).toContain('DTSTART:20260909T081500Z');
+    expect(ics).toContain('DTEND:20260909T110000Z');
+    expect(ics).toContain('LOCATION:KE E-455');
+
+    // and the Google link targets the same window
+    const href = await myBookings.getByRole('link', { name: 'Google' }).getAttribute('href');
+    // parsed rather than string-matched: URLSearchParams writes spaces as '+',
+    // which decodeURIComponent does not turn back into a space
+    const google = new URL(href ?? '');
+    expect(google.host).toBe('calendar.google.com');
+    expect(google.searchParams.get('dates')).toBe('20260909T081500Z/20260909T110000Z');
+    expect(google.searchParams.get('location')).toContain('KE E-455');
 
     // one seat per lab: every remaining seat button for this lab is now disabled
     await expect(seatButtons.first()).toBeDisabled();

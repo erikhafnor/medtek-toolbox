@@ -27,6 +27,10 @@ export interface BookingLabels {
   weekClosed: string;
   weekPast: string;
   busyThisWeek: string;
+  room: string;
+  addToCalendar: string;
+  calendarFile: string;
+  googleCalendar: string;
   yourDetails: string;
   name: string;
   namePlaceholder: string;
@@ -48,7 +52,7 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
   en: {
     title: 'Book lab time — MTE210',
     intro:
-      'MTE210 has one lab session a week: Wednesdays 10:15–13:00. Pick an assignment and take a free seat in a group — you can see which seats your fellow students have already taken.',
+      'MTE210 has one lab session a week: Wednesdays 10:15–13:00 in room KE E-455. Pick an assignment and take a free seat in a group — you can see which seats your fellow students have already taken, and add your session to your calendar afterwards.',
     lab: 'Lab assignment',
     requires: 'Equipment',
     singleUnit: 'single unit',
@@ -68,6 +72,10 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
     weekClosed: 'Closed for booking',
     weekPast: 'Passed',
     busyThisWeek: 'You already have {lab} this week.',
+    room: 'Room',
+    addToCalendar: 'Add to calendar',
+    calendarFile: 'Calendar file',
+    googleCalendar: 'Google',
     yourDetails: 'Your details',
     name: 'Name',
     namePlaceholder: 'e.g. Kari Nordmann',
@@ -76,7 +84,7 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
     detailsHint: 'Fill in your name and email to take a seat.',
     loading: 'Loading availability…',
     successTitle: 'Seat booked!',
-    successBody: 'You have seat {seat} in group {group} on {date}, {time}.',
+    successBody: 'You have seat {seat} in group {group} on {date}, {time}, in {room}.',
     successKeep:
       'Your booking is saved in this browser under “My bookings”, where you can cancel it if plans change.',
     myBookings: 'My bookings',
@@ -102,7 +110,7 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
   no: {
     title: 'Book labtid — MTE210',
     intro:
-      'MTE210 har én laboratorietime i uka: onsdager 10:15–13:00. Velg laboppgave og ta en ledig plass i en gruppe — du ser hvilke plasser medstudentene allerede har tatt.',
+      'MTE210 har én laboratorietime i uka: onsdager 10:15–13:00 i rom KE E-455. Velg laboppgave og ta en ledig plass i en gruppe — du ser hvilke plasser medstudentene allerede har tatt, og kan legge økta i kalenderen din etterpå.',
     lab: 'Laboppgave',
     requires: 'Utstyr',
     singleUnit: 'kun én enhet',
@@ -122,6 +130,10 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
     weekClosed: 'Stengt for booking',
     weekPast: 'Passert',
     busyThisWeek: 'Du har allerede {lab} denne uka.',
+    room: 'Rom',
+    addToCalendar: 'Legg til i kalender',
+    calendarFile: 'Kalenderfil',
+    googleCalendar: 'Google',
     yourDetails: 'Dine opplysninger',
     name: 'Navn',
     namePlaceholder: 'f.eks. Kari Nordmann',
@@ -130,7 +142,7 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
     detailsHint: 'Fyll inn navn og e-post for å ta en plass.',
     loading: 'Laster tilgjengelighet…',
     successTitle: 'Plass booket!',
-    successBody: 'Du har plass {seat} i gruppe {group} {date}, kl. {time}.',
+    successBody: 'Du har plass {seat} i gruppe {group} {date}, kl. {time}, i {room}.',
     successKeep:
       'Bookingen er lagret i denne nettleseren under «Mine bookinger», der du kan avbestille hvis planene endrer seg.',
     myBookings: 'Mine bookinger',

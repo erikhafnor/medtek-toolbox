@@ -27,6 +27,7 @@ const slug = entry.id.replace(/^en\//, '');
   storageKey={entry.id}
   lang="en"
   bookingSlug={isBookableLab(slug) ? slug : undefined}
+  room={entry.data.room}
 >
   <Content />
 </LabLayout>

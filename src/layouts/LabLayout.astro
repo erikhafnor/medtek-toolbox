@@ -1,6 +1,7 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import LabChecklist from '../components/LabChecklist.astro';
+import { roomLabel } from '../lib/room';
 
 interface ChecklistGroup {
   title: string;
@@ -13,11 +14,14 @@ interface Props {
   storageKey?: string;
   lang?: 'en' | 'no';
   bookingSlug?: string;
+  /** Overrides the shared lab room; omit for the usual medical technology lab. */
+  room?: string;
 }
 
-const { title, description, checklist, storageKey, lang = 'en', bookingSlug } = Astro.props;
+const { title, description, checklist, storageKey, lang = 'en', bookingSlug, room } = Astro.props;
 const hasChecklist = Array.isArray(checklist) && checklist.length > 0;
 const bookingLabel = lang === 'no' ? 'Book labtid for denne oppgaven' : 'Book a lab session for this assignment';
+const roomText = `${lang === 'no' ? 'Rom' : 'Room'}: ${roomLabel(lang, room)}`;
 
 const labels =
   lang === 'no'
@@ -41,7 +45,8 @@ const labels =
           <LabChecklist storageKey={storageKey} groups={checklist} labels={labels} />
         </aside>
         <article>
-          <h1 class="mb-4 text-3xl font-bold text-gray-900">{title}</h1>
+          <h1 class="mb-2 text-3xl font-bold text-gray-900">{title}</h1>
+          <p class="mb-4 text-sm font-medium text-gray-500">{roomText}</p>
           {description && (
             <p class={`text-lg text-gray-600 ${bookingSlug ? 'mb-4' : 'mb-8 border-b border-gray-200 pb-6'}`}>
               {description}
@@ -65,7 +70,8 @@ const labels =
     ) : (
       <div class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
         <article>
-          <h1 class="mb-4 text-3xl font-bold text-gray-900">{title}</h1>
+          <h1 class="mb-2 text-3xl font-bold text-gray-900">{title}</h1>
+          <p class="mb-4 text-sm font-medium text-gray-500">{roomText}</p>
           {description && (
             <p class={`text-lg text-gray-600 ${bookingSlug ? 'mb-4' : 'mb-8 border-b border-gray-200 pb-6'}`}>
               {description}
