@@ -1,6 +1,7 @@
 ---
 import LabLayout from '../../../layouts/LabLayout.astro';
 import { getCollection, render } from 'astro:content';
+import { isBookableLab } from '../../../lib/booking/catalog';
 
 export async function getStaticPaths() {
   const allLabs = await getCollection('labs');
@@ -14,6 +15,9 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
+
+// only the MTE210 labs students book themselves get a booking button
+const slug = entry.id.replace(/^no\//, '');
 ---
 
 <LabLayout
@@ -22,7 +26,7 @@ const { Content } = await render(entry);
   checklist={entry.data.checklist}
   storageKey={entry.id}
   lang="no"
-  bookingSlug={entry.id.replace(/^no\//, '')}
+  bookingSlug={isBookableLab(slug) ? slug : undefined}
 >
   <Content />
 </LabLayout>

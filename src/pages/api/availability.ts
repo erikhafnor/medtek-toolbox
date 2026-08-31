@@ -1,8 +1,9 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import { listBookingsByDate } from '../../lib/booking/db';
-import { isValidDateString, openingHoursFor, WORKSTATION_COUNT } from '../../lib/booking/logic';
+import { listSemesterBookings } from '../../lib/booking/db';
+import { listSemesterWeeks } from '../../lib/booking/logic';
+import { BOOKABLE_LABS, SLOT } from '../../lib/booking/semester';
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -11,33 +12,30 @@ function json(body: unknown, status = 200): Response {
   });
 }
 
-export const GET: APIRoute = async ({ url }) => {
-  const date = url.searchParams.get('date') ?? '';
-  if (!isValidDateString(date)) {
-    return json({ error: 'invalid-input' }, 400);
-  }
-  const openHours = openingHoursFor(date);
-  if (!openHours) {
-    return json({ date, openHours: null, workstations: WORKSTATION_COUNT, bookings: [] });
-  }
-
+/**
+ * The whole semester in one response — five open Wednesdays across two labs is
+ * at most 60 seats, so there is nothing to paginate and the client can compose
+ * the grid without a request per week.
+ */
+export const GET: APIRoute = async () => {
   let bookings;
   try {
-    bookings = await listBookingsByDate(date);
+    bookings = await listSemesterBookings();
   } catch (err) {
     console.error('availability read failed:', err);
     return json({ error: 'service-unavailable' }, 503);
   }
+
   return json({
-    date,
-    openHours,
-    workstations: WORKSTATION_COUNT,
+    slot: SLOT,
+    weeks: listSemesterWeeks(),
+    labs: BOOKABLE_LABS,
     bookings: bookings.map((b) => ({
       id: b.id,
       labId: b.labId,
-      startHour: b.startHour,
-      endHour: b.endHour,
-      workstation: b.workstation,
+      date: b.date,
+      group: b.group,
+      seat: b.seat,
       // first name only — no emails or full identities on the public API
       bookedBy: b.studentName.trim().split(/\s+/)[0] ?? '',
     })),

@@ -1,5 +1,8 @@
 // UI strings for the booking island, following the LabLayout convention of
 // per-language label objects (the global i18n dictionary stays lean).
+//
+// Templates use {placeholders} filled in by the island; keep the placeholder
+// names identical across languages.
 
 import type { Locale } from '../i18n';
 
@@ -7,26 +10,29 @@ export interface BookingLabels {
   title: string;
   intro: string;
   lab: string;
-  date: string;
-  startTime: string;
-  duration: string;
-  hours: string;
-  hour: string;
   requires: string;
   singleUnit: string;
+  capacityNote: string;
+  groupOne: string;
+  groupMany: string;
+  semester: string;
+  semesterRange: string;
+  closedWeeksNote: string;
+  week: string;
+  group: string;
+  seatsLeft: string;
+  freeSeat: string;
+  booking: string;
+  groupFull: string;
+  weekClosed: string;
+  weekPast: string;
+  yourDetails: string;
   name: string;
   namePlaceholder: string;
   email: string;
   emailPlaceholder: string;
-  submit: string;
-  submitting: string;
+  detailsHint: string;
   loading: string;
-  gridTitle: string;
-  workstation: string;
-  freeStations: string;
-  noStartTimes: string;
-  unavailableDevice: string;
-  unavailableFull: string;
   successTitle: string;
   successBody: string;
   successKeep: string;
@@ -34,59 +40,55 @@ export interface BookingLabels {
   myBookingsEmpty: string;
   cancel: string;
   cancelling: string;
-  bookAnother: string;
-  openTuesday: string;
-  openThursday: string;
   errors: Record<string, string>;
 }
 
 export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
   en: {
-    title: 'Book a lab session',
+    title: 'Book lab time — MTE210',
     intro:
-      'Reserve a workstation for a lab assignment. The room has 8 workstations, and sessions are checked against the device inventory — labs that need the same analyzer cannot run at the same time.',
+      'MTE210 has one lab session a week: Wednesdays 10:15–13:00. Pick an assignment and take a free seat in a group — you can see which seats your fellow students have already taken.',
     lab: 'Lab assignment',
-    date: 'Date',
-    startTime: 'Start time',
-    duration: 'Duration',
-    hours: 'hours',
-    hour: 'hour',
-    requires: 'Requires',
+    requires: 'Equipment',
     singleUnit: 'single unit',
-    name: 'Name (group representative)',
+    capacityNote: '{groups} {groupWord} × up to {seats} students per week',
+    groupOne: 'group',
+    groupMany: 'groups',
+    semester: 'Semester overview',
+    semesterRange: '{first} – {last} · Wednesdays {start}–{end}',
+    closedWeeksNote: 'Week {weeks} closed for booking.',
+    week: 'Week {week}',
+    group: 'Group {group}',
+    seatsLeft: '{free} of {total} seats free',
+    freeSeat: 'Take seat',
+    you: 'you',
+    booking: 'Booking…',
+    groupFull: 'Full',
+    weekClosed: 'Closed for booking',
+    weekPast: 'Passed',
+    yourDetails: 'Your details',
+    name: 'Name',
     namePlaceholder: 'e.g. Kari Nordmann',
     email: 'Email',
     emailPlaceholder: 'you@stud.uis.no',
-    submit: 'Book session',
-    submitting: 'Booking…',
+    detailsHint: 'Fill in your name and email to take a seat.',
     loading: 'Loading availability…',
-    gridTitle: 'Room overview',
-    workstation: 'Station',
-    freeStations: 'Free stations at the busiest hour',
-    noStartTimes: 'No available start times for this lab on this date.',
-    unavailableDevice: 'In use:',
-    unavailableFull: 'All workstations taken',
-    successTitle: 'Session booked!',
-    successBody: 'You have workstation {station} on {date}, {time}.',
+    successTitle: 'Seat booked!',
+    successBody: 'You have seat {seat} in group {group} on {date}, {time}.',
     successKeep:
       'Your booking is saved in this browser under “My bookings”, where you can cancel it if plans change.',
     myBookings: 'My bookings',
     myBookingsEmpty: 'No bookings in this browser yet.',
     cancel: 'Cancel booking',
     cancelling: 'Cancelling…',
-    bookAnother: 'Book another session',
-    openTuesday: 'Tuesdays 09:00–16:00',
-    openThursday: 'Thursdays 12:00–16:00',
     errors: {
-      closed: 'The lab room is closed on that date.',
-      'outside-hours': 'That time is outside the room’s opening hours.',
-      'no-workstation': 'All 8 workstations are taken in that time slot.',
-      'device-conflict': 'Required equipment is already booked in that time slot:',
-      'invalid-input': 'Please check the form — some fields are missing or invalid.',
-      'past-date': 'That date or time has already passed.',
+      'closed-week': 'That week is not open for booking.',
+      'past-slot': 'That lab session has already started or passed.',
+      'group-full': 'That group just filled up — please pick another seat.',
+      'already-booked':
+        'You already have a seat for this lab assignment. Cancel it first if you want to move.',
       'unknown-lab': 'Unknown lab assignment.',
-      'too-many-bookings':
-        'This email already has the maximum number of upcoming bookings (6). Cancel one first.',
+      'invalid-input': 'Please check the form — some fields are missing or invalid.',
       busy: 'The booking service is busy right now — please try again in a few seconds.',
       'service-unavailable': 'The booking service is temporarily unavailable. Please try again.',
       'not-found': 'The booking could not be found — it may already be cancelled.',
@@ -94,51 +96,50 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
     },
   },
   no: {
-    title: 'Book labtid',
+    title: 'Book labtid — MTE210',
     intro:
-      'Reserver en arbeidsstasjon for en laboppgave. Rommet har 8 arbeidsstasjoner, og hver booking sjekkes mot utstyrsbeholdningen — labber som trenger samme analysator kan ikke gå samtidig.',
+      'MTE210 har én laboratorietime i uka: onsdager 10:15–13:00. Velg laboppgave og ta en ledig plass i en gruppe — du ser hvilke plasser medstudentene allerede har tatt.',
     lab: 'Laboppgave',
-    date: 'Dato',
-    startTime: 'Starttid',
-    duration: 'Varighet',
-    hours: 'timer',
-    hour: 'time',
-    requires: 'Krever',
+    requires: 'Utstyr',
     singleUnit: 'kun én enhet',
-    name: 'Navn (gruppekontakt)',
+    capacityNote: '{groups} {groupWord} × maks {seats} studenter per uke',
+    groupOne: 'gruppe',
+    groupMany: 'grupper',
+    semester: 'Semesteroversikt',
+    semesterRange: '{first} – {last} · onsdager {start}–{end}',
+    closedWeeksNote: 'Uke {weeks} er stengt for booking.',
+    week: 'Uke {week}',
+    group: 'Gruppe {group}',
+    seatsLeft: '{free} av {total} plasser ledige',
+    freeSeat: 'Ta plass',
+    you: 'deg',
+    booking: 'Booker…',
+    groupFull: 'Full',
+    weekClosed: 'Stengt for booking',
+    weekPast: 'Passert',
+    yourDetails: 'Dine opplysninger',
+    name: 'Navn',
     namePlaceholder: 'f.eks. Kari Nordmann',
     email: 'E-post',
     emailPlaceholder: 'deg@stud.uis.no',
-    submit: 'Book økt',
-    submitting: 'Booker…',
+    detailsHint: 'Fyll inn navn og e-post for å ta en plass.',
     loading: 'Laster tilgjengelighet…',
-    gridTitle: 'Romoversikt',
-    workstation: 'Stasjon',
-    freeStations: 'Ledige stasjoner i travleste time',
-    noStartTimes: 'Ingen ledige starttider for denne labben på valgt dato.',
-    unavailableDevice: 'I bruk:',
-    unavailableFull: 'Alle arbeidsstasjoner er opptatt',
-    successTitle: 'Økt booket!',
-    successBody: 'Du har arbeidsstasjon {station} {date} kl. {time}.',
+    successTitle: 'Plass booket!',
+    successBody: 'Du har plass {seat} i gruppe {group} {date}, kl. {time}.',
     successKeep:
       'Bookingen er lagret i denne nettleseren under «Mine bookinger», der du kan avbestille hvis planene endrer seg.',
     myBookings: 'Mine bookinger',
     myBookingsEmpty: 'Ingen bookinger i denne nettleseren ennå.',
     cancel: 'Avbestill',
     cancelling: 'Avbestiller…',
-    bookAnother: 'Book en ny økt',
-    openTuesday: 'Tirsdager 09:00–16:00',
-    openThursday: 'Torsdager 12:00–16:00',
     errors: {
-      closed: 'Labrommet er stengt denne datoen.',
-      'outside-hours': 'Tidspunktet er utenfor rommets åpningstid.',
-      'no-workstation': 'Alle 8 arbeidsstasjoner er opptatt i dette tidsrommet.',
-      'device-conflict': 'Nødvendig utstyr er allerede booket i dette tidsrommet:',
-      'invalid-input': 'Sjekk skjemaet — noen felt mangler eller er ugyldige.',
-      'past-date': 'Datoen eller tidspunktet har allerede passert.',
+      'closed-week': 'Denne uka er ikke åpen for booking.',
+      'past-slot': 'Denne labtimen har allerede startet eller er passert.',
+      'group-full': 'Gruppa ble full akkurat nå — velg en annen plass.',
+      'already-booked':
+        'Du har allerede en plass på denne laboppgaven. Avbestill den først hvis du vil bytte.',
       'unknown-lab': 'Ukjent laboppgave.',
-      'too-many-bookings':
-        'Denne e-postadressen har allerede maks antall kommende bookinger (6). Avbestill en først.',
+      'invalid-input': 'Sjekk skjemaet — noen felt mangler eller er ugyldige.',
       busy: 'Bookingtjenesten er opptatt akkurat nå — prøv igjen om noen sekunder.',
       'service-unavailable': 'Bookingtjenesten er midlertidig utilgjengelig. Prøv igjen.',
       'not-found': 'Fant ikke bookingen — den kan allerede være avbestilt.',

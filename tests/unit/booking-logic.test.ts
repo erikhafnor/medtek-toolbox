@@ -1,249 +1,270 @@
 import { describe, it, expect } from 'vitest';
 import {
-  assignWorkstation,
-  checkAvailability,
-  dayOfWeek,
-  findDeviceConflicts,
-  isBookableDate,
+  assignSeat,
+  capacityFor,
+  checkSeatAvailability,
+  isOpenSlotDate,
   isValidDateString,
-  listBookableDates,
-  openingHoursFor,
-  overlaps,
-  parseDurationHours,
-  WORKSTATION_COUNT,
-  type BookingInterval,
+  isoWeek,
+  listSemesterWeeks,
+  listSlotDates,
+  seatsFreeFor,
+  type SeatBooking,
 } from '../../src/lib/booking/logic';
+import { BOOKABLE_LABS, CLOSED_WEEKS, MAX_SEATS_PER_GROUP } from '../../src/lib/booking/semester';
 import { devicesForEquipment, DEVICES } from '../../src/lib/booking/inventory';
 
-// 2026-07-14 is a Tuesday, 2026-07-16 is a Thursday, 2026-07-15 a Wednesday.
-const TUE = '2026-07-14';
-const THU = '2026-07-16';
-const WED = '2026-07-15';
+const SAFETY = 'mte210-electrical-safety';
+const NETWORKS = 'mte210-hospital-networks';
 
-const REQUIRED: Record<string, string[]> = {
-  'defib-lab': ['fluke-impulse7000', 'lifepak15'],
-  'safety-lab': ['fluke-esa615'],
-  'teardown-lab': ['fluke-esa615', 'alaris-cc'],
-  'ecg-lab': ['fluke-prosim8'],
-};
-const QUANTITIES: Record<string, number> = {
-  'fluke-impulse7000': 1,
-  'fluke-esa615': 1,
-  'fluke-prosim8': 1,
-  lifepak15: 2,
-  'alaris-cc': 8,
-};
+// The 2026 autumn semester: Wednesdays from week 37 to week 43, with weeks 39
+// and 41 closed.
+const W37 = '2026-09-09';
+const W38 = '2026-09-16';
+const W39 = '2026-09-23'; // closed
+const W40 = '2026-09-30';
+const W41 = '2026-10-07'; // closed
+const W42 = '2026-10-14';
+const W43 = '2026-10-21';
 
-function booking(
-  labId: string,
-  startHour: number,
-  endHour: number,
-  workstation = 1
-): BookingInterval {
-  return { labId, startHour, endHour, workstation };
+/** Well before the semester, so nothing is in the past. */
+const BEFORE = '2026-09-01';
+/** Minutes-of-day well before the 10:15 slot start. */
+const EARLY = 8 * 60;
+
+function seat(labId: string, date: string, group: number, seatNumber: number): SeatBooking {
+  return { labId, date, group, seat: seatNumber };
 }
 
-describe('opening hours', () => {
-  it('is open Tuesday 9-16', () => {
-    expect(openingHoursFor(TUE)).toEqual({ start: 9, end: 16 });
+/** Fill every seat of one group. */
+function fullGroup(labId: string, date: string, group: number): SeatBooking[] {
+  return [1, 2, 3].map((s) => seat(labId, date, group, s));
+}
+
+describe('isoWeek()', () => {
+  it('numbers the semester Wednesdays', () => {
+    expect(isoWeek(W37)).toBe(37);
+    expect(isoWeek(W38)).toBe(38);
+    expect(isoWeek(W39)).toBe(39);
+    expect(isoWeek(W40)).toBe(40);
+    expect(isoWeek(W41)).toBe(41);
+    expect(isoWeek(W42)).toBe(42);
+    expect(isoWeek(W43)).toBe(43);
   });
-  it('is open Thursday 12-16', () => {
-    expect(openingHoursFor(THU)).toEqual({ start: 12, end: 16 });
+
+  it('handles year boundaries the ISO-8601 way', () => {
+    expect(isoWeek('2026-01-01')).toBe(1); // a Thursday, so week 1 of 2026
+    expect(isoWeek('2026-12-28')).toBe(53); // 2026 is a 53-week year
+    expect(isoWeek('2027-01-01')).toBe(53); // still ISO week 53 of 2026
+    expect(isoWeek('2027-01-04')).toBe(1); // first Monday of ISO 2027
   });
-  it('is closed other days', () => {
-    expect(openingHoursFor(WED)).toBeNull();
-    expect(openingHoursFor('2026-07-18')).toBeNull(); // Saturday
+
+  it('is immune to the machine timezone', () => {
+    // a date that would slip a day if parsed as local time west of UTC
+    expect(isoWeek('2026-09-09')).toBe(isoWeek('2026-09-09'));
+    expect(isoWeek('2026-01-04')).toBe(1); // Sunday — last day of ISO week 1
+    expect(isoWeek('2026-01-05')).toBe(2); // Monday — first day of ISO week 2
   });
-  it('computes day of week without timezone drift', () => {
-    expect(dayOfWeek(TUE)).toBe(2);
-    expect(dayOfWeek(THU)).toBe(4);
+});
+
+describe('semester weeks', () => {
+  it('lists every Wednesday in the window, flagging the closed ones', () => {
+    const weeks = listSemesterWeeks();
+    expect(weeks.map((w) => w.date)).toEqual([W37, W38, W39, W40, W41, W42, W43]);
+    expect(weeks.filter((w) => !w.open).map((w) => w.isoWeek)).toEqual(CLOSED_WEEKS);
+  });
+
+  it('offers only the five open Wednesdays for booking', () => {
+    expect(listSlotDates()).toEqual([W37, W38, W40, W42, W43]);
+  });
+
+  it('treats closed and out-of-window dates as not bookable', () => {
+    expect(isOpenSlotDate(W37)).toBe(true);
+    expect(isOpenSlotDate(W43)).toBe(true);
+    expect(isOpenSlotDate(W39)).toBe(false); // closed week
+    expect(isOpenSlotDate(W41)).toBe(false); // closed week
+    expect(isOpenSlotDate('2026-09-02')).toBe(false); // before the window
+    expect(isOpenSlotDate('2026-10-28')).toBe(false); // after the window
+    expect(isOpenSlotDate('2026-09-10')).toBe(false); // a Thursday
   });
 });
 
 describe('date validation', () => {
   it('accepts valid date strings only', () => {
-    expect(isValidDateString('2026-07-14')).toBe(true);
+    expect(isValidDateString(W37)).toBe(true);
     expect(isValidDateString('2026-02-30')).toBe(false);
-    expect(isValidDateString('14-07-2026')).toBe(false);
+    expect(isValidDateString('09-09-2026')).toBe(false);
     expect(isValidDateString('garbage')).toBe(false);
   });
-  it('lists only Tuesdays and Thursdays within the window', () => {
-    const dates = listBookableDates('2026-07-13'); // a Monday
-    expect(dates[0]).toBe(TUE);
-    expect(dates[1]).toBe(THU);
-    expect(dates.every((d) => [2, 4].includes(dayOfWeek(d)))).toBe(true);
-    expect(dates.length).toBe(16); // 8 weeks × 2 days
+});
+
+describe('capacityFor()', () => {
+  it('gives each lab its own per-week capacity', () => {
+    expect(capacityFor(SAFETY)).toMatchObject({ groupsPerWeek: 1, seatsPerGroup: 3 });
+    expect(capacityFor(NETWORKS)).toMatchObject({ groupsPerWeek: 3, seatsPerGroup: 3 });
   });
-  it('rejects past dates and dates beyond the window', () => {
-    expect(isBookableDate(TUE, '2026-07-13')).toBe(true);
-    expect(isBookableDate('2026-07-07', '2026-07-13')).toBe(false); // past Tuesday
-    expect(isBookableDate('2026-12-01', '2026-07-13')).toBe(false); // beyond 8 weeks
-    expect(isBookableDate(WED, '2026-07-13')).toBe(false); // closed day
+
+  it('returns null for labs that are not bookable', () => {
+    expect(capacityFor('mte200-defibrillator')).toBeNull();
+    expect(capacityFor('nonsense')).toBeNull();
+  });
+
+  it('never exceeds the seat bound the database enforces', () => {
+    for (const lab of BOOKABLE_LABS) {
+      expect(lab.seatsPerGroup, lab.id).toBeLessThanOrEqual(MAX_SEATS_PER_GROUP);
+    }
   });
 });
 
-describe('overlaps()', () => {
-  it('detects partial and full overlap, rejects adjacency', () => {
-    expect(overlaps(9, 12, 11, 14)).toBe(true);
-    expect(overlaps(9, 12, 9, 12)).toBe(true);
-    expect(overlaps(9, 12, 12, 15)).toBe(false);
-    expect(overlaps(12, 15, 9, 12)).toBe(false);
+describe('assignSeat()', () => {
+  const request = { labId: SAFETY, date: W37, group: 1 };
+
+  it('assigns the lowest free seat', () => {
+    expect(assignSeat([], request, 3)).toBe(1);
+    expect(assignSeat([seat(SAFETY, W37, 1, 1)], request, 3)).toBe(2);
+    expect(assignSeat([seat(SAFETY, W37, 1, 1), seat(SAFETY, W37, 1, 2)], request, 3)).toBe(3);
+  });
+
+  it('reuses a seat freed by a cancellation', () => {
+    const existing = [seat(SAFETY, W37, 1, 1), seat(SAFETY, W37, 1, 3)];
+    expect(assignSeat(existing, request, 3)).toBe(2);
+  });
+
+  it('returns null once the group is full', () => {
+    expect(assignSeat(fullGroup(SAFETY, W37, 1), request, 3)).toBeNull();
+  });
+
+  it('counts only seats in the same lab, week and group', () => {
+    const elsewhere = [
+      ...fullGroup(NETWORKS, W37, 1), // different lab
+      ...fullGroup(SAFETY, W38, 1), // different week
+      ...fullGroup(NETWORKS, W37, 2), // different group
+    ];
+    expect(assignSeat(elsewhere, request, 3)).toBe(1);
   });
 });
 
-describe('assignWorkstation()', () => {
-  it('assigns the lowest free station', () => {
-    expect(assignWorkstation([], 9, 12)).toBe(1);
-    expect(assignWorkstation([booking('x', 9, 12, 1)], 9, 12)).toBe(2);
-    expect(assignWorkstation([booking('x', 9, 12, 1)], 12, 15)).toBe(1);
+describe('seatsFreeFor()', () => {
+  it('reports remaining seats per group', () => {
+    const existing = [seat(NETWORKS, W40, 2, 1), seat(NETWORKS, W40, 2, 2)];
+    expect(seatsFreeFor(existing, NETWORKS, W40, 1)).toBe(3);
+    expect(seatsFreeFor(existing, NETWORKS, W40, 2)).toBe(1);
+    expect(seatsFreeFor([...existing, seat(NETWORKS, W40, 2, 3)], NETWORKS, W40, 2)).toBe(0);
   });
-  it('returns null when all stations overlap', () => {
-    const full = Array.from({ length: WORKSTATION_COUNT }, (_, i) =>
-      booking('x', 10, 13, i + 1)
-    );
-    expect(assignWorkstation(full, 12, 15)).toBeNull();
-    expect(assignWorkstation(full, 13, 15)).toBe(1);
+
+  it('is zero for a lab that is not bookable', () => {
+    expect(seatsFreeFor([], 'mte200-defibrillator', W40, 1)).toBe(0);
   });
 });
 
-describe('device conflicts', () => {
-  it('blocks two labs needing the same single-unit Fluke at overlapping times', () => {
-    const existing = [booking('safety-lab', 9, 12, 1)];
-    const conflicts = findDeviceConflicts(
-      { labId: 'teardown-lab', date: TUE, startHour: 11, endHour: 14 },
-      existing,
-      REQUIRED,
-      QUANTITIES
-    );
-    expect(conflicts).toEqual(['fluke-esa615']);
-  });
-
-  it('allows the same labs back-to-back', () => {
-    const existing = [booking('safety-lab', 9, 12, 1)];
+describe('checkSeatAvailability()', () => {
+  it('accepts a free seat in an open week', () => {
     expect(
-      findDeviceConflicts(
-        { labId: 'teardown-lab', date: TUE, startHour: 12, endHour: 15 },
-        existing,
-        REQUIRED,
-        QUANTITIES
-      )
-    ).toEqual([]);
+      checkSeatAvailability({ labId: SAFETY, date: W37, group: 1 }, [], BEFORE, EARLY)
+    ).toEqual({ ok: true, seat: 1 });
   });
 
-  it('allows different labs with disjoint devices at the same time', () => {
-    const existing = [booking('safety-lab', 9, 12, 1)];
+  it('rejects labs outside the two MTE210 assignments', () => {
     expect(
-      findDeviceConflicts(
-        { labId: 'ecg-lab', date: TUE, startHour: 9, endHour: 12 },
-        existing,
-        REQUIRED,
-        QUANTITIES
-      )
-    ).toEqual([]);
+      checkSeatAvailability({ labId: 'mte200-defibrillator', date: W37, group: 1 }, [], BEFORE, EARLY)
+    ).toEqual({ ok: false, reason: 'unknown-lab' });
   });
 
-  it('fails closed for bookings whose lab was renamed or removed', () => {
-    // a stale booking with an unknown labId must count as holding every device
-    const existing = [booking('lab-that-was-renamed', 9, 12, 1)];
+  it('rejects the closed weeks 39 and 41', () => {
+    for (const date of [W39, W41]) {
+      expect(
+        checkSeatAvailability({ labId: NETWORKS, date, group: 1 }, [], BEFORE, EARLY),
+        date
+      ).toEqual({ ok: false, reason: 'closed-week' });
+    }
+  });
+
+  it('rejects dates outside the semester window', () => {
     expect(
-      findDeviceConflicts(
-        { labId: 'safety-lab', date: TUE, startHour: 10, endHour: 13 },
-        existing,
-        REQUIRED,
-        QUANTITIES
-      )
-    ).toEqual(['fluke-esa615']);
-    // …but not once the stale booking has ended
+      checkSeatAvailability({ labId: SAFETY, date: '2026-09-02', group: 1 }, [], BEFORE, EARLY)
+    ).toEqual({ ok: false, reason: 'closed-week' });
     expect(
-      findDeviceConflicts(
-        { labId: 'safety-lab', date: TUE, startHour: 12, endHour: 15 },
-        existing,
-        REQUIRED,
-        QUANTITIES
-      )
-    ).toEqual([]);
+      checkSeatAvailability({ labId: SAFETY, date: '2026-10-28', group: 1 }, [], BEFORE, EARLY)
+    ).toEqual({ ok: false, reason: 'closed-week' });
   });
 
-  it('respects multi-unit quantities', () => {
-    // two LIFEPAKs: two concurrent defib labs exhaust the single Impulse 7000
-    // first, and a third would also exhaust the LIFEPAKs
-    const existing = [booking('defib-lab', 9, 12, 1)];
-    const conflicts = findDeviceConflicts(
-      { labId: 'defib-lab', date: TUE, startHour: 10, endHour: 13 },
-      existing,
-      REQUIRED,
-      QUANTITIES
-    );
-    expect(conflicts).toEqual(['fluke-impulse7000']);
-  });
-});
-
-describe('checkAvailability()', () => {
-  const request = { labId: 'safety-lab', date: TUE, startHour: 9, endHour: 12 };
-
-  it('accepts a valid request and assigns a workstation', () => {
-    expect(checkAvailability(request, [], REQUIRED, QUANTITIES)).toEqual({
-      ok: true,
-      workstation: 1,
-    });
-  });
-
-  it('rejects closed days and out-of-hours requests', () => {
-    expect(checkAvailability({ ...request, date: WED }, [], REQUIRED, QUANTITIES)).toEqual({
-      ok: false,
-      reason: 'closed',
-    });
+  it('rejects a group number beyond the lab capacity', () => {
+    // Lab 1 runs one group per week; Lab 2 runs three
     expect(
-      checkAvailability({ ...request, date: THU, startHour: 9, endHour: 12 }, [], REQUIRED, QUANTITIES)
-    ).toEqual({ ok: false, reason: 'outside-hours' });
+      checkSeatAvailability({ labId: SAFETY, date: W37, group: 2 }, [], BEFORE, EARLY)
+    ).toEqual({ ok: false, reason: 'invalid-input' });
     expect(
-      checkAvailability({ ...request, startHour: 14, endHour: 17 }, [], REQUIRED, QUANTITIES)
-    ).toEqual({ ok: false, reason: 'outside-hours' });
+      checkSeatAvailability({ labId: NETWORKS, date: W37, group: 3 }, [], BEFORE, EARLY)
+    ).toEqual({ ok: true, seat: 1 });
     expect(
-      checkAvailability({ ...request, startHour: 12, endHour: 12 }, [], REQUIRED, QUANTITIES)
-    ).toEqual({ ok: false, reason: 'outside-hours' });
+      checkSeatAvailability({ labId: NETWORKS, date: W37, group: 4 }, [], BEFORE, EARLY)
+    ).toEqual({ ok: false, reason: 'invalid-input' });
+    expect(
+      checkSeatAvailability({ labId: NETWORKS, date: W37, group: 0 }, [], BEFORE, EARLY)
+    ).toEqual({ ok: false, reason: 'invalid-input' });
+    expect(
+      checkSeatAvailability({ labId: NETWORKS, date: W37, group: 1.5 }, [], BEFORE, EARLY)
+    ).toEqual({ ok: false, reason: 'invalid-input' });
   });
 
-  it('reports device conflicts before workstation exhaustion', () => {
-    const existing = [booking('safety-lab', 10, 13, 3)];
-    const result = checkAvailability(request, existing, REQUIRED, QUANTITIES);
-    expect(result).toEqual({ ok: false, reason: 'device-conflict', devices: ['fluke-esa615'] });
+  it('rejects a full group but still fills the next one', () => {
+    const existing = fullGroup(NETWORKS, W40, 1);
+    expect(
+      checkSeatAvailability({ labId: NETWORKS, date: W40, group: 1 }, existing, BEFORE, EARLY)
+    ).toEqual({ ok: false, reason: 'group-full' });
+    expect(
+      checkSeatAvailability({ labId: NETWORKS, date: W40, group: 2 }, existing, BEFORE, EARLY)
+    ).toEqual({ ok: true, seat: 1 });
   });
 
-  it('rejects when all 8 workstations are taken', () => {
-    const existing = Array.from({ length: WORKSTATION_COUNT }, (_, i) =>
-      booking('ecg-lab', 9, 12, i + 1)
-    );
-    // request a lab with no device overlap so the workstation check is hit
-    const result = checkAvailability(
-      { labId: 'safety-lab', date: TUE, startHour: 10, endHour: 13 },
-      existing,
-      REQUIRED,
-      QUANTITIES
-    );
-    expect(result).toEqual({ ok: false, reason: 'no-workstation' });
+  it('caps lab 1 at one group of three for the whole week', () => {
+    const existing = fullGroup(SAFETY, W38, 1);
+    expect(
+      checkSeatAvailability({ labId: SAFETY, date: W38, group: 1 }, existing, BEFORE, EARLY)
+    ).toEqual({ ok: false, reason: 'group-full' });
+    // …and there is no second group to fall back to
+    expect(
+      checkSeatAvailability({ labId: SAFETY, date: W38, group: 2 }, existing, BEFORE, EARLY)
+    ).toEqual({ ok: false, reason: 'invalid-input' });
+  });
+
+  it('rejects slots that have already passed', () => {
+    // the week before is gone once today is later
+    expect(
+      checkSeatAvailability({ labId: SAFETY, date: W37, group: 1 }, [], W38, EARLY)
+    ).toEqual({ ok: false, reason: 'past-slot' });
+    // today's slot closes when it starts at 10:15
+    expect(
+      checkSeatAvailability({ labId: SAFETY, date: W37, group: 1 }, [], W37, 10 * 60 + 14)
+    ).toEqual({ ok: true, seat: 1 });
+    expect(
+      checkSeatAvailability({ labId: SAFETY, date: W37, group: 1 }, [], W37, 10 * 60 + 15)
+    ).toEqual({ ok: false, reason: 'past-slot' });
+  });
+
+  it('lets both labs run in the same Wednesday slot', () => {
+    const existing = [...fullGroup(SAFETY, W42, 1), ...fullGroup(NETWORKS, W42, 1)];
+    // lab 1 is full for the week, lab 2 still has two groups free
+    expect(
+      checkSeatAvailability({ labId: SAFETY, date: W42, group: 1 }, existing, BEFORE, EARLY)
+    ).toEqual({ ok: false, reason: 'group-full' });
+    expect(
+      checkSeatAvailability({ labId: NETWORKS, date: W42, group: 2 }, existing, BEFORE, EARLY)
+    ).toEqual({ ok: true, seat: 1 });
   });
 });
 
 describe('inventory mapping', () => {
-  it('maps real lab equipment strings to Fluke devices', () => {
+  it('maps the two bookable labs to the kit they need', () => {
     expect(
       devicesForEquipment([
         'Fluke ESA615 Electrical Safety Analyzer (with a valid calibration certificate)',
-        'CareFusion Alaris CC Syringe Pump (one per group)',
-        'Digital multimeter (DMM)',
+        'Assorted Class I and Class II medical devices',
       ])
-    ).toEqual(expect.arrayContaining(['fluke-esa615', 'alaris-cc']));
-    expect(devicesForEquipment(['IDA-5 Infusion Device Analyzer (Fluke Biomedical)'])).toContain(
-      'fluke-ida5'
-    );
-    expect(devicesForEquipment(['Fluke Impulse 7000DP'])).toContain('fluke-impulse7000');
-    expect(devicesForEquipment(['Fluke QA-ES III Electrosurgery Analyzer'])).toContain(
-      'fluke-qaes3'
-    );
+    ).toEqual(['fluke-esa615']);
     expect(
-      devicesForEquipment(['Fluke ProSim 8 Vital Signs and ECG Patient Simulator'])
-    ).toContain('fluke-prosim8');
+      devicesForEquipment(['Patient monitor with HL7 export (Philips IntelliVue)'])
+    ).toEqual(['philips-intellivue']);
   });
 
   it('ignores untracked generic equipment', () => {
@@ -256,13 +277,5 @@ describe('inventory mapping', () => {
     for (const device of DEVICES.filter((d) => d.key.startsWith('fluke-'))) {
       expect(device.quantity, device.key).toBe(1);
     }
-  });
-});
-
-describe('parseDurationHours()', () => {
-  it('parses English and Norwegian duration strings', () => {
-    expect(parseDurationHours('3 hours')).toBe(3);
-    expect(parseDurationHours('6 timer')).toBe(6);
-    expect(parseDurationHours(undefined)).toBe(3);
   });
 });

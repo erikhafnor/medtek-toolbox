@@ -1,7 +1,8 @@
 # Lab Booking System — Design
 
 **Date:** 2026-07-11
-**Status:** Implemented on `feat/lab-booking`, pending preview review
+**Status:** Superseded by `2026-08-31-mte210-slot-booking-design.md`, which replaced the
+workstation/interval model with the MTE210 weekly Wednesday slot. Kept for context.
 
 ## Goal
 
