@@ -12,7 +12,7 @@ prerequisites:
   - "Dokumentasjon for Olympus UES-40"
   - "Dokumentasjon for Keysight InfiniiVision oscilloskop"
   - "Forelesningsnotater om elektrokirurgi"
-duration: "3 timer"
+duration: "2,5 timer"
 ---
 
 ## Læringsmål

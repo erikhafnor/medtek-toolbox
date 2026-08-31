@@ -9,7 +9,7 @@ prerequisites:
   - "Fluke ProSim 8 brukermanual"
   - "Philips PageWriter TC30 bruker- og servicemanual"
   - "Forelesningsnotater om kardial elektrofysiologi og EKG"
-duration: "3 timer"
+duration: "2,5 timer"
 ---
 
 ## Læringsmål

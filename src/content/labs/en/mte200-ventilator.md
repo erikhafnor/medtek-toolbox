@@ -9,7 +9,7 @@ equipment:
 prerequisites:
   - "Dräger Evita XL service and user manual documentation"
   - "Lecture notes on mechanical ventilation and respiratory physiology"
-duration: "3 hours"
+duration: "2.5 hours"
 ---
 
 ## Learning Objectives

@@ -7,7 +7,7 @@ equipment:
 prerequisites:
   - "LIFEPAK 15 user manual documentation"
   - "Lecture notes on hemodynamic monitoring"
-duration: "3 hours"
+duration: "2.5 hours"
 ---
 
 ## Learning Objectives

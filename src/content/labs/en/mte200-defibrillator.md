@@ -10,7 +10,7 @@ prerequisites:
   - "LIFEPAK 15 user and service manual documentation"
   - "Fluke Impulse 7000DP documentation"
   - "Lecture notes on defibrillation"
-duration: "3 hours"
+duration: "2.5 hours"
 ---
 
 ## Learning Objectives

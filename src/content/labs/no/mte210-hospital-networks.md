@@ -12,7 +12,7 @@ prerequisites:
   - "Forelesningsnotater om helseinformatikk og interoperabilitetsstandarder"
   - "Grunnleggende nettverkskunnskap (TCP/IP, porter, klient-server-modell)"
   - "Introduksjon til HL7 og DICOM fra forelesninger i emnet"
-duration: "4 timer"
+duration: "2 timer 45 minutter"
 ---
 
 ## Læringsmål

@@ -12,7 +12,7 @@ prerequisites:
   - "Olympus UES-40 documentation"
   - "Keysight InfiniiVision oscilloscope documentation"
   - "Lecture notes on electrosurgery"
-duration: "3 hours"
+duration: "2.5 hours"
 ---
 
 ## Learning Objectives

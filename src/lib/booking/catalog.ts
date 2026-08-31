@@ -1,29 +1,29 @@
-// Catalog of the bookable MTE210 labs, derived from the `labs` content
-// collection. English entries are canonical (equipment lists carry the model
-// numbers, which are language-neutral); titles fall back per locale by shared
-// slug.
+// Catalog of the bookable labs, derived from the `labs` content collection.
+// English entries are canonical (equipment lists carry the model numbers, which
+// are language-neutral); titles fall back per locale by shared slug.
 //
-// Build-time only: the API validates lab ids against `capacityFor()` in
-// semester.ts, so nothing at request time depends on content collections.
+// Build-time only: the API validates lab ids against `bookingConfigFor()` in
+// logic.ts, so nothing at request time depends on content collections.
 
 import { getCollection } from 'astro:content';
 import type { Locale } from '../i18n';
 import { devicesForEquipment } from './inventory';
-import { BOOKABLE_LABS } from './semester';
+import { ALL_BOOKABLE_LABS, COURSES } from './courses';
 
 export interface LabCatalogEntry {
-  /** Slug without locale prefix, e.g. 'mte210-electrical-safety'. */
+  /** Slug without locale prefix, e.g. 'mte200-defibrillator'. */
   id: string;
   title: string;
+  /** Course code, so the UI can group labs without a second lookup. */
   course: string;
   equipment: string[];
   /** Tracked devices the lab uses — shown to students, not a booking gate. */
   requiredDevices: string[];
-  groupsPerWeek: number;
+  groupsPerSlot: number;
   seatsPerGroup: number;
 }
 
-/** The bookable labs, in the order course staff listed them in semester.ts. */
+/** The bookable labs, in the order course staff listed them in courses.ts. */
 export async function getLabCatalog(locale: Locale = 'en'): Promise<LabCatalogEntry[]> {
   const all = await getCollection('labs');
   const bySlug = (prefix: string) =>
@@ -35,22 +35,22 @@ export async function getLabCatalog(locale: Locale = 'en'): Promise<LabCatalogEn
   const english = bySlug('en');
   const localized = bySlug(locale);
 
-  return BOOKABLE_LABS.map((lab) => {
+  return ALL_BOOKABLE_LABS.map(({ course, lab }) => {
     const canonical = english.get(lab.id);
     if (!canonical) {
       // fail the build rather than silently dropping a lab students must book
       throw new Error(
-        `booking/semester.ts lists '${lab.id}', which has no entry in src/content/labs/en/`
+        `booking/courses.ts lists '${lab.id}', which has no entry in src/content/labs/en/`
       );
     }
     const translated = localized.get(lab.id) ?? canonical;
     return {
       id: lab.id,
       title: translated.data.title,
-      course: canonical.data.course,
+      course: course.id,
       equipment: translated.data.equipment,
       requiredDevices: devicesForEquipment(canonical.data.equipment),
-      groupsPerWeek: lab.groupsPerWeek,
+      groupsPerSlot: lab.groupsPerSlot,
       seatsPerGroup: lab.seatsPerGroup,
     };
   });
@@ -58,5 +58,10 @@ export async function getLabCatalog(locale: Locale = 'en'): Promise<LabCatalogEn
 
 /** Is this lab slug one students can book? Used to gate the lab-page button. */
 export function isBookableLab(slug: string): boolean {
-  return BOOKABLE_LABS.some((lab) => lab.id === slug);
+  return ALL_BOOKABLE_LABS.some(({ lab }) => lab.id === slug);
+}
+
+/** Course codes that have bookable labs, in configuration order. */
+export function bookableCourses(): string[] {
+  return COURSES.filter((course) => course.labs.length > 0).map((course) => course.id);
 }

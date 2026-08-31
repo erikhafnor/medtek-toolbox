@@ -12,7 +12,7 @@ prerequisites:
   - "Lecture notes on health informatics and interoperability standards"
   - "Basic networking knowledge (TCP/IP, ports, client-server model)"
   - "Introduction to HL7 and DICOM from course lectures"
-duration: "4 hours"
+duration: "2 hours 45 minutes"
 ---
 
 ## Learning Objectives

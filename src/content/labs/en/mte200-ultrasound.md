@@ -10,7 +10,7 @@ prerequisites:
   - "Kyoto Kagaku N-365 phantom user manual"
   - "Springer Handbook of Medical Technology Chapter 17 (Ultrasound diagnostics)"
   - "Lecture notes on ultrasound"
-duration: "3 hours"
+duration: "2.5 hours"
 ---
 
 ## Learning Objectives

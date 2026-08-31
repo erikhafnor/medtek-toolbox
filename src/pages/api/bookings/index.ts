@@ -2,7 +2,11 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { createSeatBooking, PG_LOCK_TIMEOUT } from '../../../lib/booking/db';
-import { capacityFor, checkSeatAvailability, isValidDateString } from '../../../lib/booking/logic';
+import {
+  bookingConfigFor,
+  checkSeatAvailability,
+  isValidDateString,
+} from '../../../lib/booking/logic';
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -38,6 +42,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   const labId = typeof body.labId === 'string' ? body.labId : '';
   const date = typeof body.date === 'string' ? body.date : '';
+  const slot = Number(body.slot);
   const group = Number(body.group);
   // strip control/format characters from the display name
   const name =
@@ -48,6 +53,7 @@ export const POST: APIRoute = async ({ request }) => {
   if (
     !labId ||
     labId.length > 100 ||
+    !Number.isInteger(slot) ||
     !Number.isInteger(group) ||
     name.length < 2 ||
     name.length > 80 ||
@@ -59,11 +65,11 @@ export const POST: APIRoute = async ({ request }) => {
     return json({ error: 'invalid-input' }, 400);
   }
 
-  if (!capacityFor(labId)) {
+  if (!bookingConfigFor(labId)) {
     return json({ error: 'unknown-lab' }, 404);
   }
 
-  const seatRequest = { labId, date, group };
+  const seatRequest = { labId, date, slot, group };
   let outcome;
   try {
     outcome = await createSeatBooking(

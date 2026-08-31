@@ -17,6 +17,9 @@
 // seats in the same lab, or put one student in both labs in the same Wednesday
 // slot; those violations are translated back into the ordinary error codes
 // rather than surfacing as a 500.
+//
+// Slots were added after the first release, so ensureSchema carries a guarded
+// migration for tables created before the slot_number column existed.
 
 import { Client, neon, neonConfig } from '@neondatabase/serverless';
 import {
@@ -25,7 +28,7 @@ import {
   type SeatResult,
   type SeatUnavailableReason,
 } from './logic';
-import { FIRST_DATE, LAST_DATE, MAX_SEATS_PER_GROUP } from './semester';
+import { COURSES, MAX_SEATS_PER_GROUP } from './courses';
 
 const ADVISORY_LOCK_KEY = 823472;
 
@@ -46,6 +49,7 @@ export interface SlotBookingRow extends SeatBooking {
 export interface CreateSeatInput {
   labId: string;
   date: string;
+  slot: number;
   group: number;
   studentName: string;
   studentEmail: string;
@@ -81,12 +85,39 @@ function sql(): HttpSql {
  * Postgres does not accept placeholders in DDL. Validated as a small integer so
  * a mistyped config can never become injected SQL.
  */
-function seatBound(): number {
-  const bound = Number(MAX_SEATS_PER_GROUP);
-  if (!Number.isInteger(bound) || bound < 1 || bound > 20) {
-    throw new Error(`booking/semester.ts: seatsPerGroup out of range (${MAX_SEATS_PER_GROUP})`);
-  }
-  return bound;
+/** Earliest and latest lab date across all courses, for the listing query. */
+function semesterBounds(): { first: string; last: string } {
+  return {
+    first: COURSES.map((c) => c.firstDate).sort()[0],
+    last: COURSES.map((c) => c.lastDate).sort().reverse()[0],
+  };
+}
+
+/**
+ * Migrate a table created before slots existed. Guarded on the column rather
+ * than run unconditionally, so a cold start does not drop and recreate a unique
+ * index — which would briefly leave the rule unenforced.
+ */
+async function migrateToSlots(): Promise<void> {
+  const columns = (await sql().query(
+    `SELECT 1 FROM information_schema.columns
+     WHERE table_name = 'slot_bookings' AND column_name = 'slot_number'`
+  )) as unknown[];
+  if (columns.length > 0) return;
+
+  // every pre-slot row belongs to its course's only slot, so 1 is correct
+  await sql().query(`ALTER TABLE slot_bookings ADD COLUMN slot_number int NOT NULL DEFAULT 1`);
+  await sql().query(`ALTER TABLE slot_bookings DROP CONSTRAINT IF EXISTS ${SEAT_CONSTRAINT}`);
+  await sql().query(
+    `ALTER TABLE slot_bookings ADD CONSTRAINT ${SEAT_CONSTRAINT}
+       UNIQUE (lab_id, booking_date, slot_number, group_number, seat_number)`
+  );
+  // the old upper-bound CHECK froze seats-per-group at the value configured the
+  // day the table was made; capacity now lives in courses.ts alone
+  await sql().query(
+    `ALTER TABLE slot_bookings DROP CONSTRAINT IF EXISTS slot_bookings_seat_number_check`
+  );
+  await sql().query(`DROP INDEX IF EXISTS ${ONE_PER_SLOT_CONSTRAINT}`);
 }
 
 /** Idempotent schema setup, deduplicated per function instance. */
@@ -99,26 +130,27 @@ export function ensureSchema(): Promise<void> {
             id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
             lab_id text NOT NULL,
             booking_date date NOT NULL,
+            slot_number int NOT NULL DEFAULT 1 CHECK (slot_number >= 1),
             group_number int NOT NULL CHECK (group_number >= 1),
-            seat_number int NOT NULL
-              CHECK (seat_number >= 1 AND seat_number <= ${seatBound()}),
+            seat_number int NOT NULL CHECK (seat_number >= 1),
             student_name text NOT NULL,
             student_email text NOT NULL,
             cancel_token text NOT NULL,
             created_at timestamptz NOT NULL DEFAULT now(),
             CONSTRAINT ${SEAT_CONSTRAINT}
-              UNIQUE (lab_id, booking_date, group_number, seat_number)
+              UNIQUE (lab_id, booking_date, slot_number, group_number, seat_number)
           )`);
+        await migrateToSlots();
         // one seat per student per lab — the course's repeat rule, enforced
         // in the database so the application check cannot be the only guard
         await sql().query(`
           CREATE UNIQUE INDEX IF NOT EXISTS ${ONE_PER_LAB_CONSTRAINT}
             ON slot_bookings (lab_id, lower(student_email))`);
-        // one seat per student per Wednesday, across both labs — the two labs
-        // share the single weekly slot, so nobody can attend both at once
+        // one seat per student per slot: nobody is in two places at once. Keyed
+        // on the slot, not the day, so the two MTE200 periods stay independent
         await sql().query(`
           CREATE UNIQUE INDEX IF NOT EXISTS ${ONE_PER_SLOT_CONSTRAINT}
-            ON slot_bookings (booking_date, lower(student_email))`);
+            ON slot_bookings (booking_date, slot_number, lower(student_email))`);
         await sql().query(`
           CREATE INDEX IF NOT EXISTS slot_bookings_lab_date_idx
             ON slot_bookings (lab_id, booking_date)`);
@@ -151,6 +183,7 @@ function rowToBooking(row: Record<string, unknown>): SlotBookingRow {
     id: String(row.id),
     labId: String(row.lab_id),
     date: String(row.booking_date),
+    slot: Number(row.slot_number),
     group: Number(row.group_number),
     seat: Number(row.seat_number),
     studentName: String(row.student_name),
@@ -160,16 +193,17 @@ function rowToBooking(row: Record<string, unknown>): SlotBookingRow {
 // booking_date::text keeps the date a plain 'YYYY-MM-DD' string — letting the
 // driver parse it into a JS Date shifts it a day when the server is east of UTC
 const SELECT_FIELDS =
-  'id, lab_id, booking_date::text AS booking_date, group_number, seat_number, student_name';
+  'id, lab_id, booking_date::text AS booking_date, slot_number, group_number, seat_number, student_name';
 
 /** Every seat booked in the semester window — at most a few dozen rows. */
 export async function listSemesterBookings(): Promise<SlotBookingRow[]> {
   await ensureSchema();
+  const { first, last } = semesterBounds();
   const rows = (await sql().query(
     `SELECT ${SELECT_FIELDS} FROM slot_bookings
      WHERE booking_date BETWEEN $1 AND $2
-     ORDER BY booking_date, lab_id, group_number, seat_number`,
-    [FIRST_DATE, LAST_DATE]
+     ORDER BY booking_date, lab_id, slot_number, group_number, seat_number`,
+    [first, last]
   )) as Record<string, unknown>[];
   return rows.map(rowToBooking);
 }
@@ -205,13 +239,18 @@ export async function createSeatBooking(
     // every seat this student holds that could block the request: another seat
     // in the same lab, or any seat in the same weekly slot
     const { rows: mine } = await client.query(
-      `SELECT lab_id, booking_date::text AS booking_date FROM slot_bookings
-       WHERE lower(student_email) = lower($1) AND (lab_id = $2 OR booking_date = $3)`,
-      [input.studentEmail, input.labId, input.date]
+      `SELECT lab_id, booking_date::text AS booking_date, slot_number FROM slot_bookings
+       WHERE lower(student_email) = lower($1)
+         AND (lab_id = $2 OR (booking_date = $3 AND slot_number = $4))`,
+      [input.studentEmail, input.labId, input.date, input.slot]
     );
     const broken = checkStudentRules(
-      mine.map((row) => ({ labId: String(row.lab_id), date: String(row.booking_date) })),
-      { labId: input.labId, date: input.date }
+      mine.map((row) => ({
+        labId: String(row.lab_id),
+        date: String(row.booking_date),
+        slot: Number(row.slot_number),
+      })),
+      { labId: input.labId, date: input.date, slot: input.slot }
     );
     if (broken) {
       await client.query('ROLLBACK');
@@ -219,8 +258,9 @@ export async function createSeatBooking(
     }
 
     const { rows } = await client.query(
-      `SELECT ${SELECT_FIELDS} FROM slot_bookings WHERE lab_id = $1 AND booking_date = $2`,
-      [input.labId, input.date]
+      `SELECT ${SELECT_FIELDS} FROM slot_bookings
+       WHERE lab_id = $1 AND booking_date = $2 AND slot_number = $3`,
+      [input.labId, input.date, input.slot]
     );
     const result = check(rows.map(rowToBooking));
     if (!result.ok) {
@@ -231,13 +271,14 @@ export async function createSeatBooking(
     const cancelToken = crypto.randomUUID();
     const inserted = await client.query(
       `INSERT INTO slot_bookings
-         (lab_id, booking_date, group_number, seat_number,
+         (lab_id, booking_date, slot_number, group_number, seat_number,
           student_name, student_email, cancel_token)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
        RETURNING ${SELECT_FIELDS}`,
       [
         input.labId,
         input.date,
+        input.slot,
         input.group,
         result.seat,
         input.studentName,

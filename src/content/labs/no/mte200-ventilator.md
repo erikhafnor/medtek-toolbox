@@ -9,7 +9,7 @@ equipment:
 prerequisites:
   - "Dräger Evita XL service- og brukermanualdokumentasjon"
   - "Forelesningsnotater om mekanisk ventilasjon og respirasjonsfysiologi"
-duration: "3 timer"
+duration: "2,5 timer"
 ---
 
 ## Læringsmål

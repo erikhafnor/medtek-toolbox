@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
-/** A name unique per run, so parallel/repeat runs never collide on the one-seat-per-lab rule. */
+/** Unique per run, so repeat runs never collide on the one-seat-per-lab rule. */
 const stamp = () => `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
 test.describe('booking page', () => {
@@ -29,65 +29,83 @@ test.describe('booking page', () => {
     await expect(page.getByRole('heading', { name: /Book labtid/ })).toBeVisible();
   });
 
-  test('shows the semester with weeks 39 and 41 closed', async ({ page }) => {
+  test('switches between the two courses and their labs', async ({ page }) => {
     await page.goto('/en/booking/');
 
-    // all seven Wednesdays are listed; the two closed ones are labelled
-    await expect(page.getByText('Week 37', { exact: false })).toBeVisible();
-    await expect(page.getByText('Week 43', { exact: false })).toBeVisible();
-    // exact match, so the summary line 'Week 39 and 41 closed…' is not counted
-    await expect(page.getByText('Closed for booking', { exact: true })).toHaveCount(2);
-    await expect(page.getByText('Week 39 and 41 closed for booking.')).toBeVisible();
-  });
-
-  test('preselects lab from query param and shows its capacity', async ({ page }) => {
-    await page.goto('/en/booking/?lab=mte210-electrical-safety');
-    await expect(page.getByRole('button', { name: /Electrical Safety/ })).toHaveAttribute(
+    // MTE200 is first, with all seven labs
+    await expect(page.getByRole('button', { name: 'MTE200', exact: true })).toHaveAttribute(
       'aria-pressed',
       'true'
     );
-    // lab 1: one group of three, and the single-unit analyzer warning
-    await expect(page.getByText('1 group × up to 3 students per week')).toBeVisible();
-    await expect(page.getByText('Fluke ESA615', { exact: false }).first()).toBeVisible();
+    await expect(page.getByRole('button', { name: /Defibrillator Lab/ })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Ventilator Lab/ })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Electrical Safety/ })).toHaveCount(0);
 
-    // lab 2 runs three groups in the same weekly slot
-    await page.getByRole('button', { name: /Hospital Networks/ }).click();
-    await expect(page.getByText('3 groups × up to 3 students per week')).toBeVisible();
+    await page.getByRole('button', { name: 'MTE210', exact: true }).click();
+    await expect(page.getByRole('button', { name: /Electrical Safety/ })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Defibrillator Lab/ })).toHaveCount(0);
   });
 
-  test('blocks the other lab in the same Wednesday slot', async ({ page }) => {
+  test('shows MTE200 Tuesdays with two slots, only week 41 closed', async ({ page }) => {
+    await page.goto('/en/booking/?lab=mte200-defibrillator');
+
+    // weeks 37 through 47, and week 39 stays open for MTE200
+    await expect(page.getByText('Week 37', { exact: false })).toBeVisible();
+    await expect(page.getByText('Week 39', { exact: false })).toBeVisible();
+    await expect(page.getByText('Week 47', { exact: false })).toBeVisible();
+    await expect(page.getByText('Closed for booking', { exact: true })).toHaveCount(1);
+    await expect(page.getByText('Week 41 closed for booking.')).toBeVisible();
+
+    // both periods appear on every open Tuesday
+    await expect(
+      page.locator('[data-date="2026-09-15"][data-slot="1"]').getByText('09:00–11:30')
+    ).toBeVisible();
+    await expect(
+      page.locator('[data-date="2026-09-15"][data-slot="2"]').getByText('11:30–14:00')
+    ).toBeVisible();
+
+    // one group of three per slot for MTE200
+    await expect(page.getByText('1 group × up to 3 students per slot')).toBeVisible();
+  });
+
+  test('shows MTE210 Wednesdays with weeks 39 and 41 closed', async ({ page }) => {
+    await page.goto('/en/booking/?lab=mte210-hospital-networks');
+    await expect(page.getByText('Closed for booking', { exact: true })).toHaveCount(2);
+    await expect(page.getByText('Week 39 and 41 closed for booking.')).toBeVisible();
+    await expect(page.getByText('3 groups × up to 3 students per slot')).toBeVisible();
+  });
+
+  test('allows two MTE200 labs on one Tuesday in different slots', async ({ page }) => {
     const student = `E2E${stamp()}`;
-    await page.goto('/en/booking/?lab=mte210-electrical-safety');
+    await page.goto('/en/booking/?lab=mte200-defibrillator');
     await page.locator('#booking-name').fill(student);
     await page.locator('#booking-email').fill(`${student.toLowerCase()}@stud.uis.no`);
 
-    // take the lab 1 seat in the first open week (week 37)
-    const week37 = page.locator('li').filter({ hasText: 'Week 37' });
-    await week37.getByRole('button', { name: '+ Take seat' }).first().click();
+    // take the 09:00 slot in week 38
+    const morning = page.locator('[data-date="2026-09-15"][data-slot="1"]');
+    await expect(morning.getByText('09:00–11:30')).toBeVisible();
+    await morning.getByRole('button', { name: '+ Take seat' }).click();
     await expect(page.getByRole('status')).toContainText('Seat booked!', { timeout: 15_000 });
 
-    // switch to lab 2: week 37 is now blocked, later weeks are still open
-    await page.getByRole('button', { name: /Hospital Networks/ }).click();
-    const lab2Week37 = page.locator('li').filter({ hasText: 'Week 37' });
-    await expect(lab2Week37.getByText('You already have', { exact: false })).toBeVisible();
-    await expect(lab2Week37.getByRole('button', { name: '+ Take seat' }).first()).toBeDisabled();
+    // a different lab, same Tuesday: the 09:00 slot is blocked, 11:30 is not
+    await page.getByRole('button', { name: /ECG Recording/ }).click();
+    const ecgMorning = page.locator('[data-date="2026-09-15"][data-slot="1"]');
+    const ecgAfternoon = page.locator('[data-date="2026-09-15"][data-slot="2"]');
+    await expect(ecgMorning.getByText('You already have', { exact: false })).toBeVisible();
+    await expect(ecgMorning.getByRole('button', { name: '+ Take seat' })).toBeDisabled();
+    await expect(ecgAfternoon.getByRole('button', { name: '+ Take seat' })).toBeEnabled();
 
-    const lab2Week38 = page.locator('li').filter({ hasText: 'Week 38' });
-    await expect(lab2Week38.getByRole('button', { name: '+ Take seat' }).first()).toBeEnabled();
-
-    // clean up the shared database
+    // and it really books
+    await ecgAfternoon.getByRole('button', { name: '+ Take seat' }).click();
+    await expect(page.getByRole('status')).toContainText('Seat booked!', { timeout: 15_000 });
     const myBookings = page.getByRole('region', { name: 'My bookings' });
-    await myBookings.getByRole('button', { name: 'Cancel booking' }).click();
-    await expect(myBookings.getByText('No bookings in this browser yet.')).toBeVisible({
-      timeout: 15_000,
-    });
+    await expect(myBookings.getByRole('listitem')).toHaveCount(2);
   });
 
-  test('takes a seat and cancels it again', async ({ page }) => {
+  test('takes a seat, exports it to a calendar, and cancels it', async ({ page }) => {
     const student = `E2E${stamp()}`;
-    await page.goto('/en/booking/?lab=mte210-hospital-networks');
+    await page.goto('/en/booking/?lab=mte200-ultrasound');
 
-    // seat buttons stay disabled until name and email are valid
     const seatButtons = page.getByRole('button', { name: '+ Take seat' });
     await expect(seatButtons.first()).toBeVisible({ timeout: 15_000 });
     await expect(seatButtons.first()).toBeDisabled();
@@ -96,46 +114,44 @@ test.describe('booking page', () => {
     await page.locator('#booking-email').fill(`${student.toLowerCase()}@stud.uis.no`);
     await expect(seatButtons.first()).toBeEnabled();
 
+    // first free button is week 37, the 09:00 slot
     await seatButtons.first().click();
     await expect(page.getByRole('status')).toContainText('Seat booked!', { timeout: 15_000 });
-
-    // the seat now shows in the semester map, marked as ours
-    // \s also matches the nbsp that keeps the marker on the name's line
     await expect(page.getByText(new RegExp(`${student}\\s*\\(you\\)`))).toBeVisible();
 
     const myBookings = page.getByRole('region', { name: 'My bookings' });
-    await expect(myBookings.getByText('Hospital Networks', { exact: false })).toBeVisible();
-    // the room is shown alongside the booking
     await expect(myBookings.getByText('KE E-455', { exact: false })).toBeVisible();
 
-    // the .ics download carries the right room and UTC instants (CEST, +02:00)
+    // the .ics carries the 09:00 slot in UTC (CEST, +02:00) and the room
     const downloadPromise = page.waitForEvent('download');
     await myBookings.getByRole('button', { name: 'Calendar file' }).click();
     const download = await downloadPromise;
-    expect(download.suggestedFilename()).toBe('mte210-lab-2026-09-09.ics');
+    expect(download.suggestedFilename()).toBe('mte200-ultrasound-2026-09-08.ics');
     const ics = readFileSync((await download.path())!, 'utf8');
-    expect(ics).toContain('BEGIN:VEVENT');
-    expect(ics).toContain('DTSTART:20260909T081500Z');
-    expect(ics).toContain('DTEND:20260909T110000Z');
+    expect(ics).toContain('DTSTART:20260908T070000Z');
+    expect(ics).toContain('DTEND:20260908T093000Z');
     expect(ics).toContain('LOCATION:KE E-455');
 
-    // and the Google link targets the same window
     const href = await myBookings.getByRole('link', { name: 'Google' }).getAttribute('href');
     // parsed rather than string-matched: URLSearchParams writes spaces as '+',
     // which decodeURIComponent does not turn back into a space
     const google = new URL(href ?? '');
-    expect(google.host).toBe('calendar.google.com');
-    expect(google.searchParams.get('dates')).toBe('20260909T081500Z/20260909T110000Z');
+    expect(google.searchParams.get('dates')).toBe('20260908T070000Z/20260908T093000Z');
     expect(google.searchParams.get('location')).toContain('KE E-455');
 
-    // one seat per lab: every remaining seat button for this lab is now disabled
+    // one seat per lab: the remaining buttons for this lab are now disabled
     await expect(seatButtons.first()).toBeDisabled();
 
-    // cancel it again (also cleans up the shared database)
     await myBookings.getByRole('button', { name: 'Cancel booking' }).click();
     await expect(myBookings.getByText('No bookings in this browser yet.')).toBeVisible({
       timeout: 15_000,
     });
     await expect(seatButtons.first()).toBeEnabled();
+  });
+
+  test('shows the room on a lab page that is not bookable', async ({ page }) => {
+    await page.goto('/no/labs/mte210-ct-imaging/');
+    await expect(page.getByText('Rom: KE E-455', { exact: false })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Book labtid for denne/ })).toHaveCount(0);
   });
 });

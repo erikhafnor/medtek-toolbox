@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   buildIcs,
+  icsFilename,
   escapeIcsText,
   foldIcsLine,
   googleCalendarUrl,
@@ -115,6 +116,19 @@ describe('buildIcs()', () => {
   it('escapes reserved characters in user-supplied text', () => {
     const ics = buildIcs({ ...event, description: 'Gruppe 1, seat 2; bring notes' }, NOW);
     expect(ics).toContain('DESCRIPTION:Gruppe 1\\, seat 2\\; bring notes');
+  });
+});
+
+describe('icsFilename()', () => {
+  it('names the file after the lab and date', () => {
+    expect(icsFilename('mte200-defibrillator', '2026-09-08')).toBe(
+      'mte200-defibrillator-2026-09-08.ics'
+    );
+  });
+
+  it('strips anything that has no place in a filename', () => {
+    expect(icsFilename('../../etc/passwd', '2026-09-08')).toBe('etcpasswd-2026-09-08.ics');
+    expect(icsFilename('', '2026-09-08')).toBe('lab-2026-09-08.ics');
   });
 });
 

@@ -9,7 +9,7 @@ prerequisites:
   - "Fluke ProSim 8 user manual"
   - "Philips PageWriter TC30 user and service manual"
   - "Lecture notes on cardiac electrophysiology and ECG"
-duration: "3 hours"
+duration: "2.5 hours"
 ---
 
 ## Learning Objectives

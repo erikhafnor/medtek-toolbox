@@ -7,7 +7,7 @@ equipment:
 prerequisites:
   - "LIFEPAK 15 brukermanualdokumentasjon"
   - "Forelesningsnotater om hemodynamisk overvåking"
-duration: "3 timer"
+duration: "2,5 timer"
 ---
 
 ## Læringsmål

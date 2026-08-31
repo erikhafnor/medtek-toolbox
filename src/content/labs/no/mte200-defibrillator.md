@@ -10,7 +10,7 @@ prerequisites:
   - "LIFEPAK 15 bruker- og servicemanualdokumentasjon"
   - "Fluke Impulse 7000DP dokumentasjon"
   - "Forelesningsnotater om defibrillasjon"
-duration: "3 timer"
+duration: "2,5 timer"
 ---
 
 ## Læringsmål

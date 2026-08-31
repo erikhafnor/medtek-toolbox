@@ -9,6 +9,7 @@ import type { Locale } from '../i18n';
 export interface BookingLabels {
   title: string;
   intro: string;
+  course: string;
   lab: string;
   requires: string;
   singleUnit: string;
@@ -50,17 +51,18 @@ export interface BookingLabels {
 
 export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
   en: {
-    title: 'Book lab time — MTE210',
+    title: 'Book lab time',
     intro:
-      'MTE210 has one lab session a week: Wednesdays 10:15–13:00 in room KE E-455. Pick an assignment and take a free seat in a group — you can see which seats your fellow students have already taken, and add your session to your calendar afterwards.',
+      'Pick your course and lab assignment, then take a free seat. MTE200 runs Tuesdays in two slots (09:00–11:30 and 11:30–14:00); MTE210 runs Wednesdays 10:15–13:00. All lab work is in room KE E-455. You can see which seats your fellow students have taken, and add your session to your calendar afterwards.',
+    course: 'Course',
     lab: 'Lab assignment',
     requires: 'Equipment',
     singleUnit: 'single unit',
-    capacityNote: '{groups} {groupWord} × up to {seats} students per week',
+    capacityNote: '{groups} {groupWord} × up to {seats} students per slot',
     groupOne: 'group',
     groupMany: 'groups',
     semester: 'Semester overview',
-    semesterRange: '{first} – {last} · Wednesdays {start}–{end}',
+    semesterRange: '{first} – {last} · every {day}',
     closedWeeksNote: 'Week {weeks} closed for booking.',
     week: 'Week {week}',
     group: 'Group {group}',
@@ -71,7 +73,7 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
     groupFull: 'Full',
     weekClosed: 'Closed for booking',
     weekPast: 'Passed',
-    busyThisWeek: 'You already have {lab} this week.',
+    busyThisWeek: 'You already have {lab} in this slot.',
     room: 'Room',
     addToCalendar: 'Add to calendar',
     calendarFile: 'Calendar file',
@@ -98,7 +100,7 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
       'already-booked':
         'You already have a seat for this lab assignment. Cancel it first if you want to move.',
       'same-slot':
-        'You already have a lab session that Wednesday. Both labs run 10:15–13:00, so you can only take one seat per week.',
+        'You already have a lab session in that time slot. You cannot be in two places at once — pick another slot.',
       'unknown-lab': 'Unknown lab assignment.',
       'invalid-input': 'Please check the form — some fields are missing or invalid.',
       busy: 'The booking service is busy right now — please try again in a few seconds.',
@@ -108,17 +110,18 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
     },
   },
   no: {
-    title: 'Book labtid — MTE210',
+    title: 'Book labtid',
     intro:
-      'MTE210 har én laboratorietime i uka: onsdager 10:15–13:00 i rom KE E-455. Velg laboppgave og ta en ledig plass i en gruppe — du ser hvilke plasser medstudentene allerede har tatt, og kan legge økta i kalenderen din etterpå.',
+      'Velg emne og laboppgave, og ta en ledig plass. MTE200 går tirsdager i to økter (09:00–11:30 og 11:30–14:00); MTE210 går onsdager 10:15–13:00. All labbing er i rom KE E-455. Du ser hvilke plasser medstudentene har tatt, og kan legge økta i kalenderen din etterpå.',
+    course: 'Emne',
     lab: 'Laboppgave',
     requires: 'Utstyr',
     singleUnit: 'kun én enhet',
-    capacityNote: '{groups} {groupWord} × maks {seats} studenter per uke',
+    capacityNote: '{groups} {groupWord} × maks {seats} studenter per økt',
     groupOne: 'gruppe',
     groupMany: 'grupper',
     semester: 'Semesteroversikt',
-    semesterRange: '{first} – {last} · onsdager {start}–{end}',
+    semesterRange: '{first} – {last} · hver {day}',
     closedWeeksNote: 'Uke {weeks} er stengt for booking.',
     week: 'Uke {week}',
     group: 'Gruppe {group}',
@@ -129,7 +132,7 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
     groupFull: 'Full',
     weekClosed: 'Stengt for booking',
     weekPast: 'Passert',
-    busyThisWeek: 'Du har allerede {lab} denne uka.',
+    busyThisWeek: 'Du har allerede {lab} i denne økta.',
     room: 'Rom',
     addToCalendar: 'Legg til i kalender',
     calendarFile: 'Kalenderfil',
@@ -156,7 +159,7 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
       'already-booked':
         'Du har allerede en plass på denne laboppgaven. Avbestill den først hvis du vil bytte.',
       'same-slot':
-        'Du har allerede en labtime den onsdagen. Begge labbene går 10:15–13:00, så du kan bare ta én plass per uke.',
+        'Du har allerede en labtime i den økta. Du kan ikke være to steder samtidig — velg en annen økt.',
       'unknown-lab': 'Ukjent laboppgave.',
       'invalid-input': 'Sjekk skjemaet — noen felt mangler eller er ugyldige.',
       busy: 'Bookingtjenesten er opptatt akkurat nå — prøv igjen om noen sekunder.',

@@ -8,7 +8,7 @@
 // date, so a November slot exports as +01:00 without anyone noticing.
 
 const TIME_ZONE = 'Europe/Oslo';
-const PRODID = '-//medtek.tools//MTE210 lab booking//EN';
+const PRODID = '-//medtek.tools//Lab booking//EN';
 
 export interface CalendarEvent {
   /** Stable id, so re-importing updates the event instead of duplicating it. */
@@ -132,7 +132,8 @@ export function googleCalendarUrl(event: CalendarEvent): string {
   return url.toString();
 }
 
-/** Filename for a downloaded booking, e.g. 'mte210-lab-2026-09-16.ics'. */
-export function icsFilename(date: string): string {
-  return `mte210-lab-${date}.ics`;
+/** Filename for a downloaded booking, e.g. 'mte200-defibrillator-2026-09-08.ics'. */
+export function icsFilename(labId: string, date: string): string {
+  const safe = labId.replace(/[^a-z0-9-]/gi, '') || 'lab';
+  return `${safe}-${date}.ics`;
 }

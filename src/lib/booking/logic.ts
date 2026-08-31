@@ -1,32 +1,33 @@
-// Pure booking domain logic for the MTE210 weekly lab slot — no I/O, shared by
-// the API endpoints and the booking UI island.
+// Pure booking domain logic — no I/O, shared by the API endpoints and the
+// booking UI island.
 //
-// The slot itself is fixed (Wednesdays 10:15–13:00, see semester.ts), so time of
-// day is never a variable here: a booking is a seat in a group, in a lab, in a
-// given week. Dates are 'YYYY-MM-DD' strings in Europe/Oslo.
+// A booking is a seat, in a group, in a slot, on a lab day. Everything about
+// when a course runs lives in courses.ts; this module only derives from it.
+// Dates are 'YYYY-MM-DD' strings and times are Europe/Oslo wall-clock.
 
 import {
-  BOOKABLE_LABS,
-  CLOSED_WEEKS,
-  FIRST_DATE,
-  LAST_DATE,
-  SLOT,
-  WEDNESDAY,
+  ALL_BOOKABLE_LABS,
+  COURSES,
   type BookableLab,
-} from './semester';
+  type CourseBooking,
+  type CourseSlot,
+} from './courses';
 
 /** One student's claim on a seat. The public shape — never carries an email. */
 export interface SeatBooking {
   labId: string;
   date: string;
+  /** 1-based index into the course's slots. */
+  slot: number;
   group: number;
   seat: number;
 }
 
-/** A student asking to join a specific group in a specific week. */
+/** A student asking for a seat in a specific group, slot and week. */
 export interface SeatRequest {
   labId: string;
   date: string;
+  slot: number;
   group: number;
 }
 
@@ -39,46 +40,20 @@ export type SeatUnavailableReason =
 
 export type SeatResult = { ok: true; seat: number } | { ok: false; reason: SeatUnavailableReason };
 
-/** One seat a specific student holds — the student's own view of a booking. */
-export interface StudentSeat {
-  labId: string;
-  date: string;
-}
-
-/**
- * Rules that depend on who is asking rather than on remaining capacity:
- *
- * - `already-booked` — a student does each lab once, so a second seat in the
- *   same lab is refused however many weeks apart.
- * - `same-slot` — both labs run in the one Wednesday 10:15–13:00 slot, so a
- *   student holding any seat that week cannot take another: nobody can be in
- *   two places at once.
- *
- * Returns null when the request breaks neither rule.
- */
-export function checkStudentRules(
-  mine: StudentSeat[],
-  request: StudentSeat
-): 'already-booked' | 'same-slot' | null {
-  if (mine.some((seat) => seat.labId === request.labId)) return 'already-booked';
-  if (mine.some((seat) => seat.date === request.date)) return 'same-slot';
-  return null;
-}
-
-/** A Wednesday in the semester window — closed ones included, flagged. */
+/** A lab day in the semester window — closed ones included, flagged. */
 export interface SemesterWeek {
   date: string;
   isoWeek: number;
   open: boolean;
 }
 
-const DAY_MS = 86_400_000;
+/** Where a lab sits in the configuration. */
+export interface LabBookingConfig {
+  course: CourseBooking;
+  lab: BookableLab;
+}
 
-/** Minutes past midnight at which the slot begins, from the SLOT config. */
-export const SLOT_START_MINUTES = (() => {
-  const [hour, minute] = SLOT.start.split(':').map(Number);
-  return hour * 60 + minute;
-})();
+const DAY_MS = 86_400_000;
 
 export function isValidDateString(date: string): boolean {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return false;
@@ -106,39 +81,60 @@ export function isoWeek(date: string): number {
   return 1 + Math.round((thursday.getTime() - firstThursday.getTime()) / (7 * DAY_MS));
 }
 
-/** Every Wednesday in the semester window, closed weeks flagged not open. */
-export function listSemesterWeeks(): SemesterWeek[] {
+/** The course a lab belongs to, with its capacity — null if not bookable. */
+export function bookingConfigFor(labId: string): LabBookingConfig | null {
+  return ALL_BOOKABLE_LABS.find(({ lab }) => lab.id === labId) ?? null;
+}
+
+/** Per-slot capacity for a bookable lab, or null if the lab is not bookable. */
+export function capacityFor(labId: string): BookableLab | null {
+  return bookingConfigFor(labId)?.lab ?? null;
+}
+
+export function courseById(id: string): CourseBooking | null {
+  return COURSES.find((course) => course.id === id) ?? null;
+}
+
+/** Every lab day in a course's window, closed weeks flagged not open. */
+export function listSemesterWeeks(course: CourseBooking): SemesterWeek[] {
   const weeks: SemesterWeek[] = [];
   for (
-    let day = new Date(`${FIRST_DATE}T00:00:00Z`);
-    day.toISOString().slice(0, 10) <= LAST_DATE;
+    let day = new Date(`${course.firstDate}T00:00:00Z`);
+    day.toISOString().slice(0, 10) <= course.lastDate;
     day = new Date(day.getTime() + 7 * DAY_MS)
   ) {
     const date = day.toISOString().slice(0, 10);
     const week = isoWeek(date);
-    weeks.push({ date, isoWeek: week, open: !CLOSED_WEEKS.includes(week) });
+    weeks.push({ date, isoWeek: week, open: !course.closedWeeks.includes(week) });
   }
   return weeks;
 }
 
-/** Just the Wednesdays that accept bookings. */
-export function listSlotDates(): string[] {
-  return listSemesterWeeks()
+/** Just the lab days that accept bookings. */
+export function listSlotDates(course: CourseBooking): string[] {
+  return listSemesterWeeks(course)
     .filter((week) => week.open)
     .map((week) => week.date);
 }
 
-/** Is this date a Wednesday in the window whose week is not closed? */
-export function isOpenSlotDate(date: string): boolean {
+/** Is this date a lab day in the window whose week is not closed? */
+export function isOpenSlotDate(course: CourseBooking, date: string): boolean {
   if (!isValidDateString(date)) return false;
-  if (date < FIRST_DATE || date > LAST_DATE) return false;
-  if (new Date(`${date}T00:00:00Z`).getUTCDay() !== WEDNESDAY) return false;
-  return !CLOSED_WEEKS.includes(isoWeek(date));
+  if (date < course.firstDate || date > course.lastDate) return false;
+  if (new Date(`${date}T00:00:00Z`).getUTCDay() !== course.weekday) return false;
+  return !course.closedWeeks.includes(isoWeek(date));
 }
 
-/** Per-week capacity for a bookable lab, or null if the lab is not bookable. */
-export function capacityFor(labId: string): BookableLab | null {
-  return BOOKABLE_LABS.find((lab) => lab.id === labId) ?? null;
+/** The slot for a 1-based slot number, or null when out of range. */
+export function slotOf(course: CourseBooking, slot: number): CourseSlot | null {
+  if (!Number.isInteger(slot) || slot < 1 || slot > course.slots.length) return null;
+  return course.slots[slot - 1];
+}
+
+/** Minutes past midnight for an 'HH:MM' wall-clock time. */
+export function minutesOfDay(time: string): number {
+  const [hour, minute] = time.split(':').map(Number);
+  return hour * 60 + minute;
 }
 
 /** Today's date in the lab's timezone, as 'YYYY-MM-DD'. */
@@ -159,21 +155,48 @@ export function osloMinutesOfDay(now: Date = new Date()): number {
   return value('hour') * 60 + value('minute');
 }
 
-/** Has this slot already started (or passed) as of the given moment? */
+/**
+ * Has this slot already started (or passed)?
+ *
+ * Judged per slot, not per day: on a Tuesday at noon the 09:00 slot is gone but
+ * the 11:30 one has only just begun — and is also gone, while a 13:00 slot
+ * would still be open.
+ */
 export function isPastSlot(
+  course: CourseBooking,
   date: string,
+  slot: number,
   today: string = osloToday(),
   nowMinutes: number = osloMinutesOfDay()
 ): boolean {
   if (date < today) return true;
-  return date === today && nowMinutes >= SLOT_START_MINUTES;
+  if (date > today) return false;
+  const period = slotOf(course, slot);
+  if (!period) return true;
+  return nowMinutes >= minutesOfDay(period.start);
+}
+
+/** Is any slot on this date still open for booking? */
+export function hasOpenSlot(
+  course: CourseBooking,
+  date: string,
+  today: string = osloToday(),
+  nowMinutes: number = osloMinutesOfDay()
+): boolean {
+  return course.slots.some(
+    (_, index) => !isPastSlot(course, date, index + 1, today, nowMinutes)
+  );
 }
 
 function seatsTakenIn(existing: SeatBooking[], request: SeatRequest): Set<number> {
   return new Set(
     existing
       .filter(
-        (b) => b.labId === request.labId && b.date === request.date && b.group === request.group
+        (b) =>
+          b.labId === request.labId &&
+          b.date === request.date &&
+          b.slot === request.slot &&
+          b.group === request.group
       )
       .map((b) => b.seat)
   );
@@ -197,20 +220,21 @@ export function seatsFreeFor(
   existing: SeatBooking[],
   labId: string,
   date: string,
+  slot: number,
   group: number
 ): number {
   const lab = capacityFor(labId);
   if (!lab) return 0;
-  const taken = seatsTakenIn(existing, { labId, date, group });
+  const taken = seatsTakenIn(existing, { labId, date, slot, group });
   return Math.max(0, lab.seatsPerGroup - taken.size);
 }
 
 /**
- * Full decision for a seat request: is the lab bookable, the group within
- * capacity, the week open and still ahead, and a seat free?
+ * Full decision for a seat request: is the lab bookable, the slot and group
+ * within range, the week open and still ahead, and a seat free?
  *
- * `existing` only needs to cover the requested lab and date; extra rows are
- * filtered out, so callers may pass the whole semester.
+ * `existing` only needs to cover the requested lab, date and slot; extra rows
+ * are filtered out, so callers may pass the whole semester.
  */
 export function checkSeatAvailability(
   request: SeatRequest,
@@ -218,23 +242,57 @@ export function checkSeatAvailability(
   today: string = osloToday(),
   nowMinutes: number = osloMinutesOfDay()
 ): SeatResult {
-  const lab = capacityFor(request.labId);
-  if (!lab) return { ok: false, reason: 'unknown-lab' };
+  const config = bookingConfigFor(request.labId);
+  if (!config) return { ok: false, reason: 'unknown-lab' };
+  const { course, lab } = config;
 
+  if (!slotOf(course, request.slot)) return { ok: false, reason: 'invalid-input' };
   if (
     !Number.isInteger(request.group) ||
     request.group < 1 ||
-    request.group > lab.groupsPerWeek
+    request.group > lab.groupsPerSlot
   ) {
     return { ok: false, reason: 'invalid-input' };
   }
 
-  // covers closed weeks, non-Wednesdays and anything outside the semester
-  if (!isOpenSlotDate(request.date)) return { ok: false, reason: 'closed-week' };
-  if (isPastSlot(request.date, today, nowMinutes)) return { ok: false, reason: 'past-slot' };
+  // covers closed weeks, the wrong weekday, and anything outside the semester
+  if (!isOpenSlotDate(course, request.date)) return { ok: false, reason: 'closed-week' };
+  if (isPastSlot(course, request.date, request.slot, today, nowMinutes)) {
+    return { ok: false, reason: 'past-slot' };
+  }
 
   const seat = assignSeat(existing, request, lab.seatsPerGroup);
   if (seat === null) return { ok: false, reason: 'group-full' };
 
   return { ok: true, seat };
+}
+
+/** One seat a specific student holds — the student's own view of a booking. */
+export interface StudentSeat {
+  labId: string;
+  date: string;
+  slot: number;
+}
+
+/**
+ * Rules that depend on who is asking rather than on remaining capacity:
+ *
+ * - `already-booked` — a student does each lab once, so a second seat in the
+ *   same lab is refused however many weeks apart.
+ * - `same-slot` — nobody can be in two places at once, so a student holding a
+ *   seat in a given slot on a given day cannot take another. Two labs in
+ *   *different* slots on the same day are fine: that is what the second MTE200
+ *   period is for.
+ *
+ * Returns null when the request breaks neither rule.
+ */
+export function checkStudentRules(
+  mine: StudentSeat[],
+  request: StudentSeat
+): 'already-booked' | 'same-slot' | null {
+  if (mine.some((seat) => seat.labId === request.labId)) return 'already-booked';
+  if (mine.some((seat) => seat.date === request.date && seat.slot === request.slot)) {
+    return 'same-slot';
+  }
+  return null;
 }
