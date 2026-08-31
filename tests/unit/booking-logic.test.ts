@@ -3,6 +3,7 @@ import {
   assignSeat,
   capacityFor,
   checkSeatAvailability,
+  checkStudentRules,
   isOpenSlotDate,
   isValidDateString,
   isoWeek,
@@ -251,6 +252,48 @@ describe('checkSeatAvailability()', () => {
     expect(
       checkSeatAvailability({ labId: NETWORKS, date: W42, group: 2 }, existing, BEFORE, EARLY)
     ).toEqual({ ok: true, seat: 1 });
+  });
+});
+
+describe('checkStudentRules()', () => {
+  it('allows a student with no seats yet', () => {
+    expect(checkStudentRules([], { labId: SAFETY, date: W37 })).toBeNull();
+  });
+
+  it('allows the two different labs in different weeks', () => {
+    const mine = [{ labId: SAFETY, date: W37 }];
+    expect(checkStudentRules(mine, { labId: NETWORKS, date: W38 })).toBeNull();
+    expect(checkStudentRules(mine, { labId: NETWORKS, date: W43 })).toBeNull();
+  });
+
+  it('refuses a second seat in the same lab, however many weeks apart', () => {
+    const mine = [{ labId: SAFETY, date: W37 }];
+    expect(checkStudentRules(mine, { labId: SAFETY, date: W40 })).toBe('already-booked');
+    expect(checkStudentRules(mine, { labId: SAFETY, date: W37 })).toBe('already-booked');
+  });
+
+  it('refuses the other lab in the same Wednesday slot — nobody is in two places at once', () => {
+    const mine = [{ labId: SAFETY, date: W38 }];
+    expect(checkStudentRules(mine, { labId: NETWORKS, date: W38 })).toBe('same-slot');
+  });
+
+  it('reports the same-lab rule first when a request breaks both', () => {
+    const mine = [{ labId: SAFETY, date: W38 }];
+    expect(checkStudentRules(mine, { labId: SAFETY, date: W38 })).toBe('already-booked');
+  });
+
+  it('lets a student hold one seat in each lab once the weeks differ', () => {
+    const mine = [
+      { labId: SAFETY, date: W37 },
+      { labId: NETWORKS, date: W40 },
+    ];
+    // both labs done — nothing further is allowed
+    expect(checkStudentRules(mine, { labId: SAFETY, date: W42 })).toBe('already-booked');
+    expect(checkStudentRules(mine, { labId: NETWORKS, date: W42 })).toBe('already-booked');
+  });
+
+  it('ignores other students’ seats — the caller passes only the student’s own', () => {
+    expect(checkStudentRules([], { labId: NETWORKS, date: W38 })).toBeNull();
   });
 });
 

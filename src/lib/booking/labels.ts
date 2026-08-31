@@ -26,6 +26,7 @@ export interface BookingLabels {
   groupFull: string;
   weekClosed: string;
   weekPast: string;
+  busyThisWeek: string;
   yourDetails: string;
   name: string;
   namePlaceholder: string;
@@ -66,6 +67,7 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
     groupFull: 'Full',
     weekClosed: 'Closed for booking',
     weekPast: 'Passed',
+    busyThisWeek: 'You already have {lab} this week.',
     yourDetails: 'Your details',
     name: 'Name',
     namePlaceholder: 'e.g. Kari Nordmann',
@@ -87,6 +89,8 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
       'group-full': 'That group just filled up — please pick another seat.',
       'already-booked':
         'You already have a seat for this lab assignment. Cancel it first if you want to move.',
+      'same-slot':
+        'You already have a lab session that Wednesday. Both labs run 10:15–13:00, so you can only take one seat per week.',
       'unknown-lab': 'Unknown lab assignment.',
       'invalid-input': 'Please check the form — some fields are missing or invalid.',
       busy: 'The booking service is busy right now — please try again in a few seconds.',
@@ -117,6 +121,7 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
     groupFull: 'Full',
     weekClosed: 'Stengt for booking',
     weekPast: 'Passert',
+    busyThisWeek: 'Du har allerede {lab} denne uka.',
     yourDetails: 'Dine opplysninger',
     name: 'Navn',
     namePlaceholder: 'f.eks. Kari Nordmann',
@@ -138,6 +143,8 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
       'group-full': 'Gruppa ble full akkurat nå — velg en annen plass.',
       'already-booked':
         'Du har allerede en plass på denne laboppgaven. Avbestill den først hvis du vil bytte.',
+      'same-slot':
+        'Du har allerede en labtime den onsdagen. Begge labbene går 10:15–13:00, så du kan bare ta én plass per uke.',
       'unknown-lab': 'Ukjent laboppgave.',
       'invalid-input': 'Sjekk skjemaet — noen felt mangler eller er ugyldige.',
       busy: 'Bookingtjenesten er opptatt akkurat nå — prøv igjen om noen sekunder.',

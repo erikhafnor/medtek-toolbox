@@ -39,6 +39,32 @@ export type SeatUnavailableReason =
 
 export type SeatResult = { ok: true; seat: number } | { ok: false; reason: SeatUnavailableReason };
 
+/** One seat a specific student holds — the student's own view of a booking. */
+export interface StudentSeat {
+  labId: string;
+  date: string;
+}
+
+/**
+ * Rules that depend on who is asking rather than on remaining capacity:
+ *
+ * - `already-booked` — a student does each lab once, so a second seat in the
+ *   same lab is refused however many weeks apart.
+ * - `same-slot` — both labs run in the one Wednesday 10:15–13:00 slot, so a
+ *   student holding any seat that week cannot take another: nobody can be in
+ *   two places at once.
+ *
+ * Returns null when the request breaks neither rule.
+ */
+export function checkStudentRules(
+  mine: StudentSeat[],
+  request: StudentSeat
+): 'already-booked' | 'same-slot' | null {
+  if (mine.some((seat) => seat.labId === request.labId)) return 'already-booked';
+  if (mine.some((seat) => seat.date === request.date)) return 'same-slot';
+  return null;
+}
+
 /** A Wednesday in the semester window — closed ones included, flagged. */
 export interface SemesterWeek {
   date: string;

@@ -23,6 +23,8 @@ already taken. Course staff set the semester window and per-lab capacity in one 
 - Students sign up **individually into a seat**, choosing which group to join, so
   groups can form on the site.
 - A student may hold **at most one seat per lab** (so: Lab 1 once, Lab 2 once).
+- A student may hold **at most one seat per Wednesday**, across both labs — the
+  two labs share the one weekly slot, so nobody can attend both at once.
 
 That yields 5 bookable Wednesdays:
 
@@ -88,12 +90,15 @@ CREATE TABLE slot_bookings (
 );
 CREATE UNIQUE INDEX slot_bookings_one_per_lab_idx
   ON slot_bookings (lab_id, lower(student_email));
+CREATE UNIQUE INDEX slot_bookings_one_per_slot_idx
+  ON slot_bookings (booking_date, lower(student_email));
 CREATE INDEX slot_bookings_lab_date_idx ON slot_bookings (lab_id, booking_date);
 ```
 
-The two unique constraints enforce the course rules in the database itself,
+The three unique indexes enforce the course rules in the database itself,
 independently of the application check: a group can never hold a fourth student,
-and one email can never hold two seats in the same lab. Schema creation stays
+one email can never hold two seats in the same lab, and one email can never hold
+two seats in the same Wednesday slot. Schema creation stays
 idempotent (`ensureSchema`), so a fresh preview database needs no migration step.
 
 The pre-existing `bookings` table is left in place and unused. It is not dropped:
@@ -120,6 +125,9 @@ Pure, unit-tested, no I/O:
   each tagged `open` / `closed`, so the UI can explain the gaps.
 - `isBookableSlot(date, today)` — is this an open, not-yet-passed slot date?
 - `capacityFor(labId)` — `{ groupsPerWeek, seatsPerGroup }` or null for unknown labs.
+- `checkStudentRules(mine, request)` — the rules that depend on who is asking:
+  `already-booked` (a second seat in the same lab) and `same-slot` (any seat
+  already held that Wednesday). Pure, so both the API and the UI share it.
 - `assignSeat(existing, group, seatsPerGroup)` — lowest free seat number, or null.
 - `checkSeatAvailability(request, existing, today)` — the full decision, returning
   `{ ok: true, seat }` or a reason code.

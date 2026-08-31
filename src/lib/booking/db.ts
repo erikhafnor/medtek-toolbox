@@ -12,13 +12,19 @@
 // simultaneous requests can never both claim the last seat. lock_timeout keeps
 // a stalled holder from queueing every other request behind it indefinitely.
 //
-// Both course rules are additionally enforced by unique constraints, so even a
-// bug in the application check cannot overfill a group or give one student two
-// seats in the same lab; those violations are translated back into the ordinary
-// error codes rather than surfacing as a 500.
+// All three course rules are additionally enforced by unique indexes, so even a
+// bug in the application check cannot overfill a group, give one student two
+// seats in the same lab, or put one student in both labs in the same Wednesday
+// slot; those violations are translated back into the ordinary error codes
+// rather than surfacing as a 500.
 
 import { Client, neon, neonConfig } from '@neondatabase/serverless';
-import type { SeatBooking, SeatResult, SeatUnavailableReason } from './logic';
+import {
+  checkStudentRules,
+  type SeatBooking,
+  type SeatResult,
+  type SeatUnavailableReason,
+} from './logic';
 import { FIRST_DATE, LAST_DATE, MAX_SEATS_PER_GROUP } from './semester';
 
 const ADVISORY_LOCK_KEY = 823472;
@@ -30,6 +36,7 @@ const PG_UNIQUE_VIOLATION = '23505';
 
 const SEAT_CONSTRAINT = 'slot_bookings_seat_key';
 const ONE_PER_LAB_CONSTRAINT = 'slot_bookings_one_per_lab_idx';
+const ONE_PER_SLOT_CONSTRAINT = 'slot_bookings_one_per_slot_idx';
 
 export interface SlotBookingRow extends SeatBooking {
   id: string;
@@ -46,7 +53,7 @@ export interface CreateSeatInput {
 
 export type CreateSeatOutcome =
   | { ok: true; booking: SlotBookingRow; cancelToken: string }
-  | { ok: false; reason: SeatUnavailableReason | 'already-booked' };
+  | { ok: false; reason: SeatUnavailableReason | 'already-booked' | 'same-slot' };
 
 // Node 22+ ships a global WebSocket, which the Neon driver uses locally.
 if (typeof WebSocket !== 'undefined') {
@@ -107,13 +114,30 @@ export function ensureSchema(): Promise<void> {
         await sql().query(`
           CREATE UNIQUE INDEX IF NOT EXISTS ${ONE_PER_LAB_CONSTRAINT}
             ON slot_bookings (lab_id, lower(student_email))`);
+        // one seat per student per Wednesday, across both labs — the two labs
+        // share the single weekly slot, so nobody can attend both at once
+        await sql().query(`
+          CREATE UNIQUE INDEX IF NOT EXISTS ${ONE_PER_SLOT_CONSTRAINT}
+            ON slot_bookings (booking_date, lower(student_email))`);
         await sql().query(`
           CREATE INDEX IF NOT EXISTS slot_bookings_lab_date_idx
             ON slot_bookings (lab_id, booking_date)`);
       } catch (err) {
-        // two cold instances can race the DDL; the loser's error is benign
         const code = (err as { code?: string })?.code;
-        if (code === PG_UNIQUE_VIOLATION || code === '42P07') return;
+        // 42P07: two cold instances raced the DDL — the loser's error is benign
+        if (code === '42P07') return;
+        // 23505 here means CREATE UNIQUE INDEX found rows that already break the
+        // rule, not a racing instance. The index is then missing, so say so
+        // loudly: the in-transaction check still holds the line, but the
+        // database-level guarantee is gone until staff remove the clashing rows.
+        if (code === PG_UNIQUE_VIOLATION) {
+          console.error(
+            'booking schema: a unique index could not be created because existing ' +
+              'rows violate it. Remove the duplicates, then redeploy.',
+            err
+          );
+          return;
+        }
         schemaReady = null; // allow retry on next request
         throw err;
       }
@@ -155,6 +179,7 @@ function reasonForUniqueViolation(err: unknown): CreateSeatOutcome | null {
   if ((err as { code?: string })?.code !== PG_UNIQUE_VIOLATION) return null;
   const constraint = (err as { constraint?: string })?.constraint ?? '';
   if (constraint === ONE_PER_LAB_CONSTRAINT) return { ok: false, reason: 'already-booked' };
+  if (constraint === ONE_PER_SLOT_CONSTRAINT) return { ok: false, reason: 'same-slot' };
   if (constraint === SEAT_CONSTRAINT) return { ok: false, reason: 'group-full' };
   return null;
 }
@@ -177,14 +202,20 @@ export async function createSeatBooking(
     await client.query("SET LOCAL statement_timeout = '10s'");
     await client.query('SELECT pg_advisory_xact_lock($1)', [ADVISORY_LOCK_KEY]);
 
+    // every seat this student holds that could block the request: another seat
+    // in the same lab, or any seat in the same weekly slot
     const { rows: mine } = await client.query(
-      `SELECT 1 FROM slot_bookings
-       WHERE lab_id = $1 AND lower(student_email) = lower($2) LIMIT 1`,
-      [input.labId, input.studentEmail]
+      `SELECT lab_id, booking_date::text AS booking_date FROM slot_bookings
+       WHERE lower(student_email) = lower($1) AND (lab_id = $2 OR booking_date = $3)`,
+      [input.studentEmail, input.labId, input.date]
     );
-    if (mine.length > 0) {
+    const broken = checkStudentRules(
+      mine.map((row) => ({ labId: String(row.lab_id), date: String(row.booking_date) })),
+      { labId: input.labId, date: input.date }
+    );
+    if (broken) {
       await client.query('ROLLBACK');
-      return { ok: false, reason: 'already-booked' };
+      return { ok: false, reason: broken };
     }
 
     const { rows } = await client.query(

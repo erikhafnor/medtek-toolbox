@@ -21,6 +21,7 @@ const STATUS: Record<string, number> = {
   'past-slot': 400,
   'group-full': 409,
   'already-booked': 409,
+  'same-slot': 409,
 };
 
 export const POST: APIRoute = async ({ request }) => {

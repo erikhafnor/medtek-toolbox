@@ -38,6 +38,34 @@ test.describe('booking page', () => {
     await expect(page.getByText('3 groups × up to 3 students per week')).toBeVisible();
   });
 
+  test('blocks the other lab in the same Wednesday slot', async ({ page }) => {
+    const student = `E2E${stamp()}`;
+    await page.goto('/en/booking/?lab=mte210-electrical-safety');
+    await page.locator('#booking-name').fill(student);
+    await page.locator('#booking-email').fill(`${student.toLowerCase()}@stud.uis.no`);
+
+    // take the lab 1 seat in the first open week (week 37)
+    const week37 = page.locator('li').filter({ hasText: 'Week 37' });
+    await week37.getByRole('button', { name: '+ Take seat' }).first().click();
+    await expect(page.getByRole('status')).toContainText('Seat booked!', { timeout: 15_000 });
+
+    // switch to lab 2: week 37 is now blocked, later weeks are still open
+    await page.getByRole('button', { name: /Hospital Networks/ }).click();
+    const lab2Week37 = page.locator('li').filter({ hasText: 'Week 37' });
+    await expect(lab2Week37.getByText('You already have', { exact: false })).toBeVisible();
+    await expect(lab2Week37.getByRole('button', { name: '+ Take seat' }).first()).toBeDisabled();
+
+    const lab2Week38 = page.locator('li').filter({ hasText: 'Week 38' });
+    await expect(lab2Week38.getByRole('button', { name: '+ Take seat' }).first()).toBeEnabled();
+
+    // clean up the shared database
+    const myBookings = page.getByRole('region', { name: 'My bookings' });
+    await myBookings.getByRole('button', { name: 'Cancel booking' }).click();
+    await expect(myBookings.getByText('No bookings in this browser yet.')).toBeVisible({
+      timeout: 15_000,
+    });
+  });
+
   test('takes a seat and cancels it again', async ({ page }) => {
     const student = `E2E${stamp()}`;
     await page.goto('/en/booking/?lab=mte210-hospital-networks');

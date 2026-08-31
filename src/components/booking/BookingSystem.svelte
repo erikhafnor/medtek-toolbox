@@ -126,6 +126,15 @@
   /** A seat this browser already holds for the selected lab, if any. */
   const myBookingForLab = $derived(myBookings.find((b) => b.labId === selectedLabId));
 
+  /**
+   * A seat this browser holds in the *other* lab that same Wednesday. Both labs
+   * run 10:15–13:00, so holding one rules out the other — surfaced here so the
+   * week is visibly blocked rather than failing only on submit.
+   */
+  function myOtherLabThatWeek(date: string): StoredBooking | undefined {
+    return myBookings.find((b) => b.date === date && b.labId !== selectedLabId);
+  }
+
   // Load the whole semester, and reload after every mutation.
   $effect(() => {
     void refreshTick;
@@ -455,6 +464,12 @@
               </div>
 
               {#if week.open}
+                {@const clash = myOtherLabThatWeek(week.date)}
+                {#if clash && !past}
+                  <p class="mt-2 text-xs text-amber-700">
+                    {fill(labels.busyThisWeek, { lab: clash.labTitle })}
+                  </p>
+                {/if}
                 <div class="mt-3 space-y-2">
                   {#each groupNumbers(selectedLab) as group (group)}
                     {@const taken = seatsIn(week.date, group)}
@@ -489,9 +504,16 @@
                       {:else if bookable}
                         <button
                           type="button"
-                          disabled={!detailsValid || claiming !== null || myBookingForLab !== undefined}
+                          disabled={!detailsValid ||
+                            claiming !== null ||
+                            myBookingForLab !== undefined ||
+                            clash !== undefined}
                           onclick={() => claimSeat(week.date, group)}
-                          title={myBookingForLab ? labels.errors['already-booked'] : ''}
+                          title={myBookingForLab
+                            ? labels.errors['already-booked']
+                            : clash
+                              ? labels.errors['same-slot']
+                              : ''}
                           class="rounded-full border border-dashed border-blue-400 px-2.5 py-1 text-xs font-medium text-blue-700 transition-colors hover:border-blue-600 hover:bg-blue-50 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-300 disabled:hover:bg-transparent"
                         >
                           {claiming === `${week.date}:${group}` ? labels.booking : `+ ${labels.freeSeat}`}
