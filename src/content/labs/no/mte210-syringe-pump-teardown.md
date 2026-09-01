@@ -52,7 +52,7 @@ checklist:
     items:
       - "Svar på repetisjonsspørsmålene — de knytter det hendene dine gjorde til reglene bak."
       - "Lever tabellene, bildene, serviceprotokollen og en kort refleksjon."
-duration: "6 timer"
+duration: "2 timer 45 minutter"
 ---
 
 Denne øvelsen bruker et ekte infusjonsapparat som et vindu inn i **regelverket** som lar det nå en pasient. I EU kan en produsent CE-merke og selge denne pumpen kun ved å (a) oppfylle de **generelle kravene til sikkerhet og ytelse (GSPR)** i **EU MDR 2017/745**, Vedlegg I, (b) gjøre det innenfor et sertifisert **ISO 13485**-kvalitetssystem, og (c) vanligvis vise det med **harmoniserte standarder** (IEC 60601-1, IEC 60601-2-24, IEC 60601-1-8, …) som gir en *samsvarsformodning*. Etter at apparatet er tatt i bruk, holder **ISO 13485**-service og **IEC 62353**-testing (periodisk / etter reparasjon) det trygt. Alt dette skal du se i maskinvaren.

@@ -52,7 +52,7 @@ checklist:
     items:
       - "Answer the review questions — they tie what your hands did back to the rules behind it."
       - "Hand in your tables, photos, the service record and a short reflection."
-duration: "6 hours"
+duration: "2 hours 45 minutes"
 ---
 
 This lab uses a real infusion device as a lens on the **regulatory system** that lets it reach a patient. In the EU, a manufacturer may CE-mark and sell this pump only by (a) meeting the **General Safety and Performance Requirements (GSPRs)** of **EU MDR 2017/745**, Annex I, (b) doing so inside a certified **ISO 13485** quality management system, and (c) typically demonstrating it with **harmonised standards** (IEC 60601-1, IEC 60601-2-24, IEC 60601-1-8, …) that grant a *presumption of conformity*. After the device is in service, **ISO 13485** servicing and **IEC 62353** recurrent/after-repair testing keep it safe. You will see all of this in the hardware.
