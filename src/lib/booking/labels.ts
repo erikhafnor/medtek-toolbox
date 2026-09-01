@@ -32,6 +32,8 @@ export interface BookingLabels {
   weeklyPlan: string;
   weeklyPlanHint: string;
   runsOnDays: string;
+  electiveNote: string;
+  spareDayNote: string;
   busyThisWeek: string;
   room: string;
   addToCalendar: string;
@@ -84,6 +86,8 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
     weeklyPlan: 'Weekly plan',
     weeklyPlanHint: 'Three labs run each lab day, each in both slots.',
     runsOnDays: 'This lab runs on {count} lab days.',
+    electiveNote: 'Elective — choose {picks} of these {total} labs.',
+    spareDayNote: 'Everyone takes this lab. The last day is spare, for catching up.',
     busyThisWeek: 'You already have {lab} in this slot.',
     room: 'Room',
     addToCalendar: 'Add to calendar',
@@ -151,6 +155,8 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
     weeklyPlan: 'Ukeplan',
     weeklyPlanHint: 'Tre labber går hver labdag, hver av dem i begge økter.',
     runsOnDays: 'Denne labben går {count} labdager.',
+    electiveNote: 'Valgfri — velg {picks} av disse {total} labbene.',
+    spareDayNote: 'Alle tar denne labben. Siste dag er en reservedag for oppsamling.',
     busyThisWeek: 'Du har allerede {lab} i denne økta.',
     room: 'Rom',
     addToCalendar: 'Legg til i kalender',

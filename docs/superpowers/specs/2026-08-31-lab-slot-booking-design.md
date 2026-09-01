@@ -20,7 +20,7 @@ Course staff set every date, time and capacity in one file.
 | Last lab day | 2026-11-17 (week 47) | 2026-10-21 (week 43) |
 | Closed weeks | 41 | 39 and 41 |
 | Lab days | 10 | 5 |
-| Labs | all 7, in two blocks | electrical safety, HL7/DICOM |
+| Labs | 3 core + 4 elective | electrical safety, HL7/DICOM |
 | Capacity per lab | 1 group × 3 students per slot | 1 × 3, and 3 × 3 |
 | Cohort | 21 students = 7 groups | — |
 | Labs per day | 3 (one supervisor) | no limit needed |
@@ -40,20 +40,38 @@ There is one supervisor, so only **three labs are set up on any Tuesday**
 (`maxLabsPerDay`). Seven labs therefore cannot all be open all semester, and
 each lab lists the days it actually runs.
 
-With 21 students in 7 groups, each lab needs ⌈7/2⌉ = 4 lab days to seat everyone
-(2 slots × 3 seats = 6 students per lab day, so 4 days = 24 ≥ 21).
+A lab day seats 6 students in a lab (2 slots × 3), so a lab taken by all 21
+needs ⌈21/6⌉ = 4 days.
 
-- **Block 1** — ECG, defibrillator, infusion pump — runs the four Tuesdays
-  before the closed week (37–40). 7 groups × 3 labs = 21 group-sessions, and
-  4 days × 3 labs × 2 slots = 24 available.
-- **Block 2** — blood pressure, electrosurgery, ultrasound, ventilator — rotates
-  three-at-a-time across the six Tuesdays after it (42–47), so each of the four
-  still gets 4–5 days. It carries `opensOn: 2026-09-30`: visible from the start
-  so students can see the plan, claimable only once block 1 has finished.
+- **Block 1 — core.** ECG, defibrillator, infusion pump. Everyone takes all
+  three. Runs weeks 37–40 plus a fifth day in week 42: **30 seats against 21**,
+  so a group that misses a session, or that ends up a pair rather than a three,
+  still has somewhere to go. Without that spare day the block fits exactly, with
+  a single spare group-slot per lab and no room for the ordinary friction of a
+  semester.
+- **Block 2 — elective.** Blood pressure, electrosurgery, ultrasound,
+  ventilator; students take **two of the four** (`electivePicks: 2`). Rotating
+  three-at-a-time across weeks 43–47 gives each lab 3–4 days. Because only about
+  half the cohort takes any one of them, `seatsNeededFor` requires
+  ⌈21 × 2 ÷ 4⌉ = 11 seats rather than 21, which every one of them clears with
+  room to spare. It carries `opensOn: 2026-09-30` — visible from day one so
+  students can plan, claimable once the four core days are done. The spare
+  week-42 day is deliberately not part of that gate: it exists for stragglers,
+  and everyone else should be able to book ahead by then.
 
-Two build-time checks keep this honest: no day may exceed `maxLabsPerDay`, and
-every lab must seat `cohortSize`. Dropping a Tuesday from the rotation therefore
-fails the build rather than quietly stranding a group.
+Making block 2 elective is what buys block 1 its spare day. All seven labs being
+compulsory needs 28 lab-days against the 30 available, leaving nothing to move;
+electives free two.
+
+Three build-time checks keep this honest: no day may exceed `maxLabsPerDay`,
+every lab must reach `seatsNeededFor`, and every scheduled date must be an open
+lab day. Dropping a Tuesday from the rotation fails the build rather than
+quietly stranding a group.
+
+**Assumption worth revisiting:** elective sizing assumes take-up is broadly even
+across the four. If most of the cohort converged on the same two labs, the
+three-day ventilator lab (18 seats) would fill. Raising `electivePicks`, or
+giving a lab another date, both surface as build errors rather than surprises.
 
 ### Why one group per lab per slot
 

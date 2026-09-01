@@ -25,6 +25,7 @@ import {
   ALL_BOOKABLE_LABS,
   COURSES,
   scheduledDates,
+  seatsNeededFor,
   MAX_SEATS_PER_GROUP,
   MAX_SLOTS_PER_DAY,
 } from '../../src/lib/booking/courses';
@@ -350,7 +351,7 @@ describe('checkSeatAvailability()', () => {
   });
 
   it('refuses a block 2 lab until it opens, then accepts it', () => {
-    const request = { labId: 'mte200-ultrasound', date: '2026-10-13', slot: 1, group: 1 };
+    const request = { labId: 'mte200-ultrasound', date: '2026-10-20', slot: 1, group: 1 };
     // before block 1 has finished
     expect(checkSeatAvailability(request, [], '2026-09-15', EARLY)).toEqual({
       ok: false,
@@ -384,9 +385,22 @@ describe('checkSeatAvailability()', () => {
 });
 
 describe('lab rotation', () => {
-  it('runs block 1 on the four Tuesdays before the closed week', () => {
+  it('runs block 1 on the four core Tuesdays plus a spare day in week 42', () => {
     for (const id of [ECG, DEFIB, 'mte200-infusion-pump']) {
-      expect(labDates(id), id).toEqual([TUE37, TUE38, '2026-09-22', '2026-09-29']);
+      expect(labDates(id), id).toEqual([
+        TUE37,
+        TUE38,
+        '2026-09-22',
+        '2026-09-29',
+        '2026-10-13',
+      ]);
+    }
+  });
+
+  it('gives every core lab room for the cohort with a day to spare', () => {
+    // 5 days x 2 slots x 3 seats = 30 seats for 21 students
+    for (const id of [ECG, DEFIB, 'mte200-infusion-pump']) {
+      expect(labDates(id).length * 2 * 3, id).toBe(30);
     }
   });
 
@@ -405,7 +419,7 @@ describe('lab rotation', () => {
     }
   });
 
-  it('seats the whole cohort in every lab', () => {
+  it('seats everyone who needs each lab', () => {
     for (const { course, lab } of ALL_BOOKABLE_LABS) {
       if (course.cohortSize === undefined) continue;
       const seats =
@@ -413,8 +427,29 @@ describe('lab rotation', () => {
         course.slots.length *
         lab.groupsPerSlot *
         lab.seatsPerGroup;
-      expect(seats, lab.id).toBeGreaterThanOrEqual(course.cohortSize);
+      expect(seats, lab.id).toBeGreaterThanOrEqual(seatsNeededFor(course, lab));
     }
+  });
+
+  it('sizes a core lab for the whole cohort and an elective for its share', () => {
+    const mte200 = courseById('MTE200')!;
+    const core = mte200.labs.find((l) => l.id === ECG)!;
+    const elective = mte200.labs.find((l) => l.id === 'mte200-ventilator')!;
+    expect(seatsNeededFor(mte200, core)).toBe(21);
+    // 21 students choosing 2 of 4 electives = 10.5 per lab, rounded up
+    expect(seatsNeededFor(mte200, elective)).toBe(11);
+    expect(labDates('mte200-ventilator').length * 2 * 3).toBeGreaterThanOrEqual(11);
+  });
+
+  it('marks exactly the four block 2 labs as elective', () => {
+    const mte200 = courseById('MTE200')!;
+    expect(mte200.labs.filter((l) => l.elective).map((l) => l.id)).toEqual([
+      'mte200-blood-pressure-spo2',
+      'mte200-electrosurgery',
+      'mte200-ultrasound',
+      'mte200-ventilator',
+    ]);
+    expect(mte200.electivePicks).toBe(2);
   });
 
   it('splits the seven MTE200 labs into a block of three and a block of four', () => {
@@ -432,8 +467,10 @@ describe('lab rotation', () => {
 
   it('knows which days a lab runs and when it opens', () => {
     expect(labRunsOn(ECG, TUE37)).toBe(true);
-    expect(labRunsOn(ECG, '2026-10-13')).toBe(false);
-    expect(labRunsOn('mte200-ultrasound', '2026-10-13')).toBe(true);
+    expect(labRunsOn(ECG, '2026-10-13')).toBe(true); // the spare week-42 day
+    expect(labRunsOn(ECG, '2026-10-20')).toBe(false); // block 2 territory
+    expect(labRunsOn('mte200-ultrasound', '2026-10-13')).toBe(false);
+    expect(labRunsOn('mte200-ultrasound', '2026-10-20')).toBe(true);
     expect(isLabOpenYet(ECG, '2026-09-01')).toBe(true);
     expect(isLabOpenYet('mte200-ultrasound', '2026-09-01')).toBe(false);
     expect(isLabOpenYet('mte200-ultrasound', '2026-09-30')).toBe(true);

@@ -155,6 +155,22 @@
     const runs = new Set(labDates(selectedLabId));
     return courseWeeks.filter((week) => runs.has(week.date));
   });
+  /** Elective labs say so, since students take only some of them. */
+  const electiveInfo = $derived.by(() => {
+    if (!course?.electivePicks) return null;
+    const lab = course.labs.find((l) => l.id === selectedLabId);
+    if (!lab?.elective) return null;
+    return { picks: course.electivePicks, total: course.labs.filter((l) => l.elective).length };
+  });
+
+  /** A core lab whose schedule carries a spare day beyond what the cohort needs. */
+  const hasSpareDay = $derived.by(() => {
+    const lab = course?.labs.find((l) => l.id === selectedLabId);
+    if (!course?.cohortSize || !lab || lab.elective) return false;
+    const seats = labDates(selectedLabId).length * course.slots.length * lab.seatsPerGroup;
+    return seats - course.cohortSize >= course.slots.length * lab.seatsPerGroup;
+  });
+
   /** Set while the lab is visible but not yet claimable. */
   const opensOn = $derived(
     selectedLab && !isLabOpenYet(selectedLab.id, today) ? labOpensOn(selectedLab.id) : null
@@ -480,6 +496,13 @@
 
       {#if selectedLab}
         <p class="mt-3 text-xs font-medium text-gray-600">{capacityNote}</p>
+        {#if electiveInfo}
+          <p class="mt-1 text-xs font-medium text-violet-700">
+            {fill(labels.electiveNote, electiveInfo)}
+          </p>
+        {:else if hasSpareDay}
+          <p class="mt-1 text-xs text-gray-500">{labels.spareDayNote}</p>
+        {/if}
         {#if selectedLab.requiredDevices.length > 0}
           <p class="mt-2 text-xs text-gray-500">
             <span class="font-medium">{labels.requires}:</span>

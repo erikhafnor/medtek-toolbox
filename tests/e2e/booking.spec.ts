@@ -50,14 +50,15 @@ test.describe('booking page', () => {
     await expect(labPicker(page).getByRole('button', { name: /Defibrillator Lab/ })).toHaveCount(0);
   });
 
-  test('shows a block 1 lab on its own four Tuesdays, in two slots', async ({ page }) => {
+  test('shows a core lab on its five Tuesdays, in two slots', async ({ page }) => {
     await page.goto('/en/booking/?lab=mte200-defibrillator');
 
-    // block 1 runs weeks 37-40 only; the block 2 weeks belong to other labs
-    await expect(page.getByText('This lab runs on 4 lab days.')).toBeVisible();
+    // weeks 37-40 plus the spare week-42 day; block 2's weeks belong to others
+    await expect(page.getByText('This lab runs on 5 lab days.')).toBeVisible();
+    await expect(page.getByText('The last day is spare', { exact: false })).toBeVisible();
     await expect(page.locator('[data-date="2026-09-08"][data-slot="1"]')).toBeVisible();
-    await expect(page.locator('[data-date="2026-09-29"][data-slot="2"]')).toBeVisible();
-    await expect(page.locator('[data-date="2026-10-13"][data-slot="1"]')).toHaveCount(0);
+    await expect(page.locator('[data-date="2026-10-13"][data-slot="2"]')).toBeVisible();
+    await expect(page.locator('[data-date="2026-10-20"][data-slot="1"]')).toHaveCount(0);
 
     // both periods on each of its days
     await expect(
@@ -94,8 +95,9 @@ test.describe('booking page', () => {
     await page.locator('#booking-name').fill(student);
     await page.locator('#booking-email').fill(`${student.toLowerCase()}@stud.uis.no`);
 
-    // the plan is visible…
-    await expect(page.getByText('This lab runs on 5 lab days.')).toBeVisible();
+    // the plan is visible, and says it is a choice…
+    await expect(page.getByText('This lab runs on 4 lab days.')).toBeVisible();
+    await expect(page.getByText('Elective — choose 2 of these 4 labs.')).toBeVisible();
     await expect(page.getByText('These labs open for booking', { exact: false })).toBeVisible();
     // …but nothing can be claimed yet
     const seats = page.getByRole('button', { name: '+ Take seat' });

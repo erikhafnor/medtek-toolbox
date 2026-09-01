@@ -38,6 +38,11 @@ export interface BookableLab {
    * that opens immediately.
    */
   opensOn?: string;
+  /**
+   * A lab students choose rather than all take. Elective labs are sized for
+   * `electivePicks` of them, not for the whole cohort.
+   */
+  elective?: boolean;
 }
 
 export interface CourseBooking {
@@ -57,15 +62,26 @@ export interface CourseBooking {
   maxLabsPerDay?: number;
   /** Students on the course, so the build can prove every lab seats them all. */
   cohortSize?: number;
+  /** How many of the elective labs each student must take. */
+  electivePicks?: number;
   labs: BookableLab[];
 }
 
 // MTE200 autumn 2026: 21 students = 7 groups of 3, seven labs, one supervisor.
-// Block 1 runs the three labs everyone starts with, on the four Tuesdays before
-// the closed week. Block 2 rotates the remaining four labs three-at-a-time over
-// the six Tuesdays after it, so each still gets at least 21 seats.
-const BLOCK_1 = ['2026-09-08', '2026-09-15', '2026-09-22', '2026-09-29'];
-/** Block 2 opens once block 1's last lab day has passed. */
+//
+// Block 1 is the three labs every student takes, on weeks 37–40 plus a fifth
+// day in week 42 — the spare day exists so a group that misses a session, or
+// that ends up as a pair rather than a three, still has somewhere to go.
+//
+// Block 2 is elective: students choose two of its four labs. It rotates
+// three-at-a-time across weeks 43–47, which is why the four labs need only
+// enough seats for their share of the cohort rather than all of it.
+const BLOCK_1 = ['2026-09-08', '2026-09-15', '2026-09-22', '2026-09-29', '2026-10-13'];
+/**
+ * Block 2 opens once the four core block 1 days are done, not once its spare
+ * week-42 day is — week 42 is for stragglers, and everyone else should be able
+ * to plan the rest of their semester by then.
+ */
 const BLOCK_2_OPENS = '2026-09-30';
 
 export const COURSES: CourseBooking[] = [
@@ -82,40 +98,45 @@ export const COURSES: CourseBooking[] = [
     closedWeeks: [41],
     maxLabsPerDay: 3,
     cohortSize: 21,
+    electivePicks: 2,
     labs: [
       // Block 1 — everyone takes these three first
       { id: 'mte200-ecg-recording', groupsPerSlot: 1, seatsPerGroup: 3, dates: BLOCK_1 },
       { id: 'mte200-defibrillator', groupsPerSlot: 1, seatsPerGroup: 3, dates: BLOCK_1 },
       { id: 'mte200-infusion-pump', groupsPerSlot: 1, seatsPerGroup: 3, dates: BLOCK_1 },
 
-      // Block 2 — four labs rotating three-at-a-time across weeks 42–47
+      // Block 2 — elective, four labs rotating three-at-a-time across weeks 43–47
       {
         id: 'mte200-blood-pressure-spo2',
         groupsPerSlot: 1,
         seatsPerGroup: 3,
-        dates: ['2026-10-13', '2026-10-27', '2026-11-03', '2026-11-10'],
+        dates: ['2026-10-20', '2026-11-03', '2026-11-10', '2026-11-17'],
         opensOn: BLOCK_2_OPENS,
+        elective: true,
       },
       {
         id: 'mte200-electrosurgery',
         groupsPerSlot: 1,
         seatsPerGroup: 3,
-        dates: ['2026-10-13', '2026-10-20', '2026-11-03', '2026-11-10', '2026-11-17'],
+        dates: ['2026-10-20', '2026-10-27', '2026-11-10', '2026-11-17'],
         opensOn: BLOCK_2_OPENS,
+        elective: true,
       },
       {
         id: 'mte200-ultrasound',
         groupsPerSlot: 1,
         seatsPerGroup: 3,
-        dates: ['2026-10-13', '2026-10-20', '2026-10-27', '2026-11-10', '2026-11-17'],
+        dates: ['2026-10-20', '2026-10-27', '2026-11-03', '2026-11-17'],
         opensOn: BLOCK_2_OPENS,
+        elective: true,
       },
       {
         id: 'mte200-ventilator',
         groupsPerSlot: 1,
         seatsPerGroup: 3,
-        dates: ['2026-10-20', '2026-10-27', '2026-11-03', '2026-11-17'],
+        dates: ['2026-10-27', '2026-11-03', '2026-11-10'],
         opensOn: BLOCK_2_OPENS,
+        elective: true,
       },
     ],
   },
@@ -187,6 +208,19 @@ export function scheduledDates(course: CourseBooking, lab: BookableLab): string[
   return lab.dates ?? openDaysOf(course);
 }
 
+/**
+ * How many students must fit in a lab. Everyone takes a core lab, so it needs
+ * the whole cohort. An elective is taken by roughly its share of the cohort —
+ * `electivePicks` of `n` labs — so it needs that share, assuming take-up is
+ * broadly even across the choices.
+ */
+export function seatsNeededFor(course: CourseBooking, lab: BookableLab): number {
+  const cohort = course.cohortSize ?? 0;
+  if (!lab.elective || !course.electivePicks) return cohort;
+  const electives = course.labs.filter((l) => l.elective).length || 1;
+  return Math.ceil((cohort * course.electivePicks) / electives);
+}
+
 const seenLabIds = new Set<string>();
 for (const course of COURSES) {
   for (const [field, value] of [
@@ -242,9 +276,11 @@ for (const course of COURSES) {
     // every student must be able to get a seat, or the schedule strands someone
     if (course.cohortSize !== undefined) {
       const seats = dates.length * course.slots.length * lab.groupsPerSlot * lab.seatsPerGroup;
-      if (seats < course.cohortSize) {
+      const needed = seatsNeededFor(course, lab);
+      if (seats < needed) {
         throw new Error(
-          `booking/courses.ts: lab '${lab.id}' seats ${seats} students but ${course.id} has ${course.cohortSize}`
+          `booking/courses.ts: lab '${lab.id}' seats ${seats} students but needs ${needed}` +
+            (lab.elective ? ' (its share of the elective block)' : ` (${course.id} cohort)`)
         );
       }
     }
