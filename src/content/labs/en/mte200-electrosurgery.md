@@ -1,6 +1,7 @@
 ---
 title: "Electrosurgery Lab"
 course: "MTE200"
+shortTitle: "Electrosurgery"
 description: "Operation, periodic maintenance, and performance testing of an electrosurgical unit"
 equipment:
   - "Olympus UES-40 electrosurgical unit"

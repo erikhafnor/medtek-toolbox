@@ -1,6 +1,7 @@
 ---
 title: "Defibrillator Lab"
 course: "MTE200"
+shortTitle: "Defibrillator"
 description: "Operation, testing, and preventive maintenance of a defibrillator"
 equipment:
   - "LIFEPAK 15 (Stryker/Physio-Control)"

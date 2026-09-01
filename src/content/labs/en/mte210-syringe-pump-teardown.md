@@ -1,6 +1,7 @@
 ---
 title: "Syringe Pump Teardown & Compliance Lab"
 course: "MTE210"
+shortTitle: "Syringe pump"
 description: "Tear down an Alaris CC syringe pump and trace how its construction, servicing and post-repair testing demonstrate conformity with EU MDR 2017/745 and ISO 13485 — using the harmonised standards (IEC 60601-1, IEC 62353, IEC 60601-2-24) as the evidence"
 equipment:
   - "CareFusion Alaris CC Syringe Pump (one per group)"

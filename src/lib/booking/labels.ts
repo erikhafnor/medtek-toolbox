@@ -31,6 +31,9 @@ export interface BookingLabels {
   lockedNote: string;
   weeklyPlan: string;
   weeklyPlanHint: string;
+  session: string;
+  day: string;
+  seatsHeld: string;
   runsOnDays: string;
   electiveNote: string;
   spareDayNote: string;
@@ -60,7 +63,7 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
   en: {
     title: 'Book lab time',
     intro:
-      'Pick your course and lab assignment, then take a free seat. MTE200 runs Tuesdays in two slots (09:00–11:30 and 11:30–14:00); MTE210 runs Wednesdays 10:15–13:00. All lab work is in room KE E-455. You can see which seats your fellow students have taken, and add your session to your calendar afterwards.',
+      'Take a seat on a lab session. You can see who else is signed up, and put your session in your calendar once you have booked.',
     course: 'Course',
     lab: 'Lab assignment',
     requires: 'Equipment',
@@ -84,7 +87,10 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
     lockedNote:
       'These labs open for booking on {date}, once the first three are done. You can already see when they run.',
     weeklyPlan: 'Weekly plan',
-    weeklyPlanHint: 'Three labs run each lab day, each in both slots.',
+    weeklyPlanHint: 'Which labs are set up each week.',
+    session: 'Session',
+    day: 'Day',
+    seatsHeld: '{taken} of {total} seats taken',
     runsOnDays: 'This lab runs on {count} lab days.',
     electiveNote: 'Elective — choose {picks} of these {total} labs.',
     spareDayNote: 'Everyone takes this lab. The last day is spare, for catching up.',
@@ -129,7 +135,7 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
   no: {
     title: 'Book labtid',
     intro:
-      'Velg emne og laboppgave, og ta en ledig plass. MTE200 går tirsdager i to økter (09:00–11:30 og 11:30–14:00); MTE210 går onsdager 10:15–13:00. All labbing er i rom KE E-455. Du ser hvilke plasser medstudentene har tatt, og kan legge økta i kalenderen din etterpå.',
+      'Ta en plass på en labøkt. Du ser hvem andre som er påmeldt, og kan legge økta i kalenderen din når du har booket.',
     course: 'Emne',
     lab: 'Laboppgave',
     requires: 'Utstyr',
@@ -153,7 +159,10 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
     lockedNote:
       'Disse labbene åpner for booking {date}, når de tre første er unnagjort. Du ser allerede når de går.',
     weeklyPlan: 'Ukeplan',
-    weeklyPlanHint: 'Tre labber går hver labdag, hver av dem i begge økter.',
+    weeklyPlanHint: 'Hvilke labber som er satt opp hver uke.',
+    session: 'Økt',
+    day: 'Dag',
+    seatsHeld: '{taken} av {total} plasser tatt',
     runsOnDays: 'Denne labben går {count} labdager.',
     electiveNote: 'Valgfri — velg {picks} av disse {total} labbene.',
     spareDayNote: 'Alle tar denne labben. Siste dag er en reservedag for oppsamling.',

@@ -1,6 +1,7 @@
 ---
 title: "3D-rekonstruksjon og printing"
 course: "MTE210"
+shortTitle: "3D-rekonstruksjon"
 description: "Segmentering av et CT-volum i 3D Slicer, eksport av en vanntett STL og 3D-printing av det skjulte objektet fra CT-avbildningslabben"
 equipment:
   - "Lab-PC med 3D Slicer"

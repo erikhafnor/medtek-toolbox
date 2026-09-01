@@ -1,6 +1,7 @@
 ---
 title: "Hospital Networks and Medical Device Integration Lab"
 course: "MTE210"
+shortTitle: "HL7 & DICOM"
 description: "HL7 messaging, DICOM image transfer, and network integration of medical devices"
 equipment:
   - "HL7 test environment (Mirth Connect or HAPI FHIR server)"

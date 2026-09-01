@@ -1,6 +1,7 @@
 ---
 title: "CT Imaging and Radiation Lab"
 course: "MTE210"
+shortTitle: "CT imaging"
 description: "CT image acquisition on a benchtop X-ray CT, radiation protection, and volume reconstruction of a specimen with a hidden dense object"
 equipment:
   - "PHYWE XR 4.0 benchtop X-ray / CT unit (XRstage rotation stage + XRIS detector)"

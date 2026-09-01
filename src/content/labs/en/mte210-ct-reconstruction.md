@@ -1,6 +1,7 @@
 ---
 title: "3D Reconstruction and Printing Lab"
 course: "MTE210"
+shortTitle: "3D reconstruction"
 description: "Segmenting a CT volume in 3D Slicer, exporting a watertight STL, and 3D printing the hidden object found in the CT imaging lab"
 equipment:
   - "Lab PC running 3D Slicer"

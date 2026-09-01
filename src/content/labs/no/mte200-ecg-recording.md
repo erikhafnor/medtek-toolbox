@@ -1,6 +1,7 @@
 ---
 title: "EKG-registreringslab"
 course: "MTE200"
+shortTitle: "EKG"
 description: "Standard 12-avlednings hvile-EKG-registrering og hjertets elektriske aktivitet ved bruk av pasientsimulator"
 equipment:
   - "Fluke ProSim 8 Vital Signs and ECG Patient Simulator"

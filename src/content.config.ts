@@ -85,6 +85,9 @@ const labs = defineCollection({
   schema: z.object({
     title: z.string(),
     course: z.enum(['MTE200', 'MTE210']),
+    // Compact name for schedule grids and chips, where the full title does not
+    // fit. Falls back to `title` when absent.
+    shortTitle: z.string().optional(),
     description: z.string(),
     equipment: z.array(z.string()),
     prerequisites: z.array(z.string()).optional(),

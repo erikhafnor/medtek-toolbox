@@ -1,6 +1,7 @@
 ---
 title: "Ultralydlab"
 course: "MTE200"
+shortTitle: "Ultralyd"
 description: "Ultralydundersøkelse, IHE Scheduled Workflow i et simulert klinisk IT-system og ytelsestesting med ultralyd-fantom"
 equipment:
   - "GE Logic S8"

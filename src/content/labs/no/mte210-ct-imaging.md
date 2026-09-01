@@ -1,6 +1,7 @@
 ---
 title: "CT-avbildning og stråling"
 course: "MTE210"
+shortTitle: "CT-avbildning"
 description: "CT-bildeopptak på en benkebasert røntgen-CT, strålevern og volumrekonstruksjon av et prøveobjekt med et skjult tett objekt"
 equipment:
   - "PHYWE XR 4.0 benkebasert røntgen-/CT-enhet (XRstage rotasjonsbord + XRIS-detektor)"

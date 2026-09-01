@@ -1,6 +1,7 @@
 ---
 title: "Ventilator Lab"
 course: "MTE200"
+shortTitle: "Ventilator"
 description: "Operation, periodic maintenance, and functional testing of a mechanical ventilator"
 equipment:
   - "Dräger Evita XL"

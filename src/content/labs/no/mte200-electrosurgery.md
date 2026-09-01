@@ -1,6 +1,7 @@
 ---
 title: "Elektrokirurgilab"
 course: "MTE200"
+shortTitle: "Diatermi"
 description: "Betjening, periodisk vedlikehold og ytelsestesting av elektrokirurgisk apparat (diatermi)"
 equipment:
   - "Olympus UES-40 elektrokirurgisk apparat"

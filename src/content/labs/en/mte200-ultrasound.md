@@ -1,6 +1,7 @@
 ---
 title: "Ultrasound Lab"
 course: "MTE200"
+shortTitle: "Ultrasound"
 description: "Ultrasound examination, IHE Scheduled Workflow in a simulated clinical IT system, and performance testing with an ultrasound phantom"
 equipment:
   - "GE Logic S8"

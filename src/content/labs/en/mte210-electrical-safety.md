@@ -1,6 +1,7 @@
 ---
 title: "Electrical Safety Testing Lab"
 course: "MTE210"
+shortTitle: "Electrical safety"
 description: "Hands-on IEC 62353 electrical safety testing of medical equipment"
 equipment:
   - "Fluke ESA615 Electrical Safety Analyzer"

@@ -1,6 +1,7 @@
 ---
 title: "Lab i elektrisk sikkerhetstesting"
 course: "MTE210"
+shortTitle: "Elektrisk sikkerhet"
 description: "Praktisk IEC 62353 elektrisk sikkerhetstesting av medisinsk utstyr"
 equipment:
   - "Fluke ESA615 Electrical Safety Analyzer"

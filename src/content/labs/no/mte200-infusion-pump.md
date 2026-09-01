@@ -1,6 +1,7 @@
 ---
 title: "Infusjonspumpe-lab"
 course: "MTE200"
+shortTitle: "Infusjonspumper"
 description: "Testing av strømningsnøyaktighet, okklusjonsdeteksjon og forebyggende vedlikehold av infusjonspumper"
 equipment:
   - "B. Braun Infusomat Space (volumetrisk pumpe)"

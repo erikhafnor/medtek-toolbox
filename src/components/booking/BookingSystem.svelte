@@ -32,6 +32,7 @@
   interface LabInfo {
     id: string;
     title: string;
+    shortTitle: string;
     course: string;
     equipment: string[];
     requiredDevices: string[];
@@ -323,6 +324,16 @@
     return Array.from({ length: lab.groupsPerSlot }, (_, i) => i + 1);
   }
 
+  /** Every group of one slot, with its seats — one row of the sign-up sheet. */
+  function groupsIn(date: string, slot: number) {
+    if (!selectedLab) return [];
+    return groupNumbers(selectedLab).map((group) => ({
+      group,
+      taken: seatsIn(date, slot, group),
+      free: freeSeatsIn(date, slot, group),
+    }));
+  }
+
   function slotTime(slotIndex: number): string {
     const period = course ? slotOf(course, slotIndex) : null;
     return period ? `${period.start}–${period.end}` : '';
@@ -431,6 +442,9 @@
 
   const chipClass =
     'rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700 transition-colors hover:border-blue-400 hover:bg-blue-100';
+
+  /** One card shell, so every panel on the page shares the same edge. */
+  const panel = 'rounded-xl border border-gray-200 bg-white';
 </script>
 
 {#snippet calendarLinks(booking: StoredBooking)}
@@ -450,87 +464,124 @@
   </div>
 {/snippet}
 
-<div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
-  <div class="space-y-6">
-    <!-- Course and lab selector -->
-    <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-      <h2 class="mb-3 text-sm font-medium text-gray-700">{labels.course}</h2>
-      <div class="flex flex-wrap gap-2" role="group" aria-label={labels.course}>
-        {#each courseIds as id (id)}
-          <button
-            type="button"
-            aria-pressed={selectedCourseId === id}
-            onclick={() => pickCourse(id)}
-            class={`rounded-lg border px-4 py-2 text-sm font-semibold transition-colors ${
-              selectedCourseId === id
-                ? 'border-gray-900 bg-gray-900 text-white'
-                : 'border-gray-300 bg-white text-gray-700 hover:border-gray-500'
-            }`}
-          >
-            {id}
-          </button>
-        {/each}
-      </div>
+{#snippet seatRow(date: string, slot: number, group: number, taken: PublicSeat[], free: number, past: boolean, clash: StoredBooking | undefined)}
+  <span class="flex flex-wrap items-center gap-1">
+    {#if selectedLab && selectedLab.groupsPerSlot > 1}
+      <span class="mr-0.5 w-4 shrink-0 text-[11px] font-semibold text-gray-400">
+        {String.fromCharCode(64 + group)}
+      </span>
+    {/if}
 
-      <h2 class="mt-5 mb-3 text-sm font-medium text-gray-700">{labels.lab}</h2>
-      <div class="flex flex-wrap gap-2" role="group" aria-label={labels.lab}>
-        {#each courseLabs as lab (lab.id)}
-          <button
-            type="button"
-            aria-pressed={selectedLabId === lab.id}
-            onclick={() => {
-              selectedLabId = lab.id;
-              submitError = null;
-              success = null;
-            }}
-            class={`rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
-              selectedLabId === lab.id
-                ? 'border-blue-600 bg-blue-600 text-white'
-                : 'border-gray-300 bg-white text-gray-700 hover:border-blue-400'
-            }`}
-          >
-            {lab.title}
-          </button>
-        {/each}
-      </div>
+    {#each taken as s (s.id)}
+      <span
+        class={`rounded px-1.5 py-0.5 text-[11px] leading-tight ${
+          isMine(s)
+            ? 'bg-emerald-100 font-semibold text-emerald-800'
+            : 'bg-gray-100 text-gray-600'
+        }`}
+        title={isMine(s) ? labels.you : s.bookedBy}
+      >{s.bookedBy}{#if isMine(s)}&nbsp;<span class="font-normal">({labels.you})</span>{/if}</span>
+    {/each}
 
-      {#if selectedLab}
-        <p class="mt-3 text-xs font-medium text-gray-600">{capacityNote}</p>
-        {#if electiveInfo}
-          <p class="mt-1 text-xs font-medium text-violet-700">
-            {fill(labels.electiveNote, electiveInfo)}
-          </p>
-        {:else if hasSpareDay}
-          <p class="mt-1 text-xs text-gray-500">{labels.spareDayNote}</p>
-        {/if}
-        {#if selectedLab.requiredDevices.length > 0}
-          <p class="mt-2 text-xs text-gray-500">
-            <span class="font-medium">{labels.requires}:</span>
-            {#each selectedLab.requiredDevices as key (key)}
-              <span
-                class={`ml-1 inline-block rounded border px-1.5 py-0.5 ${
-                  (inventory[key]?.quantity ?? 0) <= 1
-                    ? 'border-amber-200 bg-amber-50 text-amber-800'
-                    : 'border-blue-100 bg-blue-50 text-blue-700'
+    {#each Array(free) as _, i (i)}
+      {#if i === 0 && !past}
+        <!-- the affordance stays visible but disabled: a grid of inert boxes
+             gives no clue that a seat can be taken at all -->
+        <button
+          type="button"
+          disabled={!detailsValid ||
+            claiming !== null ||
+            opensOn !== null ||
+            myBookingForLab !== undefined ||
+            clash !== undefined}
+          title={opensOn
+            ? labels.errors['opens-later']
+            : myBookingForLab
+              ? labels.errors['already-booked']
+              : clash
+                ? labels.errors['same-slot']
+                : !detailsValid
+                  ? labels.detailsHint
+                  : ''}
+          onclick={() => claimSeat(date, slot, group)}
+          class="rounded border border-dashed border-blue-400 px-1.5 py-0.5 text-[11px] font-semibold leading-tight text-blue-700 transition-colors hover:border-blue-600 hover:bg-blue-50 disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-50 disabled:text-gray-400 disabled:hover:bg-gray-50"
+        >
+          {claiming === `${date}:${slot}:${group}` ? labels.booking : `+ ${labels.freeSeat}`}
+        </button>
+      {:else}
+        <span
+          class="inline-block h-[18px] w-[18px] rounded border border-dashed border-gray-300 bg-gray-50/60"
+          title={labels.freeSeat}
+          aria-label={labels.freeSeat}
+        ></span>
+      {/if}
+    {/each}
+
+    {#if free === 0}
+      <span class="text-[11px] text-gray-400">{labels.groupFull}</span>
+    {/if}
+  </span>
+{/snippet}
+
+<div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
+  <div class="space-y-5">
+    <!-- Controls: course, lab, and who you are -->
+    <section class={`${panel} divide-y divide-gray-100`}>
+      <div class="p-5">
+        <div class="flex flex-wrap items-start gap-x-6 gap-y-3">
+          <div class="flex shrink-0 items-center gap-2">
+            <span class="text-xs font-semibold uppercase tracking-wide text-gray-400">
+              {labels.course}
+            </span>
+            <div class="flex rounded-lg border border-gray-300 p-0.5" role="group" aria-label={labels.course}>
+              {#each courseIds as id (id)}
+                <button
+                  type="button"
+                  aria-pressed={selectedCourseId === id}
+                  onclick={() => pickCourse(id)}
+                  class={`rounded-md px-3 py-1 text-sm font-semibold transition-colors ${
+                    selectedCourseId === id
+                      ? 'bg-gray-900 text-white'
+                      : 'text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  {id}
+                </button>
+              {/each}
+            </div>
+          </div>
+
+          <div
+            class="flex w-full min-w-0 flex-wrap gap-1.5 sm:w-auto sm:flex-1"
+            role="group"
+            aria-label={labels.lab}
+          >
+            {#each courseLabs as lab (lab.id)}
+              <button
+                type="button"
+                aria-pressed={selectedLabId === lab.id}
+                title={lab.title}
+                onclick={() => {
+                  selectedLabId = lab.id;
+                  submitError = null;
+                  success = null;
+                }}
+                class={`rounded-lg px-2.5 py-1 text-sm font-medium transition-colors ${
+                  selectedLabId === lab.id
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
-                {inventory[key]?.label ?? key}
-                {#if (inventory[key]?.quantity ?? 0) <= 1}
-                  · {labels.singleUnit}
-                {/if}
-              </span>
+                {lab.shortTitle}
+              </button>
             {/each}
-          </p>
-        {/if}
-      {/if}
-    </section>
+          </div>
+        </div>
+      </div>
 
-    <!-- Student details -->
-    <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-      <h2 class="mb-3 text-sm font-medium text-gray-700">{labels.yourDetails}</h2>
-      <div class="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label for="booking-name" class="mb-1 block text-xs font-medium text-gray-600">
+      <div class="flex flex-wrap items-end gap-3 bg-gray-50/70 p-5">
+        <div class="min-w-[10rem] flex-1">
+          <label for="booking-name" class="mb-1 block text-xs font-medium text-gray-500">
             {labels.name}
           </label>
           <input
@@ -540,11 +591,11 @@
             placeholder={labels.namePlaceholder}
             minlength="2"
             maxlength="80"
-            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm focus:border-blue-500 focus:outline-none"
           />
         </div>
-        <div>
-          <label for="booking-email" class="mb-1 block text-xs font-medium text-gray-600">
+        <div class="min-w-[12rem] flex-1">
+          <label for="booking-email" class="mb-1 block text-xs font-medium text-gray-500">
             {labels.email}
           </label>
           <input
@@ -553,29 +604,23 @@
             bind:value={email}
             placeholder={labels.emailPlaceholder}
             maxlength="120"
-            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+            class="w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm focus:border-blue-500 focus:outline-none"
           />
         </div>
+        {#if !detailsValid}
+          <p class="basis-full text-xs text-gray-500 sm:basis-auto sm:pb-2">{labels.detailsHint}</p>
+        {/if}
       </div>
-      {#if !detailsValid}
-        <p class="mt-2 text-xs text-gray-500">{labels.detailsHint}</p>
-      {/if}
     </section>
 
     {#if submitError}
-      <div
-        class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-        role="alert"
-      >
+      <p class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
         {labels.errors[submitError] ?? labels.errors.network}
-      </div>
+      </p>
     {/if}
 
     {#if success}
-      <div
-        class="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"
-        role="status"
-      >
+      <div class="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800" role="status">
         <p class="font-semibold">{labels.successTitle}</p>
         <p class="mt-0.5">
           {fill(labels.successBody, {
@@ -586,35 +631,157 @@
             room: LAB_ROOM,
           })}
         </p>
-        <p class="mt-1 text-emerald-700">{labels.successKeep}</p>
         {@render calendarLinks(success)}
       </div>
     {/if}
 
-    <!-- Rotation overview: which labs are set up on which day -->
-    {#if weeklyPlan.length > 0}
-      <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 class="text-sm font-semibold text-gray-900">{labels.weeklyPlan}</h2>
-        <p class="mt-0.5 text-xs text-gray-500">{labels.weeklyPlanHint}</p>
-        <div class="mt-3 overflow-x-auto">
-          <table class="w-full border-collapse text-xs">
-            <tbody>
-              {#each weeklyPlan as day (day.date)}
-                <tr class="border-b border-gray-100 last:border-0">
-                  <th
-                    scope="row"
-                    class="whitespace-nowrap py-1.5 pr-3 text-left font-medium text-gray-600"
-                  >
-                    {fill(labels.week, { week: day.isoWeek })}
+    <!-- The sign-up sheet: lab days down, sessions across -->
+    <section class={panel} aria-label={labels.semester}>
+      <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-gray-100 p-5">
+        <div>
+          <h2 class="text-base font-semibold text-gray-900">{selectedLab?.title}</h2>
+          <p class="mt-0.5 text-xs text-gray-500">
+            {capacityNote} · {roomLabel(locale)}
+          </p>
+        </div>
+        <p class="text-xs text-gray-400">{semesterRange}</p>
+      </div>
+
+      {#if electiveInfo}
+        <p class="border-b border-gray-100 bg-violet-50/60 px-5 py-2 text-xs font-medium text-violet-800">
+          {fill(labels.electiveNote, electiveInfo)}
+        </p>
+      {:else if hasSpareDay}
+        <p class="border-b border-gray-100 px-5 py-2 text-xs text-gray-500">{labels.spareDayNote}</p>
+      {/if}
+      {#if opensOn}
+        <p class="border-b border-gray-100 bg-amber-50 px-5 py-2 text-xs font-medium text-amber-800">
+          {fill(labels.lockedNote, { date: formatDate(opensOn) })}
+        </p>
+      {:else if myBookingForLab}
+        <!-- without this the seats simply go quiet once you hold one, and the
+             reason you cannot take another is invisible -->
+        <p class="border-b border-gray-100 bg-emerald-50 px-5 py-2 text-xs font-medium text-emerald-800">
+          {labels.errors['already-booked']}
+        </p>
+      {/if}
+
+      {#if loadFailed}
+        <p class="p-5 text-sm text-red-600" role="alert">{labels.errors.network}</p>
+      {:else if bookings === null}
+        <p class="p-5 text-sm text-gray-400">{labels.loading}</p>
+      {:else if selectedLab && course}
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse text-sm">
+            <thead>
+              <tr class="border-b border-gray-100 text-left">
+                <th scope="col" class="w-px whitespace-nowrap py-2 pl-5 pr-3 text-xs font-semibold uppercase tracking-wide text-gray-400">
+                  {labels.day}
+                </th>
+                {#each course.slots as period, i (i)}
+                  <th scope="col" class="py-2 pr-5 text-xs font-semibold tabular-nums text-gray-500">
+                    {period.start}–{period.end}
                   </th>
-                  <td class="py-1.5">
-                    {#if !day.open}
-                      <span
-                        class="rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 font-medium text-amber-800"
-                      >
-                        {labels.weekClosed}
-                      </span>
-                    {/if}
+                {/each}
+              </tr>
+            </thead>
+            <tbody>
+              {#each weeks as week (week.date)}
+                <tr class="border-b border-gray-50 align-top last:border-0 hover:bg-gray-50/60">
+                  <th scope="row" class="whitespace-nowrap py-2.5 pl-5 pr-3 text-left font-normal">
+                    <span class="block text-xs font-semibold text-gray-900">
+                      {fill(labels.week, { week: week.isoWeek })}
+                    </span>
+                    <span class="block text-[11px] text-gray-400">{formatShort(week.date)}</span>
+                  </th>
+                  {#each course.slots as _period, i (i)}
+                    {@const slot = i + 1}
+                    {@const past = isPastSlot(course, week.date, slot, today, nowMinutes)}
+                    {@const clash = myOtherLabInSlot(week.date, slot)}
+                    <td class="py-2.5 pr-5" data-date={week.date} data-slot={slot}>
+                      {#if past}
+                        <span class="text-[11px] text-gray-300">{labels.weekPast}</span>
+                      {:else}
+                        <span class="flex flex-col gap-1">
+                          {#each groupsIn(week.date, slot) as g (g.group)}
+                            {@render seatRow(week.date, slot, g.group, g.taken, g.free, past, clash)}
+                          {/each}
+                        </span>
+                        {#if clash}
+                          <span class="mt-1 block text-[11px] text-amber-700">
+                            {fill(labels.busyThisWeek, { lab: clash.labTitle })}
+                          </span>
+                        {/if}
+                      {/if}
+                    </td>
+                  {/each}
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+        </div>
+        {#if closedNote}
+          <p class="border-t border-gray-100 px-5 py-2.5 text-xs text-gray-500">{closedNote}</p>
+        {/if}
+      {/if}
+    </section>
+  </div>
+
+  <div class="space-y-5">
+    <!-- My bookings -->
+    <section class={panel} aria-label={labels.myBookings}>
+      <h2 class="border-b border-gray-100 px-4 py-3 text-sm font-semibold text-gray-900">
+        {labels.myBookings}
+      </h2>
+      {#if myBookings.length === 0}
+        <p class="px-4 py-3 text-sm text-gray-400">{labels.myBookingsEmpty}</p>
+      {:else}
+        <ul class="divide-y divide-gray-100">
+          {#each myBookings as booking (booking.id)}
+            <li class="px-4 py-3 text-sm">
+              <p class="font-medium text-gray-900">{booking.labTitle}</p>
+              <p class="mt-0.5 text-xs text-gray-500">
+                {formatDate(booking.date)} · {booking.start}–{booking.end}
+              </p>
+              <p class="text-xs text-gray-500">
+                {fill(labels.group, { group: booking.group })} · {LAB_ROOM}
+              </p>
+              {@render calendarLinks(booking)}
+              <button
+                type="button"
+                onclick={() => cancelStored(booking)}
+                disabled={cancellingId === booking.id}
+                class="mt-2 text-xs font-medium text-red-600 underline underline-offset-2 hover:text-red-700 disabled:text-gray-400"
+              >
+                {cancellingId === booking.id ? labels.cancelling : labels.cancel}
+              </button>
+            </li>
+          {/each}
+        </ul>
+      {/if}
+      {#if cancelError}
+        <p class="px-4 pb-3 text-xs text-red-600" role="alert">{cancelError}</p>
+      {/if}
+    </section>
+
+    <!-- Rotation: which labs are set up each week -->
+    {#if weeklyPlan.length > 0}
+      <section class={panel} aria-label={labels.weeklyPlan}>
+        <div class="border-b border-gray-100 px-4 py-3">
+          <h2 class="text-sm font-semibold text-gray-900">{labels.weeklyPlan}</h2>
+          <p class="mt-0.5 text-xs text-gray-500">{labels.weeklyPlanHint}</p>
+        </div>
+        <table class="w-full border-collapse text-xs">
+          <tbody>
+            {#each weeklyPlan as day (day.date)}
+              <tr class="border-b border-gray-50 last:border-0">
+                <th scope="row" class="whitespace-nowrap py-1.5 pl-4 pr-2 text-left align-top font-medium text-gray-500">
+                  {fill(labels.week, { week: day.isoWeek })}
+                </th>
+                <td class="py-1.5 pr-4">
+                  {#if !day.open}
+                    <span class="text-gray-400">{labels.weekClosed}</span>
+                  {:else}
                     <span class="flex flex-wrap gap-1">
                       {#each day.labs as lab (lab.id)}
                         <button
@@ -624,213 +791,24 @@
                             submitError = null;
                             success = null;
                           }}
-                          class={`rounded border px-1.5 py-0.5 transition-colors ${
+                          title={lab.title}
+                          class={`rounded px-1.5 py-0.5 transition-colors ${
                             lab.id === selectedLabId
-                              ? 'border-blue-300 bg-blue-50 font-medium text-blue-800'
-                              : 'border-gray-200 bg-gray-50 text-gray-600 hover:border-blue-300'
+                              ? 'bg-blue-100 font-semibold text-blue-800'
+                              : 'text-gray-600 hover:bg-gray-100'
                           }`}
                         >
-                          {lab.title}
+                          {lab.shortTitle}
                         </button>
                       {/each}
                     </span>
-                  </td>
-                </tr>
-              {/each}
-            </tbody>
-          </table>
-        </div>
+                  {/if}
+                </td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
       </section>
     {/if}
-
-    <!-- Semester seat map -->
-    <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-      <h2 class="text-sm font-semibold text-gray-900">{labels.semester}</h2>
-      <p class="mt-0.5 text-xs text-gray-500">{semesterRange}</p>
-      <p class="text-xs font-medium text-gray-600">{roomLabel(locale)}</p>
-      {#if closedNote}
-        <p class="text-xs text-gray-500">{closedNote}</p>
-      {/if}
-      {#if weeks.length > 0}
-        <p class="text-xs text-gray-500">{fill(labels.runsOnDays, { count: weeks.length })}</p>
-      {/if}
-      {#if opensOn}
-        <p
-          class="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-800"
-        >
-          {fill(labels.lockedNote, { date: formatDate(opensOn) })}
-        </p>
-      {/if}
-
-      {#if loadFailed}
-        <p class="mt-4 text-sm text-red-600" role="alert">{labels.errors.network}</p>
-      {:else if bookings === null}
-        <p class="mt-4 text-sm text-gray-400">{labels.loading}</p>
-      {:else if selectedLab && course}
-        <ul class="mt-4 space-y-3">
-          {#each weeks as week (week.date)}
-            <li
-              class={`rounded-lg border p-4 ${
-                week.open ? 'border-gray-200 bg-white' : 'border-gray-200 bg-gray-50'
-              }`}
-            >
-              <div class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                <p class={`text-sm font-medium ${week.open ? 'text-gray-900' : 'text-gray-400'}`}>
-                  {fill(labels.week, { week: week.isoWeek })} · {formatDate(week.date)}
-                </p>
-                {#if !week.open}
-                  <span
-                    class="rounded border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-800"
-                  >
-                    {labels.weekClosed}
-                  </span>
-                {/if}
-              </div>
-
-              {#if week.open}
-                <div class="mt-3 space-y-3">
-                  {#each course.slots as _period, index (index)}
-                    {@const slot = index + 1}
-                    {@const past = isPastSlot(course, week.date, slot, today, nowMinutes)}
-                    {@const clash = myOtherLabInSlot(week.date, slot)}
-                    <!-- addressable per day and slot, so tests and deep links
-                         do not depend on the surrounding markup -->
-                    <div
-                      data-date={week.date}
-                      data-slot={slot}
-                      class={course.slots.length > 1 ? 'rounded-md bg-gray-50/70 p-2' : ''}
-                    >
-                      <div class="flex flex-wrap items-baseline gap-x-2">
-                        <span
-                          class={`text-xs font-semibold tabular-nums ${
-                            past ? 'text-gray-400' : 'text-gray-700'
-                          }`}
-                        >
-                          {slotTime(slot)}
-                        </span>
-                        {#if past}
-                          <span class="text-xs text-gray-400">{labels.weekPast}</span>
-                        {:else if clash}
-                          <span class="text-xs text-amber-700">
-                            {fill(labels.busyThisWeek, { lab: clash.labTitle })}
-                          </span>
-                        {/if}
-                      </div>
-
-                      <div class="mt-1.5 space-y-1.5">
-                        {#each groupNumbers(selectedLab) as group (group)}
-                          {@const taken = seatsIn(week.date, slot, group)}
-                          {@const free = freeSeatsIn(week.date, slot, group)}
-                          <div class="flex flex-wrap items-center gap-2">
-                            {#if selectedLab.groupsPerSlot > 1}
-                              <span
-                                class={`w-20 shrink-0 text-xs font-medium ${
-                                  past ? 'text-gray-400' : 'text-gray-600'
-                                }`}
-                              >
-                                {fill(labels.group, { group })}
-                              </span>
-                            {/if}
-
-                            {#each taken as seatBooking (seatBooking.id)}
-                              <span
-                                class={`rounded-full border px-2.5 py-1 text-xs ${
-                                  isMine(seatBooking)
-                                    ? 'border-emerald-300 bg-emerald-50 font-medium text-emerald-800'
-                                    : 'border-gray-200 bg-gray-100 text-gray-700'
-                                }`}
-                              >
-                                <!-- nbsp: Svelte strips a leading space here, and it
-                                     keeps "(you)" on the same line as the name -->
-                                {seatBooking.bookedBy}{#if isMine(seatBooking)}&nbsp;<span
-                                    class="font-normal">({labels.you})</span
-                                  >{/if}
-                              </span>
-                            {/each}
-
-                            {#if free === 0}
-                              <span class="text-xs text-gray-400">{labels.groupFull}</span>
-                            {:else if !past}
-                              <button
-                                type="button"
-                                disabled={!detailsValid ||
-                                  claiming !== null ||
-                                  opensOn !== null ||
-                                  myBookingForLab !== undefined ||
-                                  clash !== undefined}
-                                onclick={() => claimSeat(week.date, slot, group)}
-                                title={opensOn
-                                  ? labels.errors['opens-later']
-                                  : myBookingForLab
-                                    ? labels.errors['already-booked']
-                                    : clash
-                                      ? labels.errors['same-slot']
-                                      : ''}
-                                class="rounded-full border border-dashed border-blue-400 px-2.5 py-1 text-xs font-medium text-blue-700 transition-colors hover:border-blue-600 hover:bg-blue-50 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-300 disabled:hover:bg-transparent"
-                              >
-                                {claiming === `${week.date}:${slot}:${group}`
-                                  ? labels.booking
-                                  : `+ ${labels.freeSeat}`}
-                              </button>
-                              <span class="text-xs text-gray-400">
-                                {fill(labels.seatsLeft, {
-                                  free,
-                                  total: selectedLab.seatsPerGroup,
-                                })}
-                              </span>
-                            {:else}
-                              <span class="text-xs text-gray-400">
-                                {fill(labels.seatsLeft, {
-                                  free,
-                                  total: selectedLab.seatsPerGroup,
-                                })}
-                              </span>
-                            {/if}
-                          </div>
-                        {/each}
-                      </div>
-                    </div>
-                  {/each}
-                </div>
-              {/if}
-            </li>
-          {/each}
-        </ul>
-      {/if}
-    </section>
   </div>
-
-  <!-- My bookings -->
-  <section class="rounded-xl border border-gray-200 bg-gray-50 p-4" aria-label={labels.myBookings}>
-    <h2 class="mb-3 text-sm font-semibold text-gray-900">{labels.myBookings}</h2>
-    {#if myBookings.length === 0}
-      <p class="text-sm text-gray-400">{labels.myBookingsEmpty}</p>
-    {:else}
-      <ul class="space-y-3">
-        {#each myBookings as booking (booking.id)}
-          <li class="rounded-lg border border-gray-200 bg-white p-3 text-sm">
-            <p class="font-medium text-gray-900">{booking.labTitle}</p>
-            <p class="text-gray-500">
-              {formatDate(booking.date)} · {booking.start}–{booking.end}
-            </p>
-            <p class="text-gray-500">
-              {fill(labels.group, { group: booking.group })} · {labels.room} {LAB_ROOM}
-            </p>
-            {@render calendarLinks(booking)}
-            <button
-              type="button"
-              onclick={() => cancelStored(booking)}
-              disabled={cancellingId === booking.id}
-              class="mt-2 text-xs font-medium text-red-600 underline underline-offset-2 hover:text-red-700 disabled:text-gray-400"
-            >
-              {cancellingId === booking.id ? labels.cancelling : labels.cancel}
-            </button>
-          </li>
-        {/each}
-      </ul>
-      {#if cancelError}
-        <p class="mt-2 text-xs text-red-600" role="alert">{cancelError}</p>
-      {/if}
-    {/if}
-  </section>
 </div>

@@ -1,6 +1,7 @@
 ---
 title: "Infusion Pump Lab"
 course: "MTE200"
+shortTitle: "Infusion pumps"
 description: "Flow rate accuracy testing, occlusion detection, and preventive maintenance of infusion pumps"
 equipment:
   - "B. Braun Infusomat Space (volumetric pump)"

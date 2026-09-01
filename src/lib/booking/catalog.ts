@@ -14,6 +14,8 @@ export interface LabCatalogEntry {
   /** Slug without locale prefix, e.g. 'mte200-defibrillator'. */
   id: string;
   title: string;
+  /** Compact name for the schedule grid and rotation table. */
+  shortTitle: string;
   /** Course code, so the UI can group labs without a second lookup. */
   course: string;
   equipment: string[];
@@ -47,6 +49,7 @@ export async function getLabCatalog(locale: Locale = 'en'): Promise<LabCatalogEn
     return {
       id: lab.id,
       title: translated.data.title,
+      shortTitle: translated.data.shortTitle ?? translated.data.title,
       course: course.id,
       equipment: translated.data.equipment,
       requiredDevices: devicesForEquipment(canonical.data.equipment),

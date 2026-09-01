@@ -1,6 +1,7 @@
 ---
 title: "Laboratorieoppgave i sykehusnettverk og integrasjon av medisinsk utstyr"
 course: "MTE210"
+shortTitle: "HL7 & DICOM"
 description: "HL7-meldinger, DICOM-bildeoverføring og nettverksintegrasjon av medisinsk utstyr"
 equipment:
   - "HL7-testmiljø (Mirth Connect eller HAPI FHIR-server)"

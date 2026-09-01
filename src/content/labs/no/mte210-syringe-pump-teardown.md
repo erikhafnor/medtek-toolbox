@@ -1,6 +1,7 @@
 ---
 title: "Demontering og samsvarsvurdering av sprøytepumpe"
 course: "MTE210"
+shortTitle: "Sprøytepumpe"
 description: "Demonter en Alaris CC sprøytepumpe og spor hvordan konstruksjonen, servicen og testingen etter reparasjon viser samsvar med EU MDR 2017/745 og ISO 13485 — med de harmoniserte standardene (IEC 60601-1, IEC 62353, IEC 60601-2-24) som bevis"
 equipment:
   - "CareFusion Alaris CC sprøytepumpe (én per gruppe)"

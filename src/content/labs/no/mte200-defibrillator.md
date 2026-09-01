@@ -1,6 +1,7 @@
 ---
 title: "Defibrillatorslab"
 course: "MTE200"
+shortTitle: "Defibrillator"
 description: "Betjening, testing og forebyggende vedlikehold av defibrillator"
 equipment:
   - "LIFEPAK 15 (Stryker/Physio-Control)"

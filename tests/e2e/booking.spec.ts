@@ -41,39 +41,36 @@ test.describe('booking page', () => {
       'aria-pressed',
       'true'
     );
-    await expect(labPicker(page).getByRole('button', { name: /Defibrillator Lab/ })).toBeVisible();
-    await expect(labPicker(page).getByRole('button', { name: /Ventilator Lab/ })).toBeVisible();
-    await expect(labPicker(page).getByRole('button', { name: /Electrical Safety/ })).toHaveCount(0);
+    await expect(labPicker(page).getByRole('button', { name: /^Defibrillator$/ })).toBeVisible();
+    await expect(labPicker(page).getByRole('button', { name: /^Ventilator$/ })).toBeVisible();
+    await expect(labPicker(page).getByRole('button', { name: /Electrical safety/ })).toHaveCount(0);
 
     await page.getByRole('button', { name: 'MTE210', exact: true }).click();
-    await expect(labPicker(page).getByRole('button', { name: /Electrical Safety/ })).toBeVisible();
-    await expect(labPicker(page).getByRole('button', { name: /Defibrillator Lab/ })).toHaveCount(0);
+    await expect(labPicker(page).getByRole('button', { name: /Electrical safety/ })).toBeVisible();
+    await expect(labPicker(page).getByRole('button', { name: /^Defibrillator$/ })).toHaveCount(0);
   });
 
   test('shows a core lab on its five Tuesdays, in two slots', async ({ page }) => {
     await page.goto('/en/booking/?lab=mte200-defibrillator');
 
     // weeks 37-40 plus the spare week-42 day; block 2's weeks belong to others
-    await expect(page.getByText('This lab runs on 5 lab days.')).toBeVisible();
+    await expect(page.locator('[data-slot="1"]')).toHaveCount(5);
     await expect(page.getByText('The last day is spare', { exact: false })).toBeVisible();
     await expect(page.locator('[data-date="2026-09-08"][data-slot="1"]')).toBeVisible();
     await expect(page.locator('[data-date="2026-10-13"][data-slot="2"]')).toBeVisible();
     await expect(page.locator('[data-date="2026-10-20"][data-slot="1"]')).toHaveCount(0);
 
-    // both periods on each of its days
-    await expect(
-      page.locator('[data-date="2026-09-15"][data-slot="1"]').getByText('09:00–11:30')
-    ).toBeVisible();
-    await expect(
-      page.locator('[data-date="2026-09-15"][data-slot="2"]').getByText('11:30–14:00')
-    ).toBeVisible();
+    // both periods are columns of the sign-up sheet, and every day has both
+    await expect(page.getByRole('columnheader', { name: '09:00–11:30' })).toBeVisible();
+    await expect(page.getByRole('columnheader', { name: '11:30–14:00' })).toBeVisible();
+    await expect(page.locator('[data-date="2026-09-15"][data-slot="2"]')).toBeVisible();
 
     await expect(page.getByText('1 group × up to 3 students per slot')).toBeVisible();
   });
 
   test('the weekly plan never schedules more than three labs a day', async ({ page }) => {
     await page.goto('/en/booking/?lab=mte200-defibrillator');
-    const rows = page.getByRole('row');
+    const rows = page.getByRole('region', { name: 'Weekly plan' }).getByRole('row');
     await expect(rows.first()).toBeVisible();
 
     for (const row of await rows.all()) {
@@ -96,7 +93,7 @@ test.describe('booking page', () => {
     await page.locator('#booking-email').fill(`${student.toLowerCase()}@stud.uis.no`);
 
     // the plan is visible, and says it is a choice…
-    await expect(page.getByText('This lab runs on 4 lab days.')).toBeVisible();
+    await expect(page.locator('[data-slot="1"]')).toHaveCount(4);
     await expect(page.getByText('Elective — choose 2 of these 4 labs.')).toBeVisible();
     await expect(page.getByText('These labs open for booking', { exact: false })).toBeVisible();
     // …but nothing can be claimed yet
@@ -104,7 +101,7 @@ test.describe('booking page', () => {
     await expect(seats.first()).toBeDisabled();
 
     // a block 1 lab, by contrast, is claimable right away
-    await labPicker(page).getByRole('button', { name: /ECG Recording/ }).click();
+    await labPicker(page).getByRole('button', { name: /^ECG$/ }).click();
     await expect(page.getByText('These labs open for booking', { exact: false })).toHaveCount(0);
     await expect(page.getByRole('button', { name: '+ Take seat' }).first()).toBeEnabled();
   });
@@ -113,10 +110,12 @@ test.describe('booking page', () => {
     await page.goto('/en/booking/?lab=mte210-hospital-networks');
     await expect(page.getByText('Week 39 and 41 closed for booking.')).toBeVisible();
     // three groups at once on lab PCs, so it clears 18 students in three days
-    await expect(page.getByText('This lab runs on 3 lab days.')).toBeVisible();
+    await expect(page.locator('[data-slot="1"]')).toHaveCount(3);
     await expect(page.getByText('3 groups × up to 3 students per slot')).toBeVisible();
     // the two closed weeks are called out in the plan
-    await expect(page.getByText('Closed for booking', { exact: true })).toHaveCount(2);
+    await expect(
+      page.getByRole('region', { name: 'Weekly plan' }).getByText('Closed for booking', { exact: true })
+    ).toHaveCount(2);
   });
 
   test('allows two MTE200 labs on one Tuesday in different slots', async ({ page }) => {
@@ -127,12 +126,12 @@ test.describe('booking page', () => {
 
     // take the 09:00 slot in week 38
     const morning = page.locator('[data-date="2026-09-15"][data-slot="1"]');
-    await expect(morning.getByText('09:00–11:30')).toBeVisible();
+    await expect(page.getByRole('columnheader', { name: '09:00–11:30' })).toBeVisible();
     await morning.getByRole('button', { name: '+ Take seat' }).click();
     await expect(page.getByRole('status')).toContainText('Seat booked!', { timeout: 15_000 });
 
     // a different lab, same Tuesday: the 09:00 slot is blocked, 11:30 is not
-    await labPicker(page).getByRole('button', { name: /ECG Recording/ }).click();
+    await labPicker(page).getByRole('button', { name: /^ECG$/ }).click();
     const ecgMorning = page.locator('[data-date="2026-09-15"][data-slot="1"]');
     const ecgAfternoon = page.locator('[data-date="2026-09-15"][data-slot="2"]');
     await expect(ecgMorning.getByText('You already have', { exact: false })).toBeVisible();

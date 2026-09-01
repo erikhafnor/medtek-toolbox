@@ -1,6 +1,7 @@
 ---
 title: "Respiratorslab"
 course: "MTE200"
+shortTitle: "Respirator"
 description: "Betjening, periodisk vedlikehold og funksjonstesting av en respirator"
 equipment:
   - "Dräger Evita XL"
