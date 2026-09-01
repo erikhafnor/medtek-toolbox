@@ -32,6 +32,8 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response(JSON.stringify({ error: 'service-unavailable' }), { status: 503 });
   }
 
+  // completions live in their own table and are untouched: a booking is
+  // scheduling, an approval is the academic record
   console.warn(`staff purge: removed ${removed} booking(s) before ${before} (${RETENTION_NOTE})`);
   return new Response(JSON.stringify({ removed }), {
     status: 200,
