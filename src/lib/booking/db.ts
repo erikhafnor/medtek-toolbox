@@ -208,6 +208,32 @@ export async function listSemesterBookings(): Promise<SlotBookingRow[]> {
   return rows.map(rowToBooking);
 }
 
+/** A booking as staff see it: the public shape plus the contact details. */
+export interface StaffBookingRow extends SlotBookingRow {
+  studentEmail: string;
+  createdAt: string;
+}
+
+/**
+ * Every booking, including student emails.
+ *
+ * Only ever called from a route the staff middleware gates — the public
+ * availability endpoint deliberately returns first names and nothing else.
+ */
+export async function listBookingsForStaff(): Promise<StaffBookingRow[]> {
+  await ensureSchema();
+  const rows = (await sql().query(
+    `SELECT ${SELECT_FIELDS}, student_email, created_at
+     FROM slot_bookings
+     ORDER BY booking_date, slot_number, lab_id, group_number, seat_number`
+  )) as Record<string, unknown>[];
+  return rows.map((row) => ({
+    ...rowToBooking(row),
+    studentEmail: String(row.student_email),
+    createdAt: new Date(String(row.created_at)).toISOString(),
+  }));
+}
+
 /** Map a unique-constraint violation back to the rule the student broke. */
 function reasonForUniqueViolation(err: unknown): CreateSeatOutcome | null {
   if ((err as { code?: string })?.code !== PG_UNIQUE_VIOLATION) return null;
