@@ -3,7 +3,8 @@ import { defineConfig } from '@playwright/test';
 export default defineConfig({
   testDir: './tests/e2e',
   webServer: {
-    command: 'npm run preview',
+    // `astro preview` is unsupported with the Vercel adapter; use the dev server.
+    command: 'npm run dev',
     port: 4321,
     reuseExistingServer: true,
   },

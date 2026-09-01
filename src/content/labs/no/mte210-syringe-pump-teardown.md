@@ -1,6 +1,7 @@
 ---
 title: "Demontering og samsvarsvurdering av sprøytepumpe"
 course: "MTE210"
+shortTitle: "Sprøytepumpe"
 description: "Demonter en Alaris CC sprøytepumpe og spor hvordan konstruksjonen, servicen og testingen etter reparasjon viser samsvar med EU MDR 2017/745 og ISO 13485 — med de harmoniserte standardene (IEC 60601-1, IEC 62353, IEC 60601-2-24) som bevis"
 equipment:
   - "CareFusion Alaris CC sprøytepumpe (én per gruppe)"
@@ -8,7 +9,6 @@ equipment:
   - "Torx-bitssett (T6, T8, T10, T20) og momentskrutrekker"
   - "Digitalt multimeter (DMM)"
   - "Tokanals oscilloskop med ×10 prober"
-  - "Fluke ESA615 elektrisk sikkerhetsanalysator (med gyldig kalibreringsbevis)"
   - "Kamera eller mobil for dokumentasjon"
 prerequisites:
   - "Teknisk servicemanual for Alaris CC sprøytepumpe (1000SM00001) og bruksanvisning (DFU)"
@@ -52,7 +52,7 @@ checklist:
     items:
       - "Svar på repetisjonsspørsmålene — de knytter det hendene dine gjorde til reglene bak."
       - "Lever tabellene, bildene, serviceprotokollen og en kort refleksjon."
-duration: "6 timer"
+duration: "2 timer 45 minutter"
 ---
 
 Denne øvelsen bruker et ekte infusjonsapparat som et vindu inn i **regelverket** som lar det nå en pasient. I EU kan en produsent CE-merke og selge denne pumpen kun ved å (a) oppfylle de **generelle kravene til sikkerhet og ytelse (GSPR)** i **EU MDR 2017/745**, Vedlegg I, (b) gjøre det innenfor et sertifisert **ISO 13485**-kvalitetssystem, og (c) vanligvis vise det med **harmoniserte standarder** (IEC 60601-1, IEC 60601-2-24, IEC 60601-1-8, …) som gir en *samsvarsformodning*. Etter at apparatet er tatt i bruk, holder **ISO 13485**-service og **IEC 62353**-testing (periodisk / etter reparasjon) det trygt. Alt dette skal du se i maskinvaren.

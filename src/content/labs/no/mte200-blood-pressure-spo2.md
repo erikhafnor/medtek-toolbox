@@ -1,13 +1,14 @@
 ---
 title: "Blodtrykk- og pulsoksymetrilab"
 course: "MTE200"
+shortTitle: "Blodtrykk & SpO₂"
 description: "Ikke-invasiv blodtrykksmåling, pulsoksymetriovervåking og prinsipper for invasiv blodtrykksmåling"
 equipment:
   - "LIFEPAK 15 (Stryker/Physio-Control)"
 prerequisites:
   - "LIFEPAK 15 brukermanualdokumentasjon"
   - "Forelesningsnotater om hemodynamisk overvåking"
-duration: "3 timer"
+duration: "2,5 timer"
 ---
 
 ## Læringsmål

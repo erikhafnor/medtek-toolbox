@@ -1,6 +1,7 @@
 ---
 title: "Electrical Safety Testing Lab"
 course: "MTE210"
+shortTitle: "Electrical safety"
 description: "Hands-on IEC 62353 electrical safety testing of medical equipment"
 equipment:
   - "Fluke ESA615 Electrical Safety Analyzer"
@@ -11,7 +12,7 @@ prerequisites:
   - "Lecture notes on IEC 60601-1 and IEC 62353"
   - "Reference: IEC 60601-1 Essentials (on this site)"
   - "Reference: Leakage Current Measurement Guide (on this site)"
-duration: "3 hours"
+duration: "2 hours 45 minutes"
 ---
 
 ## Learning Objectives

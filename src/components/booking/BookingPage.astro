@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BookingSystem from './BookingSystem.svelte';
+import { getLabCatalog } from '../../lib/booking/catalog';
+import { DEVICES } from '../../lib/booking/inventory';
+import { BOOKING_LABELS } from '../../lib/booking/labels';
+import type { Locale } from '../../lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const labels = BOOKING_LABELS[locale];
+const labs = await getLabCatalog(locale);
+const inventory = Object.fromEntries(
+  DEVICES.map((d) => [d.key, { label: locale === 'no' ? d.labelNo : d.label, quantity: d.quantity }])
+);
+---
+
+<BaseLayout title={labels.title} description={labels.intro}>
+  <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8" data-pagefind-ignore>
+    <h1 class="mb-2 text-3xl font-bold text-gray-900">{labels.title}</h1>
+    <p class="mb-8 max-w-3xl text-gray-500">{labels.intro}</p>
+    <BookingSystem client:only="svelte" {labs} {inventory} {locale} {labels}>
+      <p slot="fallback" class="text-sm text-gray-400">{labels.loading}</p>
+    </BookingSystem>
+  </div>
+</BaseLayout>

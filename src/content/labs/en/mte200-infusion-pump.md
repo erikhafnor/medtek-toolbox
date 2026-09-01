@@ -1,6 +1,7 @@
 ---
 title: "Infusion Pump Lab"
 course: "MTE200"
+shortTitle: "Infusion pumps"
 description: "Flow rate accuracy testing, occlusion detection, and preventive maintenance of infusion pumps"
 equipment:
   - "B. Braun Infusomat Space (volumetric pump)"
@@ -11,7 +12,7 @@ prerequisites:
   - "B. Braun Perfusor Space user and service manual documentation"
   - "IDA-5 Infusion Device Analyzer documentation"
   - "Lecture notes on infusion technology"
-duration: "3 hours"
+duration: "2.5 hours"
 ---
 
 ## Learning Objectives

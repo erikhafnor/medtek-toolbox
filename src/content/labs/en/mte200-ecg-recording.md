@@ -1,6 +1,7 @@
 ---
 title: "ECG Recording Lab"
 course: "MTE200"
+shortTitle: "ECG"
 description: "Standard 12-lead resting ECG recording and the heart's electrical activity using a patient simulator"
 equipment:
   - "Fluke ProSim 8 Vital Signs and ECG Patient Simulator"
@@ -9,7 +10,7 @@ prerequisites:
   - "Fluke ProSim 8 user manual"
   - "Philips PageWriter TC30 user and service manual"
   - "Lecture notes on cardiac electrophysiology and ECG"
-duration: "3 hours"
+duration: "2.5 hours"
 ---
 
 ## Learning Objectives

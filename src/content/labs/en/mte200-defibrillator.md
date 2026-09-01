@@ -1,6 +1,7 @@
 ---
 title: "Defibrillator Lab"
 course: "MTE200"
+shortTitle: "Defibrillator"
 description: "Operation, testing, and preventive maintenance of a defibrillator"
 equipment:
   - "LIFEPAK 15 (Stryker/Physio-Control)"
@@ -10,7 +11,7 @@ prerequisites:
   - "LIFEPAK 15 user and service manual documentation"
   - "Fluke Impulse 7000DP documentation"
   - "Lecture notes on defibrillation"
-duration: "3 hours"
+duration: "2.5 hours"
 ---
 
 ## Learning Objectives

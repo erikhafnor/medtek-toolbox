@@ -1,6 +1,7 @@
 ---
 title: "Syringe Pump Teardown & Compliance Lab"
 course: "MTE210"
+shortTitle: "Syringe pump"
 description: "Tear down an Alaris CC syringe pump and trace how its construction, servicing and post-repair testing demonstrate conformity with EU MDR 2017/745 and ISO 13485 — using the harmonised standards (IEC 60601-1, IEC 62353, IEC 60601-2-24) as the evidence"
 equipment:
   - "CareFusion Alaris CC Syringe Pump (one per group)"
@@ -8,7 +9,6 @@ equipment:
   - "Torx driver set (T6, T8, T10, T20) and a torque screwdriver"
   - "Digital multimeter (DMM)"
   - "Two-channel oscilloscope with ×10 probes"
-  - "Fluke ESA615 Electrical Safety Analyzer (with a valid calibration certificate)"
   - "Camera or phone for documentation"
 prerequisites:
   - "Alaris CC Syringe Pump Technical Service Manual (1000SM00001) and Directions for Use (DFU)"
@@ -52,7 +52,7 @@ checklist:
     items:
       - "Answer the review questions — they tie what your hands did back to the rules behind it."
       - "Hand in your tables, photos, the service record and a short reflection."
-duration: "6 hours"
+duration: "2 hours 45 minutes"
 ---
 
 This lab uses a real infusion device as a lens on the **regulatory system** that lets it reach a patient. In the EU, a manufacturer may CE-mark and sell this pump only by (a) meeting the **General Safety and Performance Requirements (GSPRs)** of **EU MDR 2017/745**, Annex I, (b) doing so inside a certified **ISO 13485** quality management system, and (c) typically demonstrating it with **harmonised standards** (IEC 60601-1, IEC 60601-2-24, IEC 60601-1-8, …) that grant a *presumption of conformity*. After the device is in service, **ISO 13485** servicing and **IEC 62353** recurrent/after-repair testing keep it safe. You will see all of this in the hardware.

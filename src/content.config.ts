@@ -85,10 +85,16 @@ const labs = defineCollection({
   schema: z.object({
     title: z.string(),
     course: z.enum(['MTE200', 'MTE210']),
+    // Compact name for schedule grids and chips, where the full title does not
+    // fit. Falls back to `title` when absent.
+    shortTitle: z.string().optional(),
     description: z.string(),
     equipment: z.array(z.string()),
     prerequisites: z.array(z.string()).optional(),
     duration: z.string().optional(),
+    // Overrides the shared LAB_ROOM (src/lib/room.ts) for a lab that runs
+    // somewhere other than the medical technology lab.
+    room: z.string().optional(),
     // Optional interactive, tick-off progress checklist shown in a sticky
     // sidebar next to the lab. Keep item text short and conversational.
     checklist: z

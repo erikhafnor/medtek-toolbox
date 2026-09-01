@@ -1,6 +1,7 @@
 ---
 title: "Ventilator Lab"
 course: "MTE200"
+shortTitle: "Ventilator"
 description: "Operation, periodic maintenance, and functional testing of a mechanical ventilator"
 equipment:
   - "Dräger Evita XL"
@@ -9,7 +10,7 @@ equipment:
 prerequisites:
   - "Dräger Evita XL service and user manual documentation"
   - "Lecture notes on mechanical ventilation and respiratory physiology"
-duration: "3 hours"
+duration: "2.5 hours"
 ---
 
 ## Learning Objectives

@@ -1,6 +1,7 @@
 ---
 title: "Hospital Networks and Medical Device Integration Lab"
 course: "MTE210"
+shortTitle: "HL7 & DICOM"
 description: "HL7 messaging, DICOM image transfer, and network integration of medical devices"
 equipment:
   - "HL7 test environment (Mirth Connect or HAPI FHIR server)"
@@ -12,7 +13,7 @@ prerequisites:
   - "Lecture notes on health informatics and interoperability standards"
   - "Basic networking knowledge (TCP/IP, ports, client-server model)"
   - "Introduction to HL7 and DICOM from course lectures"
-duration: "4 hours"
+duration: "2 hours 45 minutes"
 ---
 
 ## Learning Objectives

@@ -1,30 +1,25 @@
 ---
-title: "CT-avbildning, stråling og 3D-rekonstruksjon"
+title: "CT-avbildning og stråling"
 course: "MTE210"
-description: "CT-bildeopptak på en benkebasert røntgen-CT, strålevern, volumrekonstruksjon, segmentering i 3D Slicer og 3D-printing av et skjult objekt oppdaget inni prøveobjektet"
+shortTitle: "CT-avbildning"
+description: "CT-bildeopptak på en benkebasert røntgen-CT, strålevern og volumrekonstruksjon av et prøveobjekt med et skjult tett objekt"
 equipment:
   - "PHYWE XR 4.0 benkebasert røntgen-/CT-enhet (XRstage rotasjonsbord + XRIS-detektor)"
   - "measureCT opptaks- og rekonstruksjonsprogramvare"
-  - "Lab-PC med 3D Slicer"
-  - "FDM-basert 3D-printer (skrivebordsmodell)"
   - "Valnøtt som prøveobjekt (med et skjult tett objekt)"
 prerequisites:
   - "Dokumentasjon for PHYWE XR 4.0 / measureCT"
-  - "3D Slicer installert på lab-PC-en"
   - "Forelesningsnotater om røntgen-/CT-fysikk og strålevern (ALARA)"
-duration: "4 timer"
+duration: "2 timer 45 minutter"
 ---
 
 ## Læringsmål
 
-Etter denne laboratorieøvelsen skal du være i stand til å:
+Etter denne laboratorieøvelsen skal du kunne:
 
 - Ta opp et fullstendig CT-datasett på den benkebaserte PHYWE XR 4.0-CT-en, og stille inn rørspenning (kV), rørstrøm (mA), eksponeringstid og antall projeksjoner
 - Forklare hvordan en roterende serie av røntgenprojeksjoner rekonstrueres til tverrsnittsbilder, og justere rotasjonssenteret for å oppnå en skarp rekonstruksjon
 - Anvende prinsipper for strålevern (ALARA, tid–avstand–skjerming, og avstandskvadratloven) og knytte parameterne for benkeskanningen til klinisk CT med tanke på dose og bildekvalitet
-- Eksportere et rekonstruert volum og importere det som en bildestabel i 3D Slicer med riktig voxelavstand
-- Segmentere en struktur av interesse ved gråverdi-terskling, generere en 3D-overflatemodell og eksportere en tett (vanntett) STL-fil
-- Klargjøre og 3D-printe det segmenterte objektet, og vurdere hvordan valg ved opptak og segmentering påvirker den ferdige utskriften
 
 ---
 
@@ -32,11 +27,11 @@ Etter denne laboratorieøvelsen skal du være i stand til å:
 
 > **LUKKET KABINETT.** PHYWE XR 4.0 er et fullstendig skjermet, typegodkjent røntgenkabinett. Røntgenstråling genereres kun når kammerdøren er lukket og sikkerhetsbryteren (interlock) er aktivert. Røntgenvarsellampen lyser når røret er i drift. **Forsøk aldri å forbikoble, tape over eller omgå dørbryteren.**
 
+
 - Ikke åpne kammerdøren mens røntgenvarsellampen lyser. Å åpne døren kutter høyspenningen automatisk — ikke bruk dette som en rutinemessig «av»-bryter.
 - Bekreft at varsellampen er **av** før du plasserer eller fjerner prøveobjektet.
 - Hold dosen så lav som praktisk mulig (ALARA): kjør ikke røret lenger enn nødvendig, og slå av røntgenstrålingen mellom stegene.
 - Meld umiddelbart fra til labansvarlig om skadede kabler, dører eller sikkerhetsbrytere. Ikke bruk en enhet der dørbryteren ikke fungerer.
-- **3D-printer:** dyse og byggeplate er varme under og etter printing. Bruk printeren kun som anvist, hold hendene unna bevegelige deler, og la utskriften kjøle seg ned før du fjerner den.
 
 ---
 
@@ -124,48 +119,6 @@ Det tette objektet inni valnøtten er en **menneskelig tann** — målet ditt fo
 
 ---
 
-### Del 4 — Eksport og segmentering i 3D Slicer (45 min)
-
-**4.1 Eksporter volumet.** I measureCT, eksporter det rekonstruerte volumet som en stabel av snittbilder (bruk **Volview**-eksporten / lagre-bilde-funksjonen for å generere bmp-snittserien, eller lagre de rekonstruerte snittene til en mappe). Lagre hele stabelen i én tom mappe.
-
-**4.2 Importer i 3D Slicer.** Åpne **3D Slicer** på lab-PC-en. Dra mappen med snittbilder inn i Slicer-vinduet (eller bruk *Add Data*), og last serien **som et volum / en bildestabel**. Siden de eksporterte bildene ikke inneholder skalainformasjon, må du sette **voxelavstanden manuelt**: denne skanningen rekonstruerer med **0,096 mm per voxel** i alle tre retninger. Riktig avstand er det som gjør at den ferdige 3D-utskriften får riktig fysisk størrelse.
-
-**4.3 Segmenter tannen.** Åpne modulen **Segment Editor**.
-
-1. Opprett en ny segmentering og legg til et segment kalt `tann`.
-2. Velg effekten **Threshold**. Dra den nedre terskelen oppover til kun den lyse, tette tannen er markert og den omkringliggende nøtten er utelatt. Klikk Apply.
-3. Bruk effekten **Islands** → *Keep largest island* for å fjerne løse flekker, deretter effekten **Smoothing** (median eller en liten Gaussisk) for å glatte ut overflaten.
-4. Slå på 3D-visningen (*Show 3D*-knappen) for å inspisere den segmenterte tannen fra alle vinkler. Juster terskelen hvis deler mangler eller er sammensmeltet.
-
-**4.4 Eksporter en STL.** Eksporter segmentet som en overflatemodell: i modulen **Segmentations** (eller høyreklikk på segmenteringen i *Data*), velg *Export to files* og lagre som **STL**. Bekreft at modellen er **vanntett** (en lukket overflate) slik at den kan printes.
-
-> Hvis tannen blir hul eller full av hull, var terskelen for høy eller utglattingen for aggressiv — gå tilbake til steg 4.3 og juster.
-
----
-
-### Del 5 — 3D-printing (30 min + printetid)
-
-**5.1** Åpne STL-filen i printerens slicer-programvare (f.eks. Cura eller PrusaSlicer). Kontroller at dimensjonene stemmer med målingen din fra del 3.4 — hvis ikke, var voxelavstanden i del 4.2 feil.
-
-**5.2** Orienter modellen for printing, legg til støtter om nødvendig, og slice med innstillingene som anbefales for lab-printeren din. En liten laghøyde (f.eks. 0,1–0,15 mm) fanger fine detaljer på et lite objekt som en tann.
-
-**5.3** Print tannen. Du får beholde utskriften din. Mens den printes, fullfør repetisjonsspørsmålene.
-
----
-
-### Del 6 — Repetisjonsspørsmål (15 min)
-
-Besvar i labboken; du vil diskutere disse med gruppen.
-
-1. Forklar forskjellen mellom **rørspenning (kV)** og **rørstrøm (mA)** og hvordan hver påvirker bildekontrast, bildestøy og dose.
-2. Hvorfor er **antall projeksjoner** viktig? Hva ville du forvente å se i rekonstruksjonen hvis du brukte langt færre projeksjoner?
-3. Hva er **rotasjonssenteret**, og hvilket artefakt oppstår i snittene når det er satt feil?
-4. Du eksporterte vanlige bildefiler uten skalainformasjon og måtte sette **voxelavstanden** manuelt i 3D Slicer. Hva går galt med 3D-utskriften hvis denne verdien er feil, og hvordan ville du oppdaget feilen før printing?
-5. Angi de tre søylene i **ALARA** og gi ett konkret eksempel på hver — først for dette benkekabinettet, deretter for en klinisk CT-undersøkelse.
-6. Det skjulte objektet rekonstrueres mye **lysere** enn nøtten rundt. Forklar, ut fra røntgenattenuasjon, hvorfor et tett objekt fremstår slik.
-
----
-
 ## Krav til labrapport
 
 Lever en maskinskrevet labrapport innen fristen angitt i emneplanen. Rapporten må inneholde:
@@ -174,8 +127,4 @@ Lever en maskinskrevet labrapport innen fristen angitt i emneplanen. Rapporten m
 - Opptaksparameterne du brukte (del 2.2) og et merket projeksjonsbilde av prøveobjektet
 - En kort beskrivelse av hvordan du justerte **rotasjonssenteret**, med før/etter-snittbilder som viser effekten
 - Rekonstruerte snittbilder (aksial, sagittal, koronal) som identifiserer det skjulte objektet, med ditt størrelsesanslag
-- En beskrivelse av **3D Slicer-segmenteringen** din, inkludert terskelvalget ditt og et skjermbilde av 3D-modellen
-- **Voxelavstanden** du satte og de endelige printede dimensjonene, med en kommentar om de stemte overens
-- Et bilde av den ferdige 3D-utskriften din
-- Skriftlige svar på repetisjonsspørsmålene (del 6)
-- En kort konklusjon (200–300 ord) som knytter benkearbeidsflyten til klinisk CT: opptak, dose/ALARA, rekonstruksjon og etterbehandling
+- En kort konklusjon (150–200 ord) som knytter benkearbeidsflyten til klinisk CT: opptak, dose/ALARA og rekonstruksjon

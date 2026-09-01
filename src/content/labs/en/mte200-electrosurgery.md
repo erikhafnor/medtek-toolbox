@@ -1,6 +1,7 @@
 ---
 title: "Electrosurgery Lab"
 course: "MTE200"
+shortTitle: "Electrosurgery"
 description: "Operation, periodic maintenance, and performance testing of an electrosurgical unit"
 equipment:
   - "Olympus UES-40 electrosurgical unit"
@@ -12,7 +13,7 @@ prerequisites:
   - "Olympus UES-40 documentation"
   - "Keysight InfiniiVision oscilloscope documentation"
   - "Lecture notes on electrosurgery"
-duration: "3 hours"
+duration: "2.5 hours"
 ---
 
 ## Learning Objectives

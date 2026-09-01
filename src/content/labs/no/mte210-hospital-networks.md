@@ -1,6 +1,7 @@
 ---
 title: "Laboratorieoppgave i sykehusnettverk og integrasjon av medisinsk utstyr"
 course: "MTE210"
+shortTitle: "HL7 & DICOM"
 description: "HL7-meldinger, DICOM-bildeoverføring og nettverksintegrasjon av medisinsk utstyr"
 equipment:
   - "HL7-testmiljø (Mirth Connect eller HAPI FHIR-server)"
@@ -12,7 +13,7 @@ prerequisites:
   - "Forelesningsnotater om helseinformatikk og interoperabilitetsstandarder"
   - "Grunnleggende nettverkskunnskap (TCP/IP, porter, klient-server-modell)"
   - "Introduksjon til HL7 og DICOM fra forelesninger i emnet"
-duration: "4 timer"
+duration: "2 timer 45 minutter"
 ---
 
 ## Læringsmål

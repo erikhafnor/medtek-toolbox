@@ -1,6 +1,7 @@
 ---
 title: "Elektrokirurgilab"
 course: "MTE200"
+shortTitle: "Diatermi"
 description: "Betjening, periodisk vedlikehold og ytelsestesting av elektrokirurgisk apparat (diatermi)"
 equipment:
   - "Olympus UES-40 elektrokirurgisk apparat"
@@ -12,7 +13,7 @@ prerequisites:
   - "Dokumentasjon for Olympus UES-40"
   - "Dokumentasjon for Keysight InfiniiVision oscilloskop"
   - "Forelesningsnotater om elektrokirurgi"
-duration: "3 timer"
+duration: "2,5 timer"
 ---
 
 ## Læringsmål

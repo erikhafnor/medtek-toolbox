@@ -1,6 +1,7 @@
 ---
 title: "Lab i elektrisk sikkerhetstesting"
 course: "MTE210"
+shortTitle: "Elektrisk sikkerhet"
 description: "Praktisk IEC 62353 elektrisk sikkerhetstesting av medisinsk utstyr"
 equipment:
   - "Fluke ESA615 Electrical Safety Analyzer"
@@ -11,7 +12,7 @@ prerequisites:
   - "Forelesningsnotater om IEC 60601-1 og IEC 62353"
   - "Referanse: IEC 60601-1 Essentials (på dette nettstedet)"
   - "Referanse: Leakage Current Measurement Guide (på dette nettstedet)"
-duration: "3 timer"
+duration: "2 timer 45 minutter"
 ---
 
 ## Læringsmål

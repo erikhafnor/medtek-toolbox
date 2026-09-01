@@ -1,6 +1,7 @@
 ---
 title: "Ultralydlab"
 course: "MTE200"
+shortTitle: "Ultralyd"
 description: "Ultralydundersøkelse, IHE Scheduled Workflow i et simulert klinisk IT-system og ytelsestesting med ultralyd-fantom"
 equipment:
   - "GE Logic S8"
@@ -10,7 +11,7 @@ prerequisites:
   - "Brukermanual for Kyoto Kagaku N-365 fantom"
   - "Springer Handbook of Medical Technology kapittel 17 (Ultralyddiagnostikk)"
   - "Forelesningsnotater om ultralyd"
-duration: "3 timer"
+duration: "2,5 timer"
 ---
 
 ## Læringsmål

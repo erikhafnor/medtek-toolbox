@@ -1,6 +1,7 @@
 ---
 title: "Ultrasound Lab"
 course: "MTE200"
+shortTitle: "Ultrasound"
 description: "Ultrasound examination, IHE Scheduled Workflow in a simulated clinical IT system, and performance testing with an ultrasound phantom"
 equipment:
   - "GE Logic S8"
@@ -10,7 +11,7 @@ prerequisites:
   - "Kyoto Kagaku N-365 phantom user manual"
   - "Springer Handbook of Medical Technology Chapter 17 (Ultrasound diagnostics)"
   - "Lecture notes on ultrasound"
-duration: "3 hours"
+duration: "2.5 hours"
 ---
 
 ## Learning Objectives

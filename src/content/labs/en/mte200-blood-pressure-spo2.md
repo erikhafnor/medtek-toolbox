@@ -1,13 +1,14 @@
 ---
 title: "Blood Pressure and Pulse Oximetry Lab"
 course: "MTE200"
+shortTitle: "Blood pressure & SpO₂"
 description: "Non-invasive blood pressure measurement, pulse oximetry monitoring, and invasive blood pressure principles"
 equipment:
   - "LIFEPAK 15 (Stryker/Physio-Control)"
 prerequisites:
   - "LIFEPAK 15 user manual documentation"
   - "Lecture notes on hemodynamic monitoring"
-duration: "3 hours"
+duration: "2.5 hours"
 ---
 
 ## Learning Objectives
