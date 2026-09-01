@@ -6,6 +6,12 @@ import { test, expect } from '@playwright/test';
 
 const STAFF_PATHS = ['/no/booking/oversikt/', '/en/booking/roster/', '/api/staff/bookings.csv'];
 
+/** Destructive staff endpoints. Anonymous access here would let anyone wipe bookings. */
+const STAFF_MUTATIONS = [
+  { method: 'delete' as const, path: '/api/staff/bookings/00000000-0000-0000-0000-000000000000' },
+  { method: 'post' as const, path: '/api/staff/purge' },
+];
+
 test.describe('staff roster access', () => {
   for (const path of STAFF_PATHS) {
     test(`${path} refuses anonymous requests`, async ({ request }) => {
@@ -22,6 +28,14 @@ test.describe('staff roster access', () => {
         headers: { authorization: `Basic ${Buffer.from('staff:wrong').toString('base64')}` },
       });
       expect(response.status()).not.toBe(200);
+    });
+  }
+
+  for (const { method, path } of STAFF_MUTATIONS) {
+    test(`${method.toUpperCase()} ${path} refuses anonymous requests`, async ({ request }) => {
+      const response = await request[method](path, { data: { before: '2026-12-18' } });
+      // never 2xx: an open purge endpoint would let anyone delete every booking
+      expect(response.status()).toBeGreaterThanOrEqual(400);
     });
   }
 
