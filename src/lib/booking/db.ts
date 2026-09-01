@@ -208,6 +208,43 @@ export async function listSemesterBookings(): Promise<SlotBookingRow[]> {
   return rows.map(rowToBooking);
 }
 
+/**
+ * One student's own bookings, by email.
+ *
+ * Deliberately returns no cancel token: student addresses follow a guessable
+ * pattern, so anyone could cancel a classmate's seat by typing their address.
+ * Cancelling still needs the browser that booked, or course staff.
+ */
+export async function listBookingsByEmail(email: string): Promise<SlotBookingRow[]> {
+  await ensureSchema();
+  const rows = (await sql().query(
+    `SELECT ${SELECT_FIELDS} FROM slot_bookings
+     WHERE lower(student_email) = lower($1)
+     ORDER BY booking_date, slot_number`,
+    [email]
+  )) as Record<string, unknown>[];
+  return rows.map(rowToBooking);
+}
+
+/** Cancel on a student's behalf. Staff-only: no cancel token is required. */
+export async function deleteBookingAsStaff(id: string): Promise<boolean> {
+  await ensureSchema();
+  const rows = (await sql()`
+    DELETE FROM slot_bookings WHERE id::text = ${id} RETURNING id`) as Record<string, unknown>[];
+  return rows.length > 0;
+}
+
+/** Delete every booking whose lab day is before `date`. Returns how many went. */
+export async function purgeBookingsBefore(date: string): Promise<number> {
+  await ensureSchema();
+  const rows = (await sql()`
+    DELETE FROM slot_bookings WHERE booking_date < ${date} RETURNING id`) as Record<
+    string,
+    unknown
+  >[];
+  return rows.length;
+}
+
 /** A booking as staff see it: the public shape plus the contact details. */
 export interface StaffBookingRow extends SlotBookingRow {
   studentEmail: string;

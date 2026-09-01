@@ -190,6 +190,21 @@ test.describe('booking page', () => {
     await expect(seatButtons.first()).toBeEnabled();
   });
 
+  test('looking up bookings by email never returns a cancel token', async ({ request }) => {
+    // student addresses are guessable, so a token here would let anyone cancel
+    // a classmate's seat just by typing their address
+    const response = await request.post('/api/bookings/lookup', {
+      data: { email: 'someone@stud.uis.no' },
+    });
+    expect(response.status()).toBe(200);
+    const body = await response.text();
+    expect(body).not.toMatch(/cancelToken|cancel_token/i);
+    expect(JSON.parse(body)).toHaveProperty('bookings');
+
+    const bad = await request.post('/api/bookings/lookup', { data: { email: 'not-an-email' } });
+    expect(bad.status()).toBe(400);
+  });
+
   test('shows the room and a booking link on the new reconstruction lab', async ({ page }) => {
     await page.goto('/no/labs/mte210-ct-reconstruction/');
     await expect(page.getByText('Rom: KE E-455', { exact: false })).toBeVisible();

@@ -34,6 +34,14 @@ export interface BookingLabels {
   session: string;
   day: string;
   seatsHeld: string;
+  privacy: string;
+  findMine: string;
+  findMineHint: string;
+  findMineAction: string;
+  findMineSearching: string;
+  findMineNone: string;
+  findMineFound: string;
+  findMineCancelHint: string;
   runsOnDays: string;
   electiveNote: string;
   spareDayNote: string;
@@ -91,6 +99,17 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
     session: 'Session',
     day: 'Day',
     seatsHeld: '{taken} of {total} seats taken',
+    privacy:
+      'Your name and email are stored only to run the lab sign-up, and are visible to course staff. Other students see your first name on the schedule. Bookings are deleted {retention} days after the last lab day.',
+    findMine: 'Booked on another device?',
+    findMineHint:
+      'Your bookings are remembered in the browser you booked from. Enter your email to see them anywhere.',
+    findMineAction: 'Find my bookings',
+    findMineSearching: 'Searching…',
+    findMineNone: 'No bookings found for that email.',
+    findMineFound: 'Found {count} booking(s) for that email:',
+    findMineCancelHint:
+      'To cancel one, use the browser you booked from — or ask course staff.',
     runsOnDays: 'This lab runs on {count} lab days.',
     electiveNote: 'Elective — choose {picks} of these {total} labs.',
     spareDayNote: 'Everyone takes this lab. The last day is spare, for catching up.',
@@ -163,6 +182,17 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
     session: 'Økt',
     day: 'Dag',
     seatsHeld: '{taken} av {total} plasser tatt',
+    privacy:
+      'Navn og e-post lagres kun for å drifte labpåmeldingen, og er synlig for emneansvarlig. Medstudenter ser fornavnet ditt i timeplanen. Bookinger slettes {retention} dager etter siste labdag.',
+    findMine: 'Booket på en annen enhet?',
+    findMineHint:
+      'Bookingene dine huskes i nettleseren du booket fra. Skriv inn e-posten din for å se dem hvor som helst.',
+    findMineAction: 'Finn bookingene mine',
+    findMineSearching: 'Søker…',
+    findMineNone: 'Fant ingen bookinger på den e-posten.',
+    findMineFound: 'Fant {count} booking(er) på den e-posten:',
+    findMineCancelHint:
+      'For å avbestille, bruk nettleseren du booket fra — eller kontakt emneansvarlig.',
     runsOnDays: 'Denne labben går {count} labdager.',
     electiveNote: 'Valgfri — velg {picks} av disse {total} labbene.',
     spareDayNote: 'Alle tar denne labben. Siste dag er en reservedag for oppsamling.',

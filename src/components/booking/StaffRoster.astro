@@ -8,6 +8,7 @@ import { getLabCatalog } from '../../lib/booking/catalog';
 import { COURSES } from '../../lib/booking/courses';
 import { labDates, osloToday, slotOf } from '../../lib/booking/logic';
 import { LAB_ROOM } from '../../lib/room';
+import { RETENTION_DAYS_AFTER_SEMESTER, purgeAllowedFrom } from '../../lib/booking/retention';
 import type { Locale } from '../../lib/i18n';
 
 interface Props {
@@ -34,6 +35,13 @@ const L = no
       failed: 'Kunne ikke hente bookinger fra databasen.',
       students: 'studenter',
       total: 'Totalt',
+      cancel: 'Avbestill',
+      cancelConfirm: 'Avbestille plassen til {name}?',
+      retention: 'Bookinger slettes {days} dager etter siste labdag. Kan slettes fra {from}.',
+      purge: 'Slett passerte bookinger',
+      purgeConfirm: 'Slette alle bookinger før {from}? Dette kan ikke angres.',
+      purgeDone: 'Slettet {n} bookinger.',
+      purgeTooEarly: 'Ikke tilgjengelig ennå — semesteret er ikke over.',
     }
   : {
       title: 'Booking overview',
@@ -52,6 +60,13 @@ const L = no
       failed: 'Could not load bookings from the database.',
       students: 'students',
       total: 'Total',
+      cancel: 'Cancel',
+      cancelConfirm: 'Cancel the seat held by {name}?',
+      retention: 'Bookings are deleted {days} days after the last lab day. Deletable from {from}.',
+      purge: 'Delete past bookings',
+      purgeConfirm: 'Delete all bookings before {from}? This cannot be undone.',
+      purgeDone: 'Deleted {n} bookings.',
+      purgeTooEarly: 'Not available yet — the semester is not over.',
     };
 
 const catalog = await getLabCatalog(locale);
@@ -68,6 +83,8 @@ try {
 }
 
 const today = osloToday();
+const purgeFrom = purgeAllowedFrom();
+const purgeAvailable = today >= purgeFrom;
 
 /** Every lab day that has at least one booking, newest work first. */
 const days = [...new Set(bookings.map((b) => b.date))].sort();
@@ -225,6 +242,14 @@ const progress = COURSES.flatMap((course) =>
                             >
                               {s.studentEmail}
                             </a>
+                            <button
+                              type="button"
+                              data-cancel-booking={s.id}
+                              data-student={s.studentName}
+                              class="ml-2 text-xs text-red-600 underline underline-offset-2 hover:text-red-700 print:hidden"
+                            >
+                              {L.cancel}
+                            </button>
                           </li>
                         ))}
                       </ul>
@@ -236,6 +261,25 @@ const progress = COURSES.flatMap((course) =>
           </article>
         ))
       )}
+    </section>
+
+    <section class="mt-10 border-t border-gray-200 pt-4 print:hidden">
+      <p class="text-xs text-gray-500">
+        {L.retention.replace('{days}', String(RETENTION_DAYS_AFTER_SEMESTER)).replace('{from}', purgeFrom)}
+      </p>
+      <button
+        type="button"
+        id="purge-bookings"
+        data-purge-from={purgeFrom}
+        data-confirm={L.purgeConfirm.replace('{from}', purgeFrom)}
+        data-done={L.purgeDone}
+        disabled={!purgeAvailable}
+        title={purgeAvailable ? '' : L.purgeTooEarly}
+        class="mt-2 rounded-lg border border-red-300 px-3 py-1.5 text-xs font-semibold text-red-700 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-300 disabled:hover:bg-transparent"
+      >
+        {L.purge}
+      </button>
+      <span id="purge-result" class="ml-2 text-xs text-gray-600"></span>
     </section>
 
     {past.length > 0 && (
@@ -265,4 +309,39 @@ const progress = COURSES.flatMap((course) =>
       </section>
     )}
   </div>
+
+  <script is:inline define:vars={{ cancelPrompt: L.cancelConfirm }}>
+    // Staff actions are destructive, so each one confirms with the name or the
+    // date it is about to remove before anything is sent.
+    document.querySelectorAll('[data-cancel-booking]').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const name = button.getAttribute('data-student') ?? '';
+        if (!window.confirm(cancelPrompt.replace('{name}', name))) return;
+        button.disabled = true;
+        const id = button.getAttribute('data-cancel-booking');
+        const response = await fetch(`/api/staff/bookings/${id}`, { method: 'DELETE' });
+        if (response.status === 204 || response.status === 404) location.reload();
+        else button.disabled = false;
+      });
+    });
+
+    const purge = document.getElementById('purge-bookings');
+    purge?.addEventListener('click', async () => {
+      if (!window.confirm(purge.getAttribute('data-confirm') ?? '')) return;
+      purge.disabled = true;
+      const response = await fetch('/api/staff/purge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ before: purge.getAttribute('data-purge-from') }),
+      });
+      const data = await response.json().catch(() => ({}));
+      const result = document.getElementById('purge-result');
+      if (result) {
+        result.textContent = response.ok
+          ? (purge.getAttribute('data-done') ?? '').replace('{n}', String(data.removed ?? 0))
+          : 'Error';
+      }
+      purge.disabled = false;
+    });
+  </script>
 </BaseLayout>

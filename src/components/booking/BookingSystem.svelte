@@ -26,6 +26,7 @@
     type CalendarEvent,
   } from '../../lib/booking/calendar';
   import { LAB_ROOM, roomLabel } from '../../lib/room';
+  import { RETENTION_DAYS_AFTER_SEMESTER } from '../../lib/booking/retention';
   import type { BookingLabels } from '../../lib/booking/labels';
   import type { Locale } from '../../lib/i18n';
 
@@ -418,6 +419,43 @@
     setTimeout(() => URL.revokeObjectURL(href), 0);
   }
 
+  /** Bookings recovered by email — view only, so no cancel token comes back. */
+  let lookupEmail = $state('');
+  let lookupBusy = $state(false);
+  let lookupResult = $state<Array<{ labId: string; date: string; slot: number; group: number }> | null>(
+    null
+  );
+
+  async function findMyBookings() {
+    const email = (lookupEmail || email).trim();
+    if (!EMAIL_RE.test(email)) return;
+    lookupBusy = true;
+    lookupResult = null;
+    try {
+      const response = await fetch('/api/bookings/lookup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await response.json().catch(() => ({}));
+      lookupResult = response.ok ? (data.bookings ?? []) : [];
+    } catch {
+      lookupResult = [];
+    } finally {
+      lookupBusy = false;
+    }
+  }
+
+  function labTitleOf(labId: string): string {
+    return labs.find((l) => l.id === labId)?.title ?? labId;
+  }
+
+  function slotTimeOf(labId: string, slot: number): string {
+    const c = COURSES.find((course) => course.labs.some((l) => l.id === labId));
+    const period = c ? slotOf(c, slot) : null;
+    return period ? `${period.start}–${period.end}` : '';
+  }
+
   async function cancelStored(booking: StoredBooking) {
     cancellingId = booking.id;
     cancelError = null;
@@ -610,6 +648,9 @@
         {#if !detailsValid}
           <p class="basis-full text-xs text-gray-500 sm:basis-auto sm:pb-2">{labels.detailsHint}</p>
         {/if}
+        <p class="basis-full text-[11px] leading-relaxed text-gray-400">
+          {fill(labels.privacy, { retention: RETENTION_DAYS_AFTER_SEMESTER })}
+        </p>
       </div>
     </section>
 
@@ -762,6 +803,56 @@
       {#if cancelError}
         <p class="px-4 pb-3 text-xs text-red-600" role="alert">{cancelError}</p>
       {/if}
+    </section>
+
+    <!-- Recover bookings made in another browser -->
+    <section class={panel}>
+      <h2 class="border-b border-gray-100 px-4 py-3 text-sm font-semibold text-gray-900">
+        {labels.findMine}
+      </h2>
+      <div class="px-4 py-3">
+        <p class="text-xs text-gray-500">{labels.findMineHint}</p>
+        <div class="mt-2 flex flex-wrap gap-2">
+          <label class="sr-only" for="booking-lookup">{labels.email}</label>
+          <input
+            id="booking-lookup"
+            type="email"
+            bind:value={lookupEmail}
+            placeholder={email || labels.emailPlaceholder}
+            maxlength="120"
+            class="min-w-0 flex-1 rounded-lg border border-gray-300 px-2.5 py-1.5 text-xs focus:border-blue-500 focus:outline-none"
+          />
+          <button
+            type="button"
+            onclick={findMyBookings}
+            disabled={lookupBusy}
+            class="rounded-lg bg-gray-900 px-2.5 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-gray-700 disabled:bg-gray-300"
+          >
+            {lookupBusy ? labels.findMineSearching : labels.findMineAction}
+          </button>
+        </div>
+
+        {#if lookupResult !== null}
+          {#if lookupResult.length === 0}
+            <p class="mt-2 text-xs text-gray-500">{labels.findMineNone}</p>
+          {:else}
+            <p class="mt-2 text-xs text-gray-500">
+              {fill(labels.findMineFound, { count: lookupResult.length })}
+            </p>
+            <ul class="mt-1 space-y-1.5">
+              {#each lookupResult as b (b.labId + b.date + b.slot)}
+                <li class="rounded border border-gray-200 px-2 py-1.5 text-xs">
+                  <span class="block font-medium text-gray-900">{labTitleOf(b.labId)}</span>
+                  <span class="block text-gray-500">
+                    {formatDate(b.date)} · {slotTimeOf(b.labId, b.slot)} · {LAB_ROOM}
+                  </span>
+                </li>
+              {/each}
+            </ul>
+            <p class="mt-2 text-[11px] text-gray-400">{labels.findMineCancelHint}</p>
+          {/if}
+        {/if}
+      </div>
     </section>
 
     <!-- Rotation: which labs are set up each week -->
