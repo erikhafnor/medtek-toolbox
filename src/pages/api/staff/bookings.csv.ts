@@ -1,7 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import { listBookingsForStaff } from '../../../lib/booking/db';
+import { listBookingsForStaff, listCompletions } from '../../../lib/booking/db';
 import { COURSES } from '../../../lib/booking/courses';
 import { slotOf } from '../../../lib/booking/logic';
 
@@ -16,12 +16,17 @@ function csvCell(value: string | number): string {
  */
 export const GET: APIRoute = async () => {
   let bookings;
+  let completions;
   try {
-    bookings = await listBookingsForStaff();
+    [bookings, completions] = await Promise.all([listBookingsForStaff(), listCompletions()]);
   } catch (err) {
     console.error('staff csv read failed:', err);
     return new Response('Could not load bookings.', { status: 503 });
   }
+  // so the exported sheet can be graded from directly
+  const approved = new Set(
+    completions.map((c) => `${c.labId}|${c.studentEmail.toLowerCase()}`)
+  );
 
   const header = [
     'course',
@@ -35,6 +40,7 @@ export const GET: APIRoute = async () => {
     'student',
     'email',
     'booked_at',
+    'approved',
   ];
 
   const rows = bookings.map((b) => {
@@ -52,6 +58,7 @@ export const GET: APIRoute = async () => {
       b.studentName,
       b.studentEmail,
       b.createdAt,
+      approved.has(`${b.labId}|${b.studentEmail.toLowerCase()}`) ? 'yes' : 'no',
     ]
       .map(csvCell)
       .join(',');

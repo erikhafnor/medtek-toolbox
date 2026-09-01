@@ -37,6 +37,7 @@ export const PG_LOCK_TIMEOUT = '55P03';
 /** Postgres error code for a unique-constraint violation. */
 const PG_UNIQUE_VIOLATION = '23505';
 
+const COMPLETION_CONSTRAINT = 'lab_completions_one_per_lab_idx';
 const SEAT_CONSTRAINT = 'slot_bookings_seat_key';
 const ONE_PER_LAB_CONSTRAINT = 'slot_bookings_one_per_lab_idx';
 const ONE_PER_SLOT_CONSTRAINT = 'slot_bookings_one_per_slot_idx';
@@ -154,6 +155,20 @@ export function ensureSchema(): Promise<void> {
         await sql().query(`
           CREATE INDEX IF NOT EXISTS slot_bookings_lab_date_idx
             ON slot_bookings (lab_id, booking_date)`);
+        // Completion is recorded against the student and the lab, not against a
+        // booking: a student may attend a different session than they booked,
+        // and the record has to outlive the booking the retention rule deletes.
+        await sql().query(`
+          CREATE TABLE IF NOT EXISTS lab_completions (
+            id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+            lab_id text NOT NULL,
+            student_name text NOT NULL,
+            student_email text NOT NULL,
+            completed_at timestamptz NOT NULL DEFAULT now()
+          )`);
+        await sql().query(`
+          CREATE UNIQUE INDEX IF NOT EXISTS ${COMPLETION_CONSTRAINT}
+            ON lab_completions (lab_id, lower(student_email))`);
       } catch (err) {
         const code = (err as { code?: string })?.code;
         // 42P07: two cold instances raced the DDL — the loser's error is benign
@@ -243,6 +258,49 @@ export async function purgeBookingsBefore(date: string): Promise<number> {
     unknown
   >[];
   return rows.length;
+}
+
+export interface LabCompletion {
+  labId: string;
+  studentName: string;
+  studentEmail: string;
+  completedAt: string;
+}
+
+/** Every approved lab, for the roster's approvals view. */
+export async function listCompletions(): Promise<LabCompletion[]> {
+  await ensureSchema();
+  const rows = (await sql()`
+    SELECT lab_id, student_name, student_email, completed_at
+    FROM lab_completions
+    ORDER BY student_name, lab_id`) as Record<string, unknown>[];
+  return rows.map((row) => ({
+    labId: String(row.lab_id),
+    studentName: String(row.student_name),
+    studentEmail: String(row.student_email),
+    completedAt: new Date(String(row.completed_at)).toISOString(),
+  }));
+}
+
+/** Approve a student for a lab. Idempotent — ticking twice is not an error. */
+export async function markCompleted(
+  labId: string,
+  studentName: string,
+  studentEmail: string
+): Promise<void> {
+  await ensureSchema();
+  await sql()`
+    INSERT INTO lab_completions (lab_id, student_name, student_email)
+    VALUES (${labId}, ${studentName}, ${studentEmail})
+    ON CONFLICT (lab_id, lower(student_email)) DO NOTHING`;
+}
+
+/** Undo an approval, for a tick made by mistake. */
+export async function unmarkCompleted(labId: string, studentEmail: string): Promise<void> {
+  await ensureSchema();
+  await sql()`
+    DELETE FROM lab_completions
+    WHERE lab_id = ${labId} AND lower(student_email) = lower(${studentEmail})`;
 }
 
 /** A booking as staff see it: the public shape plus the contact details. */

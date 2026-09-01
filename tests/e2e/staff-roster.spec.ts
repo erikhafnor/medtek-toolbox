@@ -10,6 +10,8 @@ const STAFF_PATHS = ['/no/booking/oversikt/', '/en/booking/roster/', '/api/staff
 const STAFF_MUTATIONS = [
   { method: 'delete' as const, path: '/api/staff/bookings/00000000-0000-0000-0000-000000000000' },
   { method: 'post' as const, path: '/api/staff/purge' },
+  { method: 'post' as const, path: '/api/staff/completions' },
+  { method: 'delete' as const, path: '/api/staff/completions' },
 ];
 
 test.describe('staff roster access', () => {
@@ -33,7 +35,14 @@ test.describe('staff roster access', () => {
 
   for (const { method, path } of STAFF_MUTATIONS) {
     test(`${method.toUpperCase()} ${path} refuses anonymous requests`, async ({ request }) => {
-      const response = await request[method](path, { data: { before: '2026-12-18' } });
+      const response = await request[method](path, {
+        data: {
+          before: '2026-12-18',
+          labId: 'mte200-ecg-recording',
+          studentEmail: 'someone@stud.uis.no',
+          studentName: 'Someone',
+        },
+      });
       // never 2xx: an open purge endpoint would let anyone delete every booking
       expect(response.status()).toBeGreaterThanOrEqual(400);
     });

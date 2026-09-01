@@ -556,6 +556,45 @@ describe('checkStudentRules()', () => {
   });
 });
 
+describe('a student taking both courses', () => {
+  // several students take MTE200 and MTE210 in the same semester, so nothing
+  // may treat one course's booking as blocking the other's
+  const mine = [
+    { labId: ECG, date: TUE37, slot: 1 },
+    { labId: DEFIB, date: TUE37, slot: 2 },
+  ];
+
+  it('allows an MTE210 lab in the same week as two MTE200 labs', () => {
+    expect(checkStudentRules(mine, { labId: SAFETY, date: WED37, slot: 1 })).toBeNull();
+    expect(
+      checkSeatAvailability({ labId: SAFETY, date: WED37, slot: 1, group: 1 }, [], BEFORE, EARLY)
+    ).toEqual({ ok: true, seat: 1 });
+  });
+
+  it('keeps both courses on different weekdays, so their slots cannot collide', () => {
+    // this is what makes the one-seat-per-slot rule safe across courses: the
+    // rule is keyed on (date, slot), and the two courses never share a date
+    expect(MTE200.weekday).not.toBe(MTE210.weekday);
+    const mte200Days = new Set(listSlotDates(MTE200));
+    for (const day of listSlotDates(MTE210)) {
+      expect(mte200Days.has(day), day).toBe(false);
+    }
+  });
+
+  it('still blocks a second seat in the same slot, whichever course', () => {
+    expect(checkStudentRules(mine, { labId: 'mte200-infusion-pump', date: TUE37, slot: 1 })).toBe(
+      'same-slot'
+    );
+    expect(
+      checkStudentRules([{ labId: SAFETY, date: WED37, slot: 1 }], {
+        labId: NETWORKS,
+        date: WED37,
+        slot: 1,
+      })
+    ).toBe('same-slot');
+  });
+});
+
 describe('inventory mapping', () => {
   it('maps real lab equipment strings to tracked devices', () => {
     expect(devicesForEquipment(['Fluke ESA615 Electrical Safety Analyzer'])).toEqual([

@@ -3,7 +3,7 @@
 // place student email addresses reach a page, so it must never be linked from
 // the public navigation.
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { listBookingsForStaff } from '../../lib/booking/db';
+import { listBookingsForStaff, listCompletions } from '../../lib/booking/db';
 import { getLabCatalog } from '../../lib/booking/catalog';
 import { COURSES } from '../../lib/booking/courses';
 import { labDates, osloToday, slotOf } from '../../lib/booking/logic';
@@ -37,11 +37,20 @@ const L = no
       total: 'Totalt',
       cancel: 'Avbestill',
       cancelConfirm: 'Avbestille plassen til {name}?',
-      retention: 'Bookinger slettes {days} dager etter siste labdag. Kan slettes fra {from}.',
+      retention:
+        'Bookinger slettes {days} dager etter siste labdag. Kan slettes fra {from}. Godkjenninger beholdes.',
       purge: 'Slett passerte bookinger',
       purgeConfirm: 'Slette alle bookinger før {from}? Dette kan ikke angres.',
       purgeDone: 'Slettet {n} bookinger.',
       purgeTooEarly: 'Ikke tilgjengelig ennå — semesteret er ikke over.',
+      approved: 'Godkjent',
+      approve: 'Godkjenn',
+      approvals: 'Godkjente labber',
+      approvalsHint:
+        'Huk av når du har godkjent studenten i lab. Registreres på student og lab, og beholdes selv om bookingen slettes.',
+      student: 'Student',
+      done: 'Godkjent',
+      noneApproved: 'Ingen godkjenninger registrert ennå.',
     }
   : {
       title: 'Booking overview',
@@ -62,11 +71,20 @@ const L = no
       total: 'Total',
       cancel: 'Cancel',
       cancelConfirm: 'Cancel the seat held by {name}?',
-      retention: 'Bookings are deleted {days} days after the last lab day. Deletable from {from}.',
+      retention:
+        'Bookings are deleted {days} days after the last lab day. Deletable from {from}. Approvals are kept.',
       purge: 'Delete past bookings',
       purgeConfirm: 'Delete all bookings before {from}? This cannot be undone.',
       purgeDone: 'Deleted {n} bookings.',
       purgeTooEarly: 'Not available yet — the semester is not over.',
+      approved: 'Approved',
+      approve: 'Approve',
+      approvals: 'Approved labs',
+      approvalsHint:
+        'Tick when you have approved the student in the lab. Recorded against student and lab, and kept even if the booking is deleted.',
+      student: 'Student',
+      done: 'Approved',
+      noneApproved: 'No approvals recorded yet.',
     };
 
 const catalog = await getLabCatalog(locale);
@@ -74,13 +92,49 @@ const labTitle = (id: string) => catalog.find((l) => l.id === id)?.title ?? id;
 const labShort = (id: string) => catalog.find((l) => l.id === id)?.shortTitle ?? id;
 
 let bookings: Awaited<ReturnType<typeof listBookingsForStaff>> = [];
+let completions: Awaited<ReturnType<typeof listCompletions>> = [];
 let loadFailed = false;
 try {
-  bookings = await listBookingsForStaff();
+  [bookings, completions] = await Promise.all([listBookingsForStaff(), listCompletions()]);
 } catch (err) {
   console.error('staff roster read failed:', err);
   loadFailed = true;
 }
+
+const completionKey = (labId: string, email: string) => `${labId}|${email.toLowerCase()}`;
+const approved = new Set(completions.map((c) => completionKey(c.labId, c.studentEmail)));
+const isApproved = (labId: string, email: string) => approved.has(completionKey(labId, email));
+
+/**
+ * Everyone who has either booked or been approved, so a student approved in a
+ * session they did not book is still recorded.
+ */
+const everyone = [
+  ...new Map(
+    [
+      ...bookings.map((b) => ({ name: b.studentName, email: b.studentEmail })),
+      ...completions.map((c) => ({ name: c.studentName, email: c.studentEmail })),
+    ].map((s) => [s.email.toLowerCase(), s])
+  ).values(),
+].sort((a, b) => a.name.localeCompare(b.name, no ? 'nb-NO' : 'en'));
+
+/**
+ * Approvals split per course. Most students take one course, so one wide table
+ * of every lab would be unreadable — MTE200 has seven labs, MTE210 five. A
+ * student taking both simply appears in both tables, each showing only that
+ * course's labs.
+ */
+const approvalsByCourse = COURSES.map((course) => {
+  const labIds = course.labs.map((l) => l.id);
+  const belongs = (email: string) =>
+    bookings.some((b) => labIds.includes(b.labId) && b.studentEmail.toLowerCase() === email) ||
+    completions.some((c) => labIds.includes(c.labId) && c.studentEmail.toLowerCase() === email);
+  return {
+    course,
+    labIds,
+    students: everyone.filter((s) => belongs(s.email.toLowerCase())),
+  };
+}).filter((g) => g.students.length > 0);
 
 const today = osloToday();
 const purgeFrom = purgeAllowedFrom();
@@ -203,6 +257,67 @@ const progress = COURSES.flatMap((course) =>
       </table>
     </section>
 
+    <!-- Approvals, one table per course -->
+    <section class="mt-10">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-500">{L.approvals}</h2>
+      <p class="mt-0.5 text-xs text-gray-500">{L.approvalsHint}</p>
+      {approvalsByCourse.length === 0 ? (
+        <p class="mt-2 text-sm text-gray-400">{L.noneApproved}</p>
+      ) : (
+        approvalsByCourse.map((g) => (
+          <div class="mt-4 break-inside-avoid">
+            <h3 class="text-xs font-semibold text-gray-600">{g.course.id}</h3>
+            <div class="mt-1 overflow-x-auto">
+              <table class="w-full border-collapse text-xs">
+                <thead>
+                  <tr class="border-b border-gray-200 text-left text-gray-400">
+                    <th scope="col" class="py-1.5 pr-3 font-semibold uppercase tracking-wide">
+                      {L.student}
+                    </th>
+                    {g.labIds.map((id) => (
+                      <th scope="col" class="px-1.5 py-1.5 text-center font-medium">
+                        {labShort(id)}
+                      </th>
+                    ))}
+                    <th scope="col" class="py-1.5 pl-2 text-right font-semibold uppercase tracking-wide">
+                      {L.done}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {g.students.map((student) => {
+                    const count = g.labIds.filter((id) => isApproved(id, student.email)).length;
+                    return (
+                      <tr class="border-b border-gray-100">
+                        <td class="whitespace-nowrap py-1.5 pr-3">
+                          <span class="text-gray-900">{student.name}</span>
+                          <span class="ml-1 text-gray-400">{student.email}</span>
+                        </td>
+                        {g.labIds.map((id) => (
+                          <td class="px-1.5 py-1.5 text-center">
+                            {isApproved(id, student.email) ? (
+                              <span class="font-semibold text-emerald-600" title={labTitle(id)}>✓</span>
+                            ) : (
+                              <span class="text-gray-200">·</span>
+                            )}
+                          </td>
+                        ))}
+                        <td class="py-1.5 pl-2 text-right tabular-nums">
+                          <span class={count === g.labIds.length ? 'font-semibold text-emerald-700' : 'text-gray-500'}>
+                            {count}/{g.labIds.length}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ))
+      )}
+    </section>
+
     <!-- The bench sheet: who is coming to what, day by day -->
     <section class="mt-10">
       <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-500">{L.upcoming}</h2>
@@ -242,6 +357,17 @@ const progress = COURSES.flatMap((course) =>
                             >
                               {s.studentEmail}
                             </a>
+                            <label class="ml-2 inline-flex items-center gap-1 align-middle text-xs text-gray-600">
+                              <input
+                                type="checkbox"
+                                class="h-3.5 w-3.5 accent-emerald-600"
+                                checked={isApproved(lab.labId, s.studentEmail)}
+                                data-approve-lab={lab.labId}
+                                data-approve-email={s.studentEmail}
+                                data-approve-name={s.studentName}
+                              />
+                              {L.approve}
+                            </label>
                             <button
                               type="button"
                               data-cancel-booking={s.id}
@@ -322,6 +448,31 @@ const progress = COURSES.flatMap((course) =>
         const response = await fetch(`/api/staff/bookings/${id}`, { method: 'DELETE' });
         if (response.status === 204 || response.status === 404) location.reload();
         else button.disabled = false;
+      });
+    });
+
+    // Approvals save immediately; on failure the tick reverts so the checkbox
+    // never claims a record that was not written.
+    document.querySelectorAll('[data-approve-lab]').forEach((box) => {
+      box.addEventListener('change', async () => {
+        const wanted = box.checked;
+        box.disabled = true;
+        try {
+          const response = await fetch('/api/staff/completions', {
+            method: wanted ? 'POST' : 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              labId: box.getAttribute('data-approve-lab'),
+              studentEmail: box.getAttribute('data-approve-email'),
+              studentName: box.getAttribute('data-approve-name'),
+            }),
+          });
+          if (!response.ok) box.checked = !wanted;
+        } catch {
+          box.checked = !wanted;
+        } finally {
+          box.disabled = false;
+        }
       });
     });
 
