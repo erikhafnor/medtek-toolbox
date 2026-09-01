@@ -1,8 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
-
-/** Unique per run, so repeat runs never collide on the one-seat-per-lab rule. */
-const stamp = () => `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+import { testStudent } from './fixtures';
 
 /** The lab selector, distinct from the lab chips in the weekly plan table. */
 const labPicker = (page: import('@playwright/test').Page) =>
@@ -87,10 +85,10 @@ test.describe('booking page', () => {
   });
 
   test('block 2 labs are visible but locked until block 1 finishes', async ({ page }) => {
-    const student = `E2E${stamp()}`;
+    const student = testStudent();
     await page.goto('/en/booking/?lab=mte200-ultrasound');
-    await page.locator('#booking-name').fill(student);
-    await page.locator('#booking-email').fill(`${student.toLowerCase()}@stud.uis.no`);
+    await page.locator('#booking-name').fill(student.name);
+    await page.locator('#booking-email').fill(student.email);
 
     // the plan is visible, and says it is a choice…
     await expect(page.locator('[data-slot="1"]')).toHaveCount(4);
@@ -119,10 +117,10 @@ test.describe('booking page', () => {
   });
 
   test('allows two MTE200 labs on one Tuesday in different slots', async ({ page }) => {
-    const student = `E2E${stamp()}`;
+    const student = testStudent();
     await page.goto('/en/booking/?lab=mte200-defibrillator');
-    await page.locator('#booking-name').fill(student);
-    await page.locator('#booking-email').fill(`${student.toLowerCase()}@stud.uis.no`);
+    await page.locator('#booking-name').fill(student.name);
+    await page.locator('#booking-email').fill(student.email);
 
     // take the 09:00 slot in week 38
     const morning = page.locator('[data-date="2026-09-15"][data-slot="1"]');
@@ -146,21 +144,21 @@ test.describe('booking page', () => {
   });
 
   test('takes a seat, exports it to a calendar, and cancels it', async ({ page }) => {
-    const student = `E2E${stamp()}`;
+    const student = testStudent();
     await page.goto('/en/booking/?lab=mte200-infusion-pump');
 
     const seatButtons = page.getByRole('button', { name: '+ Take seat' });
     await expect(seatButtons.first()).toBeVisible({ timeout: 15_000 });
     await expect(seatButtons.first()).toBeDisabled();
 
-    await page.locator('#booking-name').fill(student);
-    await page.locator('#booking-email').fill(`${student.toLowerCase()}@stud.uis.no`);
+    await page.locator('#booking-name').fill(student.name);
+    await page.locator('#booking-email').fill(student.email);
     await expect(seatButtons.first()).toBeEnabled();
 
     // first free button is week 37, the 09:00 slot
     await seatButtons.first().click();
     await expect(page.getByRole('status')).toContainText('Seat booked!', { timeout: 15_000 });
-    await expect(page.getByText(new RegExp(`${student}\\s*\\(you\\)`))).toBeVisible();
+    await expect(page.getByText(new RegExp(`${student.name}\\s*\\(you\\)`))).toBeVisible();
 
     const myBookings = page.getByRole('region', { name: 'My bookings' });
     await expect(myBookings.getByText('KE E-455', { exact: false })).toBeVisible();
