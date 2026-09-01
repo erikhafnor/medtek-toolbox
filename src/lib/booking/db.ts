@@ -267,7 +267,7 @@ export interface LabCompletion {
   completedAt: string;
 }
 
-/** Every approved lab, for the roster's grading view. */
+/** Every approved lab, for the roster's approvals view. */
 export async function listCompletions(): Promise<LabCompletion[]> {
   await ensureSchema();
   const rows = (await sql()`

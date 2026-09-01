@@ -100,7 +100,7 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
     day: 'Day',
     seatsHeld: '{taken} of {total} seats taken',
     privacy:
-      'Your name and email are stored only to run the lab sign-up, and are visible to course staff. Other students see your first name on the schedule. Bookings are deleted {retention} days after the last lab day; a record that you completed a lab is kept for grading.',
+      'Your name and email are stored only to run the lab sign-up, and are visible to course staff. Other students see your first name on the schedule. Bookings are deleted {retention} days after the last lab day; a record that the lab was approved is kept.',
     findMine: 'Booked on another device?',
     findMineHint:
       'Your bookings are remembered in the browser you booked from. Enter your email to see them anywhere.',
@@ -183,7 +183,7 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
     day: 'Dag',
     seatsHeld: '{taken} av {total} plasser tatt',
     privacy:
-      'Navn og e-post lagres kun for å drifte labpåmeldingen, og er synlig for emneansvarlig. Medstudenter ser fornavnet ditt i timeplanen. Bookinger slettes {retention} dager etter siste labdag; registrering av at du har fullført en lab beholdes for karaktersetting.',
+      'Navn og e-post lagres kun for å drifte labpåmeldingen, og er synlig for emneansvarlig. Medstudenter ser fornavnet ditt i timeplanen. Bookinger slettes {retention} dager etter siste labdag; registrering av at labben er godkjent beholdes.',
     findMine: 'Booket på en annen enhet?',
     findMineHint:
       'Bookingene dine huskes i nettleseren du booket fra. Skriv inn e-posten din for å se dem hvor som helst.',

@@ -45,8 +45,8 @@ const L = no
       purgeTooEarly: 'Ikke tilgjengelig ennå — semesteret er ikke over.',
       approved: 'Godkjent',
       approve: 'Godkjenn',
-      grading: 'Godkjente labber',
-      gradingHint:
+      approvals: 'Godkjente labber',
+      approvalsHint:
         'Huk av når du har godkjent studenten i lab. Registreres på student og lab, og beholdes selv om bookingen slettes.',
       student: 'Student',
       done: 'Godkjent',
@@ -79,8 +79,8 @@ const L = no
       purgeTooEarly: 'Not available yet — the semester is not over.',
       approved: 'Approved',
       approve: 'Approve',
-      grading: 'Approved labs',
-      gradingHint:
+      approvals: 'Approved labs',
+      approvalsHint:
         'Tick when you have approved the student in the lab. Recorded against student and lab, and kept even if the booking is deleted.',
       student: 'Student',
       done: 'Approved',
@@ -107,7 +107,7 @@ const isApproved = (labId: string, email: string) => approved.has(completionKey(
 
 /**
  * Everyone who has either booked or been approved, so a student approved in a
- * session they did not book still appears on the grading sheet.
+ * session they did not book is still recorded.
  */
 const everyone = [
   ...new Map(
@@ -119,11 +119,12 @@ const everyone = [
 ].sort((a, b) => a.name.localeCompare(b.name, no ? 'nb-NO' : 'en'));
 
 /**
- * The grading sheet, split per course. A student takes one course, so showing
- * every lab to everyone would be both unreadable and wrong — MTE200 has seven
- * labs and MTE210 five, and nobody appears in both.
+ * Approvals split per course. Most students take one course, so one wide table
+ * of every lab would be unreadable — MTE200 has seven labs, MTE210 five. A
+ * student taking both simply appears in both tables, each showing only that
+ * course's labs.
  */
-const gradingByCourse = COURSES.map((course) => {
+const approvalsByCourse = COURSES.map((course) => {
   const labIds = course.labs.map((l) => l.id);
   const belongs = (email: string) =>
     bookings.some((b) => labIds.includes(b.labId) && b.studentEmail.toLowerCase() === email) ||
@@ -256,14 +257,14 @@ const progress = COURSES.flatMap((course) =>
       </table>
     </section>
 
-    <!-- The grading sheet, one table per course -->
+    <!-- Approvals, one table per course -->
     <section class="mt-10">
-      <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-500">{L.grading}</h2>
-      <p class="mt-0.5 text-xs text-gray-500">{L.gradingHint}</p>
-      {gradingByCourse.length === 0 ? (
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-500">{L.approvals}</h2>
+      <p class="mt-0.5 text-xs text-gray-500">{L.approvalsHint}</p>
+      {approvalsByCourse.length === 0 ? (
         <p class="mt-2 text-sm text-gray-400">{L.noneApproved}</p>
       ) : (
-        gradingByCourse.map((g) => (
+        approvalsByCourse.map((g) => (
           <div class="mt-4 break-inside-avoid">
             <h3 class="text-xs font-semibold text-gray-600">{g.course.id}</h3>
             <div class="mt-1 overflow-x-auto">
