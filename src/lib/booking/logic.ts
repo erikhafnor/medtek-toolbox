@@ -8,6 +8,7 @@
 import {
   ALL_BOOKABLE_LABS,
   COURSES,
+  scheduledDates,
   type BookableLab,
   type CourseBooking,
   type CourseSlot,
@@ -34,6 +35,8 @@ export interface SeatRequest {
 export type SeatUnavailableReason =
   | 'unknown-lab'
   | 'closed-week'
+  | 'not-scheduled'
+  | 'opens-later'
   | 'past-slot'
   | 'invalid-input'
   | 'group-full';
@@ -108,6 +111,31 @@ export function listSemesterWeeks(course: CourseBooking): SemesterWeek[] {
     weeks.push({ date, isoWeek: week, open: !course.closedWeeks.includes(week) });
   }
   return weeks;
+}
+
+/** The lab days a specific lab runs on — its rotation, not the course's. */
+export function labDates(labId: string): string[] {
+  const config = bookingConfigFor(labId);
+  return config ? scheduledDates(config.course, config.lab) : [];
+}
+
+/** Does this lab run on this day? */
+export function labRunsOn(labId: string, date: string): boolean {
+  return labDates(labId).includes(date);
+}
+
+/**
+ * Is this lab claimable yet? A lab in a later block stays visible so students
+ * can see the plan, but refuses bookings until its `opensOn` date arrives.
+ */
+export function isLabOpenYet(labId: string, today: string = osloToday()): boolean {
+  const opensOn = bookingConfigFor(labId)?.lab.opensOn;
+  return !opensOn || today >= opensOn;
+}
+
+/** The date a lab starts accepting bookings, or null if it already has. */
+export function labOpensOn(labId: string): string | null {
+  return bookingConfigFor(labId)?.lab.opensOn ?? null;
 }
 
 /** Just the lab days that accept bookings. */
@@ -257,6 +285,9 @@ export function checkSeatAvailability(
 
   // covers closed weeks, the wrong weekday, and anything outside the semester
   if (!isOpenSlotDate(course, request.date)) return { ok: false, reason: 'closed-week' };
+  // …and this lab may only run on some of those days
+  if (!labRunsOn(request.labId, request.date)) return { ok: false, reason: 'not-scheduled' };
+  if (!isLabOpenYet(request.labId, today)) return { ok: false, reason: 'opens-later' };
   if (isPastSlot(course, request.date, request.slot, today, nowMinutes)) {
     return { ok: false, reason: 'past-slot' };
   }

@@ -9,8 +9,11 @@ import {
   hasOpenSlot,
   isOpenSlotDate,
   isPastSlot,
+  isLabOpenYet,
   isValidDateString,
   isoWeek,
+  labDates,
+  labRunsOn,
   listSemesterWeeks,
   listSlotDates,
   minutesOfDay,
@@ -21,6 +24,7 @@ import {
 import {
   ALL_BOOKABLE_LABS,
   COURSES,
+  scheduledDates,
   MAX_SEATS_PER_GROUP,
   MAX_SLOTS_PER_DAY,
 } from '../../src/lib/booking/courses';
@@ -333,19 +337,110 @@ describe('checkSeatAvailability()', () => {
     ).toEqual({ ok: true, seat: 1 });
   });
 
-  it('lets all seven MTE200 labs run in the same slot', () => {
-    // one group per lab per slot means no two labs ever contend for a device
-    const existing = MTE200.labs.flatMap((lab) => fullGroup(lab.id, TUE38, 1, 1));
-    for (const lab of MTE200.labs) {
+  it('rejects a lab on a Tuesday it is not scheduled to run', () => {
+    // ultrasound is a block 2 lab; it never runs in week 38
+    expect(
+      checkSeatAvailability(
+        { labId: 'mte200-ultrasound', date: TUE38, slot: 1, group: 1 },
+        [],
+        BEFORE,
+        EARLY
+      )
+    ).toEqual({ ok: false, reason: 'not-scheduled' });
+  });
+
+  it('refuses a block 2 lab until it opens, then accepts it', () => {
+    const request = { labId: 'mte200-ultrasound', date: '2026-10-13', slot: 1, group: 1 };
+    // before block 1 has finished
+    expect(checkSeatAvailability(request, [], '2026-09-15', EARLY)).toEqual({
+      ok: false,
+      reason: 'opens-later',
+    });
+    // on the day block 2 opens
+    expect(checkSeatAvailability(request, [], '2026-09-30', EARLY)).toEqual({ ok: true, seat: 1 });
+  });
+
+  it('accepts block 1 labs straight away', () => {
+    expect(
+      checkSeatAvailability({ labId: ECG, date: TUE37, slot: 1, group: 1 }, [], BEFORE, EARLY)
+    ).toEqual({ ok: true, seat: 1 });
+  });
+
+  it('lets the three block 1 labs share a Tuesday', () => {
+    const blockOne = [ECG, DEFIB, 'mte200-infusion-pump'];
+    const existing = blockOne.flatMap((id) => fullGroup(id, TUE38, 1, 1));
+    for (const id of blockOne) {
       expect(
-        checkSeatAvailability({ labId: lab.id, date: TUE38, slot: 1, group: 1 }, existing, BEFORE, EARLY),
-        lab.id
+        checkSeatAvailability({ labId: id, date: TUE38, slot: 1, group: 1 }, existing, BEFORE, EARLY),
+        id
       ).toEqual({ ok: false, reason: 'group-full' });
+      // …the afternoon period of the same day is untouched
       expect(
-        checkSeatAvailability({ labId: lab.id, date: TUE38, slot: 2, group: 1 }, existing, BEFORE, EARLY),
-        lab.id
+        checkSeatAvailability({ labId: id, date: TUE38, slot: 2, group: 1 }, existing, BEFORE, EARLY),
+        id
       ).toEqual({ ok: true, seat: 1 });
     }
+  });
+});
+
+describe('lab rotation', () => {
+  it('runs block 1 on the four Tuesdays before the closed week', () => {
+    for (const id of [ECG, DEFIB, 'mte200-infusion-pump']) {
+      expect(labDates(id), id).toEqual([TUE37, TUE38, '2026-09-22', '2026-09-29']);
+    }
+  });
+
+  it('never schedules more than three labs on one day', () => {
+    for (const course of COURSES) {
+      if (course.maxLabsPerDay === undefined) continue;
+      const perDay = new Map<string, string[]>();
+      for (const lab of course.labs) {
+        for (const date of scheduledDates(course, lab)) {
+          perDay.set(date, [...(perDay.get(date) ?? []), lab.id]);
+        }
+      }
+      for (const [date, ids] of perDay) {
+        expect(ids.length, `${date}: ${ids.join(', ')}`).toBeLessThanOrEqual(course.maxLabsPerDay);
+      }
+    }
+  });
+
+  it('seats the whole cohort in every lab', () => {
+    for (const { course, lab } of ALL_BOOKABLE_LABS) {
+      if (course.cohortSize === undefined) continue;
+      const seats =
+        scheduledDates(course, lab).length *
+        course.slots.length *
+        lab.groupsPerSlot *
+        lab.seatsPerGroup;
+      expect(seats, lab.id).toBeGreaterThanOrEqual(course.cohortSize);
+    }
+  });
+
+  it('splits the seven MTE200 labs into a block of three and a block of four', () => {
+    const mte200 = COURSES.find((c) => c.id === 'MTE200')!;
+    const immediate = mte200.labs.filter((l) => !l.opensOn);
+    const later = mte200.labs.filter((l) => l.opensOn);
+    expect(immediate.map((l) => l.id)).toEqual([
+      'mte200-ecg-recording',
+      'mte200-defibrillator',
+      'mte200-infusion-pump',
+    ]);
+    expect(later).toHaveLength(4);
+    expect(new Set(later.map((l) => l.opensOn))).toEqual(new Set(['2026-09-30']));
+  });
+
+  it('knows which days a lab runs and when it opens', () => {
+    expect(labRunsOn(ECG, TUE37)).toBe(true);
+    expect(labRunsOn(ECG, '2026-10-13')).toBe(false);
+    expect(labRunsOn('mte200-ultrasound', '2026-10-13')).toBe(true);
+    expect(isLabOpenYet(ECG, '2026-09-01')).toBe(true);
+    expect(isLabOpenYet('mte200-ultrasound', '2026-09-01')).toBe(false);
+    expect(isLabOpenYet('mte200-ultrasound', '2026-09-30')).toBe(true);
+  });
+
+  it('lets MTE210 labs run on every open Wednesday, with no rotation', () => {
+    expect(labDates(SAFETY)).toEqual([WED37, WED38, WED40, WED42, WED43]);
   });
 });
 

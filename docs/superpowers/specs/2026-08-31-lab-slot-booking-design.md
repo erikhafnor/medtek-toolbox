@@ -20,8 +20,10 @@ Course staff set every date, time and capacity in one file.
 | Last lab day | 2026-11-17 (week 47) | 2026-10-21 (week 43) |
 | Closed weeks | 41 | 39 and 41 |
 | Lab days | 10 | 5 |
-| Labs | all 7 | electrical safety, HL7/DICOM |
+| Labs | all 7, in two blocks | electrical safety, HL7/DICOM |
 | Capacity per lab | 1 group × 3 students per slot | 1 × 3, and 3 × 3 |
+| Cohort | 21 students = 7 groups | — |
+| Labs per day | 3 (one supervisor) | no limit needed |
 
 Room: **KE E-455**, the medical technology lab, for everything.
 
@@ -31,6 +33,27 @@ Rules that apply to a student rather than to remaining capacity:
 - **One seat per slot.** Nobody is in two places at once. Keyed on the *slot*,
   not the day, so a student may take the 09:00 and the 11:30 MTE200 period on
   the same Tuesday — which is the point of running two.
+
+### Why the labs run in blocks
+
+There is one supervisor, so only **three labs are set up on any Tuesday**
+(`maxLabsPerDay`). Seven labs therefore cannot all be open all semester, and
+each lab lists the days it actually runs.
+
+With 21 students in 7 groups, each lab needs ⌈7/2⌉ = 4 lab days to seat everyone
+(2 slots × 3 seats = 6 students per lab day, so 4 days = 24 ≥ 21).
+
+- **Block 1** — ECG, defibrillator, infusion pump — runs the four Tuesdays
+  before the closed week (37–40). 7 groups × 3 labs = 21 group-sessions, and
+  4 days × 3 labs × 2 slots = 24 available.
+- **Block 2** — blood pressure, electrosurgery, ultrasound, ventilator — rotates
+  three-at-a-time across the six Tuesdays after it (42–47), so each of the four
+  still gets 4–5 days. It carries `opensOn: 2026-09-30`: visible from the start
+  so students can see the plan, claimable only once block 1 has finished.
+
+Two build-time checks keep this honest: no day may exceed `maxLabsPerDay`, and
+every lab must seat `cohortSize`. Dropping a Tuesday from the rotation therefore
+fails the build rather than quietly stranding a group.
 
 ### Why one group per lab per slot
 
@@ -143,8 +166,12 @@ break the import.
 
 ## UI
 
-One page for both courses: course tabs → lab buttons → a semester list of lab
-days, each day showing its slots and each slot its groups and seats. Free seats
+One page for both courses: course tabs → lab buttons → a weekly plan table
+showing which labs run on which day → a list of **the selected lab's own** lab
+days, each showing its slots and each slot its groups and seats. Because a lab's
+list only holds its own days, closed weeks are called out in the plan table
+instead, which is where someone would look for what happens in a given week. A
+lab that has not opened yet shows its days with a banner and disabled buttons. Free seats
 are buttons; closed weeks render greyed and labelled rather than hidden. A slot
 where the student already holds another lab is disabled with a note naming it.
 Slot blocks carry `data-date` / `data-slot` so tests and deep links do not

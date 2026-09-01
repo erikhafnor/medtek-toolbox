@@ -10,6 +10,9 @@
     isPastSlot,
     listSemesterWeeks,
     osloMinutesOfDay,
+    isLabOpenYet,
+    labDates,
+    labOpensOn,
     osloToday,
     seatsFreeFor,
     slotOf,
@@ -146,7 +149,26 @@
     courseLabs.find((l) => l.id === selectedLabId) ?? courseLabs[0]
   );
   const course = $derived(courseById(selectedCourseId));
-  const weeks = $derived(course ? listSemesterWeeks(course) : []);
+  const courseWeeks = $derived(course ? listSemesterWeeks(course) : []);
+  /** Only the days the selected lab actually runs — its slice of the rotation. */
+  const weeks = $derived.by(() => {
+    const runs = new Set(labDates(selectedLabId));
+    return courseWeeks.filter((week) => runs.has(week.date));
+  });
+  /** Set while the lab is visible but not yet claimable. */
+  const opensOn = $derived(
+    selectedLab && !isLabOpenYet(selectedLab.id, today) ? labOpensOn(selectedLab.id) : null
+  );
+
+  /** Which labs run on each lab day — the rotation, for the plan table. */
+  const weeklyPlan = $derived.by(() =>
+    // closed weeks stay in, so the gap in the semester is explained here rather
+    // than silently missing from a lab's own list of days
+    courseWeeks.map((week) => ({
+      ...week,
+      labs: week.open ? courseLabs.filter((lab) => labDates(lab.id).includes(week.date)) : [],
+    }))
+  );
   const detailsValid = $derived(name.trim().length >= 2 && EMAIL_RE.test(email.trim()));
 
   /** A seat this browser already holds for the selected lab, if any. */
@@ -417,7 +439,7 @@
     <!-- Course and lab selector -->
     <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
       <h2 class="mb-3 text-sm font-medium text-gray-700">{labels.course}</h2>
-      <div class="flex flex-wrap gap-2">
+      <div class="flex flex-wrap gap-2" role="group" aria-label={labels.course}>
         {#each courseIds as id (id)}
           <button
             type="button"
@@ -435,7 +457,7 @@
       </div>
 
       <h2 class="mt-5 mb-3 text-sm font-medium text-gray-700">{labels.lab}</h2>
-      <div class="flex flex-wrap gap-2">
+      <div class="flex flex-wrap gap-2" role="group" aria-label={labels.lab}>
         {#each courseLabs as lab (lab.id)}
           <button
             type="button"
@@ -546,6 +568,58 @@
       </div>
     {/if}
 
+    <!-- Rotation overview: which labs are set up on which day -->
+    {#if weeklyPlan.length > 0}
+      <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h2 class="text-sm font-semibold text-gray-900">{labels.weeklyPlan}</h2>
+        <p class="mt-0.5 text-xs text-gray-500">{labels.weeklyPlanHint}</p>
+        <div class="mt-3 overflow-x-auto">
+          <table class="w-full border-collapse text-xs">
+            <tbody>
+              {#each weeklyPlan as day (day.date)}
+                <tr class="border-b border-gray-100 last:border-0">
+                  <th
+                    scope="row"
+                    class="whitespace-nowrap py-1.5 pr-3 text-left font-medium text-gray-600"
+                  >
+                    {fill(labels.week, { week: day.isoWeek })}
+                  </th>
+                  <td class="py-1.5">
+                    {#if !day.open}
+                      <span
+                        class="rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 font-medium text-amber-800"
+                      >
+                        {labels.weekClosed}
+                      </span>
+                    {/if}
+                    <span class="flex flex-wrap gap-1">
+                      {#each day.labs as lab (lab.id)}
+                        <button
+                          type="button"
+                          onclick={() => {
+                            selectedLabId = lab.id;
+                            submitError = null;
+                            success = null;
+                          }}
+                          class={`rounded border px-1.5 py-0.5 transition-colors ${
+                            lab.id === selectedLabId
+                              ? 'border-blue-300 bg-blue-50 font-medium text-blue-800'
+                              : 'border-gray-200 bg-gray-50 text-gray-600 hover:border-blue-300'
+                          }`}
+                        >
+                          {lab.title}
+                        </button>
+                      {/each}
+                    </span>
+                  </td>
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    {/if}
+
     <!-- Semester seat map -->
     <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
       <h2 class="text-sm font-semibold text-gray-900">{labels.semester}</h2>
@@ -553,6 +627,16 @@
       <p class="text-xs font-medium text-gray-600">{roomLabel(locale)}</p>
       {#if closedNote}
         <p class="text-xs text-gray-500">{closedNote}</p>
+      {/if}
+      {#if weeks.length > 0}
+        <p class="text-xs text-gray-500">{fill(labels.runsOnDays, { count: weeks.length })}</p>
+      {/if}
+      {#if opensOn}
+        <p
+          class="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-800"
+        >
+          {fill(labels.lockedNote, { date: formatDate(opensOn) })}
+        </p>
       {/if}
 
       {#if loadFailed}
@@ -648,14 +732,17 @@
                                 type="button"
                                 disabled={!detailsValid ||
                                   claiming !== null ||
+                                  opensOn !== null ||
                                   myBookingForLab !== undefined ||
                                   clash !== undefined}
                                 onclick={() => claimSeat(week.date, slot, group)}
-                                title={myBookingForLab
-                                  ? labels.errors['already-booked']
-                                  : clash
-                                    ? labels.errors['same-slot']
-                                    : ''}
+                                title={opensOn
+                                  ? labels.errors['opens-later']
+                                  : myBookingForLab
+                                    ? labels.errors['already-booked']
+                                    : clash
+                                      ? labels.errors['same-slot']
+                                      : ''}
                                 class="rounded-full border border-dashed border-blue-400 px-2.5 py-1 text-xs font-medium text-blue-700 transition-colors hover:border-blue-600 hover:bg-blue-50 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-300 disabled:hover:bg-transparent"
                               >
                                 {claiming === `${week.date}:${slot}:${group}`

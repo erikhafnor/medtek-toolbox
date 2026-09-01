@@ -22,6 +22,8 @@ const STATUS: Record<string, number> = {
   'invalid-input': 400,
   'unknown-lab': 404,
   'closed-week': 400,
+  'not-scheduled': 400,
+  'opens-later': 400,
   'past-slot': 400,
   'group-full': 409,
   'already-booked': 409,
