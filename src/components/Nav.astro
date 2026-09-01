@@ -20,8 +20,16 @@ const currentPath = Astro.url.pathname;
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-14">
       <!-- Logo -->
-      <a href={`/${locale}/`} class="flex items-center text-lg font-bold">
-        <span class="text-gray-900">medtek</span><span class="text-blue-600">.tools</span>
+      <a href={`/${locale}/`} class="flex items-center" aria-label="medtek.tools">
+        <img
+          src="/brand/medtek-wordmark.png"
+          alt=""
+          width="129"
+          height="40"
+          class="h-7 w-auto"
+          decoding="async"
+        />
+        <span class="text-lg font-bold text-blue-600">.tools</span>
       </a>
 
       <!-- Nav Links -->
