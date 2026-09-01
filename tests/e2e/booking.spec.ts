@@ -112,7 +112,8 @@ test.describe('booking page', () => {
   test('shows MTE210 Wednesdays with weeks 39 and 41 closed', async ({ page }) => {
     await page.goto('/en/booking/?lab=mte210-hospital-networks');
     await expect(page.getByText('Week 39 and 41 closed for booking.')).toBeVisible();
-    await expect(page.getByText('This lab runs on 5 lab days.')).toBeVisible();
+    // three groups at once on lab PCs, so it clears 18 students in three days
+    await expect(page.getByText('This lab runs on 3 lab days.')).toBeVisible();
     await expect(page.getByText('3 groups × up to 3 students per slot')).toBeVisible();
     // the two closed weeks are called out in the plan
     await expect(page.getByText('Closed for booking', { exact: true })).toHaveCount(2);
@@ -192,9 +193,11 @@ test.describe('booking page', () => {
     await expect(seatButtons.first()).toBeEnabled();
   });
 
-  test('shows the room on a lab page that is not bookable', async ({ page }) => {
-    await page.goto('/no/labs/mte210-ct-imaging/');
+  test('shows the room and a booking link on the new reconstruction lab', async ({ page }) => {
+    await page.goto('/no/labs/mte210-ct-reconstruction/');
     await expect(page.getByText('Rom: KE E-455', { exact: false })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Book labtid for denne/ })).toHaveCount(0);
+    await expect(page.getByRole('link', { name: /Book labtid for denne/ })).toBeVisible();
+    // it carries the second half of the CT lab, starting at Part 4
+    await expect(page.getByRole('heading', { name: /Del 4/ })).toBeVisible();
   });
 });

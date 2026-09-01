@@ -8,7 +8,6 @@ equipment:
   - "Torx-bitssett (T6, T8, T10, T20) og momentskrutrekker"
   - "Digitalt multimeter (DMM)"
   - "Tokanals oscilloskop med ×10 prober"
-  - "Fluke ESA615 elektrisk sikkerhetsanalysator (med gyldig kalibreringsbevis)"
   - "Kamera eller mobil for dokumentasjon"
 prerequisites:
   - "Teknisk servicemanual for Alaris CC sprøytepumpe (1000SM00001) og bruksanvisning (DFU)"

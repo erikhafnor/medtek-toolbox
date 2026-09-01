@@ -8,7 +8,6 @@ equipment:
   - "Torx driver set (T6, T8, T10, T20) and a torque screwdriver"
   - "Digital multimeter (DMM)"
   - "Two-channel oscilloscope with ×10 probes"
-  - "Fluke ESA615 Electrical Safety Analyzer (with a valid calibration certificate)"
   - "Camera or phone for documentation"
 prerequisites:
   - "Alaris CC Syringe Pump Technical Service Manual (1000SM00001) and Directions for Use (DFU)"

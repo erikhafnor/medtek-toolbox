@@ -84,6 +84,28 @@ const BLOCK_1 = ['2026-09-08', '2026-09-15', '2026-09-22', '2026-09-29', '2026-1
  */
 const BLOCK_2_OPENS = '2026-09-30';
 
+// MTE210 autumn 2026: 18 students = 6 groups, one Wednesday slot a week.
+//
+// Three of the five labs are gated by a single instrument — the ESA615, the
+// PHYWE CT cabinet — and so take one group (3 students) a week, needing six
+// Wednesdays each to get the cohort through. Six for block 1 plus six for
+// block 2 is twelve, and the window to mid-November holds nine, so the blocks
+// overlap: CT imaging starts in week 42 while electrical safety finishes.
+// Strict back-to-back blocks would run to 9 December.
+const MTE210_WEEKS = [
+  '2026-09-09', // wk 37
+  '2026-09-16', // wk 38
+  '2026-09-30', // wk 40
+  '2026-10-14', // wk 42
+  '2026-10-21', // wk 43
+  '2026-10-28', // wk 44
+  '2026-11-04', // wk 45
+  '2026-11-11', // wk 46
+  '2026-11-18', // wk 47
+];
+/** Block 2 opens after block 1's first three Wednesdays, before its own start. */
+const MTE210_BLOCK_2_OPENS = '2026-10-01';
+
 export const COURSES: CourseBooking[] = [
   {
     id: 'MTE200',
@@ -145,12 +167,47 @@ export const COURSES: CourseBooking[] = [
     weekday: WEDNESDAY,
     slots: [{ start: '10:15', end: '13:00' }],
     firstDate: '2026-09-09', // ISO week 37
-    lastDate: '2026-10-21', // ISO week 43
+    lastDate: '2026-11-18', // ISO week 47
     closedWeeks: [39, 41],
-    // no rotation: both labs run every open Wednesday
+    maxLabsPerDay: 3,
+    cohortSize: 18,
     labs: [
-      { id: 'mte210-electrical-safety', groupsPerSlot: 1, seatsPerGroup: 3 },
-      { id: 'mte210-hospital-networks', groupsPerSlot: 3, seatsPerGroup: 3 },
+      // Block 1 — the two labs everyone starts with
+      {
+        id: 'mte210-electrical-safety',
+        groupsPerSlot: 1, // one ESA615
+        seatsPerGroup: 3,
+        dates: MTE210_WEEKS.slice(0, 6),
+      },
+      {
+        id: 'mte210-hospital-networks',
+        groupsPerSlot: 3, // workstations, not a single instrument
+        seatsPerGroup: 3,
+        dates: MTE210_WEEKS.slice(0, 3),
+      },
+
+      // Block 2 — opens once block 1's opening run is done
+      {
+        id: 'mte210-ct-imaging',
+        groupsPerSlot: 1, // one PHYWE XR 4.0 cabinet
+        seatsPerGroup: 3,
+        dates: MTE210_WEEKS.slice(3),
+        opensOn: MTE210_BLOCK_2_OPENS,
+      },
+      {
+        id: 'mte210-syringe-pump-teardown',
+        groupsPerSlot: 2, // two oscilloscopes; eight Alaris pumps
+        seatsPerGroup: 3,
+        dates: MTE210_WEEKS.slice(6),
+        opensOn: MTE210_BLOCK_2_OPENS,
+      },
+      {
+        id: 'mte210-ct-reconstruction',
+        groupsPerSlot: 3, // lab PCs running 3D Slicer
+        seatsPerGroup: 3,
+        dates: MTE210_WEEKS.slice(6),
+        opensOn: MTE210_BLOCK_2_OPENS,
+      },
     ],
   },
 ];

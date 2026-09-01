@@ -148,8 +148,13 @@ describe('semester weeks', () => {
     expect(dates).not.toContain(TUE41);
   });
 
-  it('still offers five bookable Wednesdays for MTE210', () => {
-    expect(listSlotDates(MTE210)).toEqual([WED37, WED38, WED40, WED42, WED43]);
+  it('offers nine bookable Wednesdays for MTE210, to mid-November', () => {
+    const dates = listSlotDates(MTE210);
+    expect(dates).toHaveLength(9);
+    expect(dates.slice(0, 5)).toEqual([WED37, WED38, WED40, WED42, WED43]);
+    expect(dates[dates.length - 1]).toBe('2026-11-18');
+    expect(dates).not.toContain(WED39);
+    expect(dates).not.toContain(WED41);
   });
 
   it('rejects a date on the other course’s weekday', () => {
@@ -214,9 +219,13 @@ describe('capacityFor()', () => {
     expect(capacityFor(DEFIB)).toMatchObject({ groupsPerSlot: 1, seatsPerGroup: 3 });
   });
 
-  it('returns null for labs that are not bookable', () => {
-    expect(capacityFor('mte210-ct-imaging')).toBeNull();
+  it('returns null for a lab that does not exist', () => {
     expect(capacityFor('nonsense')).toBeNull();
+  });
+
+  it('books every lab in the content collection', () => {
+    // all twelve labs are now schedulable; nothing is left stranded
+    expect(ALL_BOOKABLE_LABS).toHaveLength(12);
   });
 });
 
@@ -254,8 +263,8 @@ describe('seatsFreeFor()', () => {
     expect(seatsFreeFor(existing, DEFIB, TUE38, 2, 1)).toBe(3);
   });
 
-  it('is zero for a lab that is not bookable', () => {
-    expect(seatsFreeFor([], 'mte210-ct-imaging', TUE38, 1, 1)).toBe(0);
+  it('is zero for a lab that does not exist', () => {
+    expect(seatsFreeFor([], 'nonsense', TUE38, 1, 1)).toBe(0);
   });
 });
 
@@ -269,14 +278,9 @@ describe('checkSeatAvailability()', () => {
     ).toEqual({ ok: true, seat: 1 });
   });
 
-  it('rejects labs that are not bookable', () => {
+  it('rejects a lab that does not exist', () => {
     expect(
-      checkSeatAvailability(
-        { labId: 'mte210-ct-imaging', date: TUE37, slot: 1, group: 1 },
-        [],
-        BEFORE,
-        EARLY
-      )
+      checkSeatAvailability({ labId: 'nonsense', date: TUE37, slot: 1, group: 1 }, [], BEFORE, EARLY)
     ).toEqual({ ok: false, reason: 'unknown-lab' });
   });
 
@@ -476,8 +480,47 @@ describe('lab rotation', () => {
     expect(isLabOpenYet('mte200-ultrasound', '2026-09-30')).toBe(true);
   });
 
-  it('lets MTE210 labs run on every open Wednesday, with no rotation', () => {
-    expect(labDates(SAFETY)).toEqual([WED37, WED38, WED40, WED42, WED43]);
+  it('runs MTE210 block 1 first and overlaps block 2 from week 42', () => {
+    // electrical safety takes one group a week, so it needs six Wednesdays
+    expect(labDates(SAFETY)).toEqual([WED37, WED38, WED40, WED42, WED43, '2026-10-28']);
+    expect(labDates(NETWORKS)).toEqual([WED37, WED38, WED40]);
+    // CT imaging is the other single-instrument lab: it starts while block 1
+    // is still finishing, because twelve back-to-back Wednesdays do not exist
+    expect(labDates('mte210-ct-imaging')).toEqual([
+      WED42, WED43, '2026-10-28', '2026-11-04', '2026-11-11', '2026-11-18',
+    ]);
+    expect(labDates('mte210-syringe-pump-teardown')).toEqual([
+      '2026-11-04', '2026-11-11', '2026-11-18',
+    ]);
+    expect(labDates('mte210-ct-reconstruction')).toEqual([
+      '2026-11-04', '2026-11-11', '2026-11-18',
+    ]);
+  });
+
+  it('seats all 18 MTE210 students in every one of its labs', () => {
+    for (const lab of MTE210.labs) {
+      const seats = labDates(lab.id).length * 1 * lab.groupsPerSlot * lab.seatsPerGroup;
+      expect(seats, lab.id).toBeGreaterThanOrEqual(18);
+    }
+  });
+
+  it('locks the three block 2 labs until 1 October', () => {
+    for (const id of ['mte210-ct-imaging', 'mte210-syringe-pump-teardown', 'mte210-ct-reconstruction']) {
+      expect(isLabOpenYet(id, '2026-09-30'), id).toBe(false);
+      expect(isLabOpenYet(id, '2026-10-01'), id).toBe(true);
+    }
+    expect(isLabOpenYet(SAFETY, '2026-09-01')).toBe(true);
+  });
+
+  it('no longer needs the ESA615 for the teardown lab', () => {
+    // the analyzer left the teardown equipment list, so it no longer collides
+    // with the electrical safety lab that genuinely needs it
+    expect(devicesForEquipment(['Two-channel oscilloscope with ×10 probes'])).toEqual([
+      'keysight-scope',
+    ]);
+    expect(devicesForEquipment(['CareFusion Alaris CC Syringe Pump (one per group)'])).toEqual([
+      'alaris-cc',
+    ]);
   });
 });
 

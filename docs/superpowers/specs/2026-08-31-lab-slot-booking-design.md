@@ -17,13 +17,13 @@ Course staff set every date, time and capacity in one file.
 | Day | Tuesday | Wednesday |
 | Slots | 09:00–11:30 and 11:30–14:00 | 10:15–13:00 |
 | First lab day | 2026-09-08 (week 37) | 2026-09-09 (week 37) |
-| Last lab day | 2026-11-17 (week 47) | 2026-10-21 (week 43) |
+| Last lab day | 2026-11-17 (week 47) | 2026-11-18 (week 47) |
 | Closed weeks | 41 | 39 and 41 |
-| Lab days | 10 | 5 |
-| Labs | 3 core + 4 elective | electrical safety, HL7/DICOM |
+| Lab days | 10 | 9 |
+| Labs | 3 core + 4 elective | 2 core + 3 in a later block |
 | Capacity per lab | 1 group × 3 students per slot | 1 × 3, and 3 × 3 |
-| Cohort | 21 students = 7 groups | — |
-| Labs per day | 3 (one supervisor) | no limit needed |
+| Cohort | 21 students = 7 groups | 18 students = 6 groups |
+| Labs per day | 3 (one supervisor) | 3 (one supervisor) |
 
 Room: **KE E-455**, the medical technology lab, for everything.
 
@@ -72,6 +72,31 @@ quietly stranding a group.
 across the four. If most of the cohort converged on the same two labs, the
 three-day ventilator lab (18 seats) would fill. Raising `electivePicks`, or
 giving a lab another date, both surface as build errors rather than surprises.
+
+### Why MTE210's blocks overlap
+
+MTE210 has one 2h45 slot a week, and three of its five labs are gated by a
+single instrument — the ESA615 for electrical safety, the PHYWE cabinet for CT
+imaging — so they take one group, three students, a week. Eighteen students
+therefore need **six Wednesdays per single-instrument lab**.
+
+Six for block 1 plus six for block 2 is twelve Wednesdays; the window to
+mid-November holds nine. Strict back-to-back blocks would run to 9 December. So
+CT imaging starts in week 42 while electrical safety is still finishing, and
+`opensOn` gates booking from 1 October rather than from block 1's last day.
+Ordering is enforced socially rather than technically: nothing stops a student
+booking CT imaging before finishing electrical safety, only the fact that the
+sessions are laid out in that order.
+
+Two things made this fit at all. The CT lab **split** moved 3D reconstruction
+onto lab PCs, where three groups work at once, so it needs three Wednesdays
+rather than six. And dropping the ESA615 from the **teardown** lab removed the
+collision with electrical safety — the two could never have shared a Wednesday
+while both needed the single analyzer.
+
+Every MTE210 lab lands on exactly 18 seats or better, but the three
+single-instrument ones land on *exactly* 18. There is no slack: a missed session
+has nowhere to go. Adding a week 48 or 49 is the one-line fix if that bites.
 
 ### Why one group per lab per slot
 
