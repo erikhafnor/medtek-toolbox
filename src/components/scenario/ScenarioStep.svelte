@@ -6,11 +6,25 @@
     step: ScenarioStep;
     answer?: Answer;
     onSelect?: (choiceIndex: number) => void;
+    /** Called when the student is done with a step that takes no answer. */
+    onAdvance?: () => void;
+    /** True while this is the step the student is working on. */
+    isCurrent?: boolean;
     labHandoffLabel: string;
     hintLabel: string;
+    continueLabel: string;
   }
 
-  let { step, answer, onSelect, labHandoffLabel, hintLabel }: Props = $props();
+  let {
+    step,
+    answer,
+    onSelect,
+    onAdvance,
+    isCurrent = false,
+    labHandoffLabel,
+    hintLabel,
+    continueLabel,
+  }: Props = $props();
 
   let hintOpen = $state(false);
 
@@ -147,5 +161,20 @@
         </div>
       </div>
     </div>
+
+    <!-- A lab-handoff records no answer, so it needs its own way onward. -->
+    {#if isCurrent}
+      <div class="flex justify-end">
+        <button
+          class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+          onclick={() => onAdvance?.()}
+        >
+          {continueLabel}
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </button>
+      </div>
+    {/if}
   </div>
 {/if}
