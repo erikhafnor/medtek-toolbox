@@ -42,15 +42,15 @@ steps:
     question: "Du sjekker Erbe VIO-skjermen: REM-indikatoren viser en gul advarselstrekant, men ingen hørbar alarm ble oppfattet i den støyete operasjonsstuen. Du inspiserer returelektroden — det er en splittet-pad-elektrode påført på høyre lår. Den øvre halvdelen av paden har løsnet fra huden på grunn av svette. Hva er problemet?"
     hint: "REM (Return Electrode Monitoring) måler impedansen mellom de to halvdelene av en splittet pad. Hva skjer når kontaktarealet minker?"
     choices:
-      - text: "Det reduserte kontaktarealet øker strømtettheten ved padstedet, og REM-systemet har detektert den høye impedansen og redusert utgangseffekten"
+      - text: "Det reduserte kontaktarealet øker strømtettheten ved padstedet, og REM-systemet har detektert den høye impedansen og sperret HF-utgangen"
         correct: true
-        feedback: "Riktig — Erbe VIO sitt REM-system (kalt CQM — Contact Quality Monitoring) måler kontinuerlig impedansen mellom de to halvdelene av den splittede paden. Når halvparten av paden løsner, stiger impedansen, og systemet reduserer eller deaktiverer utgangen for å forhindre en returelektrodebrannskade. Den visuelle advarselen ble vist, men den hørbare alarmen ble ikke oppfattet."
+        feedback: "Riktig — Erbe VIO sitt REM-system (kalt CQM — Contact Quality Monitoring) måler kontinuerlig impedansen mellom de to halvdelene av den splittede paden. Når halvparten av paden løsner, stiger impedansen, og systemet sperrer HF-utgangen for å forhindre en returelektrodebrannskade — det alarmerer og blokkerer utgangen i stedet for å strupe effekten. Den visuelle advarselen ble vist, men den hørbare alarmen ble ikke oppfattet."
       - text: "Paden har gått ut på dato og gelen har degradert"
         correct: false
         feedback: "Gelen kan bidra, men hovedproblemet er mekanisk — paden har fysisk løsnet på grunn av svette. Selv en ny pad kan svikte hvis hudforberedelsen er utilstrekkelig."
       - text: "Padtypen er inkompatibel med denne generatoren"
         correct: false
-        feedback: "Padinkompatibilitet ville forhindret aktivering helt. Systemet aktiverte, men reduserte utgangen fordi det detekterte den høye impedansen."
+        feedback: "Padinkompatibilitet ville forhindret aktivering helt. Her godtok generatoren paden og aktiverte, men CQM sperret utgangen fordi den detekterte den høye impedansen."
       - text: "Svette har skapt en kortslutning mellom padhalvdelene"
         correct: false
         feedback: "En kortslutning mellom padhalvdelene ville senket impedansen, ikke økt den. Problemet er tap av hudkontakt på den ene halvdelen."

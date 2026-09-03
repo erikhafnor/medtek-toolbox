@@ -1,12 +1,13 @@
 ---
-title: "Ultralydapparat"
+title: "Ultralydapparater"
 category: "ultrasound"
-description: "Referanseguide for vedlikehold, testing og feilsøking av diagnostiske ultralydapparat"
+description: "Referanseguide for vedlikehold, testing og feilsøking av diagnostiske ultralydapparater"
 equipment:
-  - "GE LOGIQ E10"
-  - "Philips EPIQ 7"
-  - "CIRS Multi-Purpose Ultrasound Phantom (Model 040GSE)"
-  - "Fluke ESA615 Electrical Safety Analyzer"
+  - "GE LOGIQ S8 (MTE200-laben)"
+  - "GE LOGIQ E10 (simuleringsscenarioer)"
+  - "Kyoto Kagaku N-365 ultralydfantom (MTE200-laben)"
+  - "CIRS Multi-Purpose Ultrasound Phantom, modell 040GSE (simuleringsscenarioer)"
+  - "Fluke ESA615 elektrisk sikkerhetsanalysator"
 standards:
   - "IEC 60601-2-37 (Diagnostisk ultralyd)"
   - "IEC 62359 (Ultralyd — Feltkarakterisering)"
@@ -16,7 +17,7 @@ order: 6
 
 ## Oversikt
 
-Diagnostiske ultralydapparat bruker høyfrekvente lydbølger (1–20 MHz) til å skape sanntidsbilder av indre kroppsstrukturer. De brukes på tvers av praktisk talt alle kliniske spesialiteter — fra obstetrikk og kardiologi til akuttmedisin og intervensjonsprosedyrer. I motsetning til røntgen eller CT bruker ultralyd ingen ioniserende stråling, noe som gjør det trygt for gjentatt bruk, inkludert under graviditet. Kliniske ingeniører er ansvarlige for bildekvalitetssikring, probeintegritet, elektrisk sikkerhet og forvaltning av en utstyrspark som kan omfatte titalls systemer med hundrevis av transdusere.
+Diagnostiske ultralydapparater bruker høyfrekvente lydbølger (1–20 MHz) til å skape sanntidsbilder av indre kroppsstrukturer. De brukes på tvers av praktisk talt alle kliniske spesialiteter — fra obstetrikk og kardiologi til akuttmedisin og intervensjonsprosedyrer. I motsetning til røntgen eller CT bruker ultralyd ingen ioniserende stråling, noe som gjør det trygt for gjentatt bruk, inkludert under graviditet. Kliniske ingeniører er ansvarlige for bildekvalitetssikring, probeintegritet, elektrisk sikkerhet og forvaltning av en utstyrspark som kan omfatte titalls systemer med hundrevis av transdusere.
 
 ---
 
@@ -56,9 +57,9 @@ Utfør ved intervallet spesifisert av produsenten (vanligvis årlig, med kvartal
 
 1. **Visuell inspeksjon** — Kontroller systemhuset, hjul, skjerm, tastatur/styrekule og alle kabelkontakter. Inspiser hver probe: akustisk linse for sprekker/delaminering, kabel for kutt/knekker, kontaktpinner for bøying/korrosjon, trekkavlastning for skade.
 
-2. **Test av elektrisk sikkerhet** — Per IEC 62353: beskyttende jordresistans (klasse I-systemer), kapslingslekkasjestrøm og pasientlekkasjestrøm for hver probe (Type BF tilkoblingsdeler: ≤ 100 µA normal, ≤ 500 µA SFC).
+2. **Test av elektrisk sikkerhet** — Per IEC 62353: beskyttelsesjordresistans (≤ 0,3 Ω for klasse I, målt inkludert nettkabelen), utstyrslekkasjestrøm (≤ 500 µA for klasse I) og lekkasjestrøm i anvendt del for hver probe. Transdusere er anvendte deler av Type BF, så IEC 62353-grensen for lekkasjestrøm i anvendt del er ≤ 5000 µA. Merk at paret ≤ 100 µA normaltilstand / ≤ 500 µA enkeltfeil som vanligvis oppgis for Type BF, er IEC 60601-1 sin pasientlekkasjegrense ved typeprøving — IEC 62353 måler ikke normaltilstand og enkeltfeil hver for seg, så kontroller hvilken standard analysatoren er stilt inn på før du vurderer en avlesning.
 
-3. **Bildekvalitet — Fantomtest** — Bruk et vevsetterliknende fantom (f.eks. CIRS 040GSE), ta standardiserte bilder og evaluer:
+3. **Bildekvalitet — Fantomtest** — Bruk et vevsetterliknende fantom (f.eks. Kyoto Kagaku N-365, som brukes i MTE200-laben, eller et CIRS 040GSE), ta standardiserte bilder og evaluer:
    - **Uniformitet** — jevn lysstyrke over hele bildefeltet
    - **Inntrengningsdybde** — maksimal dybde der måleobjekter er synlige
    - **Aksial og lateral oppløsning** — minste oppløsbare målgruppe
@@ -75,7 +76,7 @@ Utfør ved intervallet spesifisert av produsenten (vanligvis årlig, med kvartal
 
 ## Relaterte standarder
 
-- **IEC 60601-2-37:2024** — Særskilte krav til grunnleggende sikkerhet og essensiell ytelse for diagnostisk og terapeutisk ultralydapparat. Dekker grenser for akustisk utgang (MI, TI), transdusersikkerhet og visningskrav.
+- **IEC 60601-2-37:2024** — Særskilte krav til grunnleggende sikkerhet og essensiell ytelse for medisinsk ultralydutstyr for diagnostikk og overvåking. Dekker grenser for akustisk utgang (MI, TI), transdusersikkerhet og visningskrav. Standarden dekker ikke terapeutisk ultralyd; ultralydutstyr til fysioterapi omfattes av IEC 60601-2-5.
 - **IEC 62359:2010+AMD1:2017** — Ultralyd — Feltkarakterisering: testmetoder for bestemmelse av termiske og mekaniske indekser. Spesifiserer hvordan MI og TI måles og rapporteres.
 - **IEC 62353:2014** — Periodisk test og test etter reparasjon av medisinsk elektrisk utstyr.
 - **IEC 60601-1:2005+AMD2:2020** — Generelle krav til grunnleggende sikkerhet og essensiell ytelse.

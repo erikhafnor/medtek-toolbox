@@ -3,8 +3,8 @@ title: "Elektrokirurgiske enheter"
 category: "electrosurgery"
 description: "Referanseguide for vedlikehold, testing og feilsøking av elektrokirurgiske enheter"
 equipment:
+  - "Olympus UES-40"
   - "Erbe VIO 300 D"
-  - "Valleylab FT10 (Medtronic)"
   - "Fluke QA-ES III ESU-analysator"
 standards:
   - "IEC 60601-2-2 (Høyfrekvent kirurgisk utstyr)"
@@ -35,7 +35,7 @@ En ESU-generator produserer høyfrekvent vekselstrøm som flyter fra den aktive 
 | Driftsfrekvens | 350 kHz (typisk for Erbe VIO) | Under 200 kHz risikerer nevromuskulær stimulering |
 | HF-lekkasjestrøm | ≤ 150 mA (IEC 60601-2-2) | Overflødig lekkasje forårsaker utilsiktede brannskader ved kontaktpunkter |
 | Returelektrodeovervåking (REM) | Alarm hvis padimpedans > terskelverdi | Forhindrer brannskader fra dårlig padkontakt |
-| Toppfaktor (koag) | 3–10 avhengig av modus | Høyere toppfaktor = dypere koagulering, mer vevsskade |
+| Crestfaktor | ≈ 1,4 (rent snitt) opp til 6–10 (spray-koagulering) | Lav crestfaktor (kontinuerlig bølgeform) skjærer, og gir ved kontakt dypest uttørking (desikkasjon); høy crestfaktor (modulert bølgeform) gir fulgurasjon — en bred, men overflatisk sårskorpe med mindre dybdeskade |
 
 ---
 
@@ -46,7 +46,7 @@ En ESU-generator produserer høyfrekvent vekselstrøm som flyter fra den aktive 
 | Ingen utgang / utilstrekkelig snitting | Returelektrode frakoblet, pad tørket ut, kabelfeil, effekt satt for lavt | Sjekk REM-alarmstatus, inspiser padkontakt, test kabelkontinuitet, mål utgangseffekt med QA-ES III | Påfør returelektrode på nytt, bytt kabel, juster effekt |
 | REM-alarm (returelektrodeovervåking) | Dårlig padkontakt, pad delvis løsnet, padgel tørket, padkabelfeil | Inspiser padpåføring, sjekk kabelkontakt, mål padimpedans | Påfør eller bytt pad; bytt kabel hvis defekt |
 | Pasientbrannskade ved returelektrodested | Utilstrekkelig padkontaktareal, REM deaktivert/forbigått, pad plassert over arr/benfremspring | Etterhendelsesundersøkelse: sjekk padplassering, REM-funksjon, padtilstand, generator REM-krets | Gjennomgå padplasseringsprotokoll, verifiser REM-funksjon, rapporter som sikkerhetshendelse |
-| Interferens med pasientovervåking | ESU-aktivering forstyrrer EKG-/SpO₂-visning | Verifiser ESU-driftsfrekvens, sjekk for stray HF-kobling til overvåkingsledninger | Bruk ESU-klassifiserte overvåkingskabler, separer ESU- og overvåkingsledninger |
+| Interferens med pasientovervåking | ESU-aktivering forstyrrer EKG-/SpO₂-visning | Verifiser ESU-driftsfrekvens, sjekk for utilsiktet HF-kobling til overvåkingsledningene | Bruk ESU-klassifiserte overvåkingskabler, separer ESU- og overvåkingsledninger |
 | Utilsiktet aktivering | Fotbryterfeil (fastklemt), håndstykkeknapp fastklemt, kobling til nærliggende metall | Inspiser fotbrytermekanisme, test aktiveringskretser, sjekk for isolasjonsskade | Bytt fotbryter, bytt håndstykke, sørg for korrekt tildekking av aktiv elektrode |
 
 ---

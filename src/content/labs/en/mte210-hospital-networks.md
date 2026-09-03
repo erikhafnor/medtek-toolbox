@@ -4,10 +4,10 @@ course: "MTE210"
 shortTitle: "HL7 & DICOM"
 description: "HL7 messaging, DICOM image transfer, and network integration of medical devices"
 equipment:
-  - "HL7 test environment (Mirth Connect or HAPI FHIR server)"
-  - "DICOM viewer (Horos/OsiriX or RadiAnt)"
+  - "HAPI Testpanel (HL7 v2.x test environment, on the lab PC)"
+  - "DCM4CHE RIS/PACS (teaching image archive)"
+  - "OHIF-viewer (DICOM viewer, on the lab PC)"
   - "Network analysis tools (Wireshark)"
-  - "Patient monitor with HL7 export (Philips IntelliVue)"
   - "Lab workstations with Ethernet connections"
 prerequisites:
   - "Lecture notes on health informatics and interoperability standards"
@@ -59,7 +59,7 @@ IHE provides implementation profiles that specify exactly how HL7 and DICOM shou
 MSH|^~\&|ADT_SYSTEM|HOSP|MONITOR_SYS|ICU|20260325120000||ADT^A01|MSG00001|P|2.5
 EVN|A01|20260325120000
 PID|1||PAT12345^^^HOSP^MR||HANSEN^ANNA^M||19520415|F|||BREIGATA 12^^STAVANGER^^4006^NO
-PV1|1|I|ICU^BED-03^^HOSP||||DR001^NILSEN^OLE|||MED||||||||V12345|||||||||||||||||||||||||20260325120000
+PV1|1|I|ICU^BED-03^^HOSP||||DR001^NILSEN^OLE|||MED|||||||||V12345|||||||||||||||||||||||||20260325120000
 ```
 
 In your lab notebook, decode each segment and field:
@@ -73,11 +73,11 @@ In your lab notebook, decode each segment and field:
 MSH|^~\&|MONITOR|ICU|HIS|HOSP|20260325121500||ORU^R01|MSG00042|P|2.5
 PID|1||PAT12345^^^HOSP^MR||HANSEN^ANNA^M
 OBR|1||ORD001|VITALS|||20260325121500
-OBX|1|NM|HR^Heart Rate^LN||78|bpm|60-100||||F
-OBX|2|NM|SPO2^SpO2^LN||96|%|90-100||||F
-OBX|3|NM|NIBP_SYS^Systolic BP^LN||134|mmHg|90-140||||F
-OBX|4|NM|NIBP_DIA^Diastolic BP^LN||82|mmHg|60-90||||F
-OBX|5|NM|TEMP^Temperature^LN||37.2|Cel|36.0-38.0||||F
+OBX|1|NM|8867-4^Heart rate^LN||78|bpm|60-100||||F
+OBX|2|NM|59408-5^Oxygen saturation in Arterial blood by Pulse oximetry^LN||96|%|90-100||||F
+OBX|3|NM|8480-6^Systolic blood pressure^LN||134|mmHg|90-140||||F
+OBX|4|NM|8462-4^Diastolic blood pressure^LN||82|mmHg|60-90||||F
+OBX|5|NM|8310-5^Body temperature^LN||37.2|Cel|36.0-38.0||||F
 ```
 
 Decode:
@@ -94,7 +94,7 @@ Decode:
 
 **2.1** On your lab workstation, open Wireshark and start capturing on the Ethernet interface.
 
-**2.2** The lab supervisor will trigger a series of HL7 messages between the test HL7 server and a client application.
+**2.2** The lab supervisor triggers a series of HL7 messages between the test HL7 server and a client application. The client runs on **your own workstation**, so the messages pass through the interface you are capturing on. (On a switched network a workstation only sees traffic addressed to itself — to capture traffic between two other hosts, the supervisor must first enable port mirroring on the lab switch, or your capture will stay empty.)
 
 **2.3** In Wireshark, filter for HL7 traffic:
 - Filter by the HL7 port (typically TCP port 2575): `tcp.port == 2575`
@@ -110,7 +110,7 @@ Decode:
 
 ### Part 3 — DICOM Image Exploration (45 min)
 
-**3.1** Open the DICOM viewer (Horos, OsiriX, or RadiAnt) on your lab workstation.
+**3.1** Open the OHIF-viewer — the lab's DICOM viewer, the same one used in the ultrasound lab — on your lab workstation.
 
 **3.2** Load the provided sample DICOM dataset (a set of anonymised medical images from the teaching archive).
 
@@ -147,18 +147,19 @@ This is a discussion-based section. Working in your lab group, discuss and recor
 - Immediate actions (patient safety vs. investigation)
 - Who you notify
 - How you investigate
-- What IEC 80001-1 says about risk management for networked medical devices
+- What **IEC 80001-1:2021** (*Application of risk management for IT-networks incorporating medical devices — Part 1: Safety, effectiveness and security in the implementation and use of connected medical devices or connected health software*) says about risk management for networked medical devices — check that you are reading the 2021 edition, which replaced and restructured the 2010 edition (titled *Roles, responsibilities and activities*), because older lecture material still points at the withdrawn one
 
 **4.3** Discuss the tension between medical device availability (the device must work 24/7) and cybersecurity (the device should be patched and updated). How would you approach a situation where a critical ventilator runs an operating system that is no longer supported with security patches?
 
 ---
 
-## Lab Report Requirements
+## Approval
 
-Submit a typed lab report by the date specified in the course schedule. The report must include:
+You are approved in the lab once you can show and explain the following to the lab engineer:
 
-- Decoded HL7 messages from Part 1 with explanations
-- Wireshark capture screenshots showing HL7 traffic (Part 2)
-- DICOM header data table from Part 3
-- Written discussion answers from Part 4
-- A brief conclusion (200–300 words) on the role of clinical engineering in hospital system integration
+- Your decoded HL7 messages from Part 1 — the segments and fields of the ADT message (1.1), the vital signs, reference ranges and result status in the ORU message (1.2), and your answer to 1.3
+- Your Wireshark capture of the HL7 traffic (2.1–2.2), the display filter you used to find it (2.3), and your answers to 2.4
+- The DICOM header table you filled in for each image series (3.3), what changing Window Center and Window Width did to the image (3.4), and your answer to 3.5 on a mismatched patient ID
+- The answers your group reached on the discussion questions in Part 4 (4.1–4.3)
+
+There is no written hand-in.

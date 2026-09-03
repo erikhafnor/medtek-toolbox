@@ -25,7 +25,7 @@ steps:
     choices:
       - text: "Open the device casing and check internal components"
         correct: false
-        feedback: "Too invasive as a first step — always start with observation and information gathering."
+        feedback: "Too invasive as a first step — always start with observation and information gathering. Opening a defibrillator is never a bedside action: the high-voltage capacitor can hold a lethal charge."
       - text: "Talk to the nurse, reproduce the error, check basics (power, battery, cables, pads)"
         correct: true
         feedback: "Correct — systematic approach: gather info, observe, check the obvious before going deeper."
@@ -39,7 +39,7 @@ steps:
     choices:
       - text: "Open device and visually inspect capacitor for bulging or leakage"
         correct: false
-        feedback: "Visual inspection alone rarely confirms capacitor degradation — you need measurements."
+        feedback: "No — and not only because visual inspection rarely confirms capacitor degradation. This device has been charging, and the high-voltage capacitor can retain a lethal charge even after the device is switched off and the battery removed. Never open the casing on the ward: characterise the fault from the outside with a defibrillator analyser first, and if the device has to be opened, do it on the bench following the manufacturer's discharge and verification procedure. You need measurements anyway."
       - text: "Swap to a known-good battery and retest"
         correct: false
         feedback: "Reasonable step, but battery indicator is consistent — pursue the charge circuit first."
@@ -61,9 +61,10 @@ steps:
           status: pass
         - setting: "Setting: 100J → Delivered"
           delivered: "96J"
-          status: pass
+          status: warning
           charge_time: "8.2s"
-          spec: "≤6s"
+          spec: "Energy within ±15%; charge time ≤6s"
+          error: "Energy within tolerance, but the 8.2s charge time exceeds the 6s specification"
         - setting: "Setting: 150J → Delivered"
           delivered: null
           status: fail

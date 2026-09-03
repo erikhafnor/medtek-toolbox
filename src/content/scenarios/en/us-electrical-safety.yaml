@@ -29,7 +29,7 @@ steps:
         feedback: "Waiting for evaporation is not sufficient — water may pool inside the chassis in areas that don't dry easily, and mineral residue from tap water can create conductive paths even after drying."
       - text: "Inspect the chassis for water ingress, dry any accessible areas, then perform a full electrical safety test (IEC 62353) before reconnecting to mains power"
         correct: true
-        feedback: "Correct — you cannot safely power on a fluid-exposed device without first verifying electrical safety. Inspect for visible water inside vents/ports, dry accessible areas, then test earth bond, enclosure leakage, and patient leakage before reconnecting. The safety test is the gatekeeper."
+        feedback: "Correct — you cannot safely power on a fluid-exposed device without first verifying electrical safety. Inspect for visible water inside vents and ports, dry accessible areas, then test protective earth resistance, equipment leakage and applied-part leakage before reconnecting. The safety test is the gatekeeper."
       - text: "Turn it on and check if it works — modern equipment has splash protection"
         correct: false
         feedback: "Extremely dangerous. Even IPX1-rated equipment (protection against dripping water) is not designed for a 300 mL spill. Water may have reached internal components and could cause a short circuit or electric shock when powered on."
@@ -41,9 +41,9 @@ steps:
     question: "You inspect the LOGIQ E10. The keyboard area has surface moisture (you dry it). You check the ventilation slots on the right side — you can see water droplets on internal components through the vent. What does this mean for your safety assessment?"
     hint: "Visible water on internal components means the insulation between mains-powered circuits and accessible parts may be compromised."
     choices:
-      - text: "Do NOT power on. Open the covers (per service manual access procedures), carefully dry internal components with lint-free cloths and compressed air, then allow 2–4 hours of air drying before safety testing"
+      - text: "Do NOT power on. Confirm the system is de-energised first — mains lead out, internal battery disconnected, and time allowed for the power-supply capacitors to discharge — then open the covers per the service manual access procedure, dry internal components with lint-free cloths and low-pressure dry compressed air, and allow 2–4 hours of air drying before safety testing"
         correct: true
-        feedback: "Correct — with visible internal moisture, you must physically dry the components before safety testing. Compressed air (low pressure, no moisture) removes pooled water; lint-free cloths absorb residue. Allow additional air drying time. Only then proceed with electrical safety testing."
+        feedback: "Correct — with visible internal moisture, you must physically dry the components before safety testing. Powered off and unplugged is not the same as de-energised: the LOGIQ E10 keeps an internal battery connected and its power supply holds charged capacitors, so isolate the battery and allow discharge time before you go inside the covers. Compressed air (low pressure, no moisture) removes pooled water; lint-free cloths absorb residue. Allow additional air drying time. Only then proceed with electrical safety testing."
       - text: "The water on internal components is minimal — proceed with the safety test"
         correct: false
         feedback: "Testing with water still present on internal components could give falsely elevated leakage readings AND risks damaging the test equipment or creating additional short circuits."
@@ -63,18 +63,18 @@ steps:
           delivered: "0.08 Ω"
           status: pass
           spec: "< 0.3 Ω"
-        - setting: "Enclosure leakage current (normal condition)"
+        - setting: "Enclosure (touch) leakage current — IEC 60601-1 cross-check"
           delivered: "78 µA"
           status: pass
-          spec: "< 100 µA"
-        - setting: "Enclosure leakage current (open earth SFC)"
+          spec: "≤ 100 µA (IEC 60601-1, normal condition)"
+        - setting: "Equipment leakage current (differential method)"
           delivered: "320 µA"
           status: pass
-          spec: "< 500 µA"
-        - setting: "Patient leakage — C5-1 probe (BF applied part)"
+          spec: "≤ 500 µA (IEC 62353, Class I)"
+        - setting: "Applied part leakage current — C1-6 probe (Type BF)"
           delivered: "45 µA"
           status: pass
-          spec: "< 100 µA normal"
+          spec: "≤ 5000 µA (IEC 62353, Type BF); ≤ 100 µA (IEC 60601-1, normal condition)"
         - setting: "Functional test — B-mode image on CIRS phantom"
           delivered: "Normal image quality, no artifacts"
           status: pass

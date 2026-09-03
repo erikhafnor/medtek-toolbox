@@ -3,8 +3,8 @@ title: "Electrosurgical Units"
 category: "electrosurgery"
 description: "Reference guide for electrosurgical unit maintenance, testing, and troubleshooting"
 equipment:
+  - "Olympus UES-40"
   - "Erbe VIO 300 D"
-  - "Valleylab FT10 (Medtronic)"
   - "Fluke QA-ES III ESU Analyzer"
 standards:
   - "IEC 60601-2-2 (High-frequency surgical equipment)"
@@ -35,7 +35,7 @@ An ESU generator produces high-frequency AC that flows from the active electrode
 | Operating frequency | 350 kHz (typical for Erbe VIO) | Below 200 kHz risks neuromuscular stimulation |
 | HF leakage current | ≤ 150 mA (IEC 60601-2-2) | Excess leakage causes unintended burns at contact points |
 | Return electrode monitoring (REM) | Alarm if pad impedance > threshold | Prevents burns from poor pad contact |
-| Crest factor (coag) | 3–10 depending on mode | Higher crest factor = deeper coagulation, more tissue damage |
+| Crest factor | ≈ 1.4 (pure cut) up to 6–10 (spray coag) | Low crest factor (continuous waveform) cuts, and in contact produces the deepest desiccation; high crest factor (modulated waveform) fulgurates — a wide but superficial eschar with less depth of injury |
 
 ---
 

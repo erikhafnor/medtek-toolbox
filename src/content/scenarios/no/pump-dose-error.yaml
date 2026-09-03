@@ -62,7 +62,7 @@ steps:
       - text: "Opprett en kvartalsvis plan for å sammenligne medikamentbiblioteket med apotekprotokollen"
         correct: false
         feedback: "Kvartalsvise sjekker tillater fortsatt måneder med avvik. Oppdateringen må utløses av selve protokollendringen, ikke av en kalender."
-      - text: "Etabler en formell endringskontrollprosess: apoteket varsler medisinsk-teknisk avdeling når protokoller endres, MTU oppdaterer biblioteket, apoteket verifiserer oppdateringen før utrulling"
+      - text: "Etabler en formell endringskontrollprosess: apoteket varsler medisinsk-teknisk avdeling (MTA) når protokoller endres, MTA oppdaterer biblioteket, apoteket verifiserer oppdateringen før utrulling"
         correct: true
         feedback: "Riktig — oppdateringen av medikamentbiblioteket må utløses av protokollendringen og verifiseres før utrulling. Dette skaper en lukket sløyfe: protokollendring → bibliotekoppdatering → apotekverifisering → utrulling til flåten. Legg dette til i sykehusets endringsstyringssystem med signering ved hvert steg."
       - text: "Gi apoteket direkte tilgang til å oppdatere medikamentbiblioteket selv"
@@ -88,11 +88,11 @@ steps:
         correct: false
         feedback: "Bibliotekinnholdet er sykehusets ansvar, ikke produsentens. B. Braun leverer plattformen; dere konfigurerer grensene."
 learning_points:
-  - text: "Styring av medikamentbibliotek er et delt ansvar mellom apotek (definerer grenser), medisinsk-teknisk avdeling (implementerer og ruller ut) og sykepleietjenesten (bruker sikkerhetsgrensene). Et sammenbrudd i ethvert ledd kan tillate dosefeil."
+  - text: "Styring av medikamentbibliotek er et delt ansvar mellom apotek (definerer grenser), medisinsk-teknisk avdeling (implementerer og ruller ut) og sykepleietjenesten (bruker sikkerhetsgrensene). Svikt i ett av leddene kan føre til dosefeil."
   - text: "Når et avvik i medikamentbiblioteket oppdages, revider HELE biblioteket — ikke bare legemiddelet som utløste etterforskningen. Hvis én oppføring er utdatert, er andre sannsynligvis det også."
     source_type: best-practice
-  - text: "IEC 60601-2-24 krever at infusjonspumper støtter dose- og hastighetsgrenser og varsler. Men standarden omhandler plattformens kapabilitet — nøyaktigheten av grensene avhenger helt av sykehusets konfigurasjon og vedlikehold."
-    source: "IEC 60601-2-24 §201.12"
+  - text: "IEC 60601-2-24:2012 regulerer doseringsnøyaktighet, okklusjonsdeteksjon, friflytsbeskyttelse og alarmoppførsel — den krever ikke at en pumpe har medikamentbibliotek eller programvare for dosefeilreduksjon (DERS). Dosegrensene er et lag sykehuset selv konfigurerer oppå en sertifisert pumpe, så riktigheten avhenger utelukkende av lokal styring, aldri av pumpens sertifisering."
+    source: "IEC 60601-2-24:2012 (virkeområde); AAMI- og ISMP-veiledning om DERS i smartpumper"
     source_type: standard
   - text: "Avvik i medikamentbibliotek er en anerkjent pasientsikkerhetsrisiko. ECRI Institute og ISMP rangerer konsekvent dosefeil knyttet til infusjonspumper blant de største teknologirelaterte sikkerhetsbekymringene."
     source: "ISMP (Institute for Safe Medication Practices) — Smart pump drug library management"

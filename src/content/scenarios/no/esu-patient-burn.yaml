@@ -68,15 +68,15 @@ steps:
           delivered: "Ingen alarm — CQM-indikator grønn"
           status: warning
           error: "Impedans under alarmterskel"
-        - setting: "CQM-alarmterskel — 30 % kontakt (120 Ω padimpedans)"
-          delivered: "CQM-alarm ved 135 Ω"
+        - setting: "CQM-alarmterskel — padimpedans økt trinnvis fra 20 Ω til alarm (ca. 30 % kontakt)"
+          delivered: "CQM-alarm ved 135 Ω, HF-utgangen sperret"
           status: pass
           spec: "135 ± 10 Ω"
-        - setting: "Simulert 60 % kontakt (55 Ω padimpedans) — 80 W snitt i 5 s"
-          delivered: "Ingen alarm — men strømtetthet ved pad overskrider sikker grense"
-          status: fail
-          error: "CQM-impedans under alarm, men kontaktareal utilstrekkelig for sikker strømtetthet"
-        - setting: "HF-lekkasjestrøm — aktiv til retur"
+        - setting: "Simulert 60 % kontakt (55 Ω padimpedans) — 80 W i snittemodus i 5 s"
+          delivered: "Ingen alarm — CQM-indikator grønn; 78 W levert i 200 Ω"
+          status: warning
+          error: "Impedansen holder seg under alarmterskelen på 135 Ω — CQM overvåker impedans, ikke kontaktareal, så det reduserte kontaktarealet blir ikke oppdaget"
+        - setting: "HF-lekkasjestrøm — aktiv elektrode til jord, 200 Ω"
           delivered: "42 mA"
           status: pass
           spec: "≤ 150 mA"
@@ -100,9 +100,9 @@ steps:
     id: corrective-action
     question: "Hvilke korrigerende tiltak anbefaler du?"
     choices:
-      - text: "Umiddelbart: visuell padkontrollprotokoll etter påføring (sjekk for folder, rynker, full kontakt). Langsiktig: legg til padpåføringsverifisering i den kirurgiske sjekklisten. Send produsenthendelsesrapport (MIR) og regulatorisk rapport."
+      - text: "Umiddelbart: visuell padkontrollprotokoll etter påføring (sjekk for folder, rynker, full kontakt). Langsiktig: legg til padpåføringsverifisering i den kirurgiske sjekklisten. Meld den alvorlige hendelsen til Direktoratet for medisinske produkter (DMP) og varsle Erbe."
         correct: true
-        feedback: "Riktig — de korrigerende tiltakene adresserer den kontrollerbare faktoren (kvalitet på padpåføring) samtidig som de anerkjenner CQM-begrensningen. En visuell inspeksjon etter padpåføring tar sekunder og fanger opp folder/rynker som CQM ikke kan detektere. MIR og regulatorisk rapport sikrer at hendelsen spores og at produsenten er informert."
+        feedback: "Riktig — de korrigerende tiltakene adresserer den kontrollerbare faktoren (kvalitet på padpåføring) samtidig som de anerkjenner CQM-begrensningen. En visuell inspeksjon etter padpåføring tar sekunder og fanger opp folder/rynker som CQM ikke kan detektere. Som helseinstitusjon melder dere den alvorlige hendelsen til DMP og varsler produsenten; det er deretter Erbe som skal sende produsentens hendelsesrapport (MIR) etter MDR artikkel 87."
       - text: "Bytt alle Erbe VIO-generatorer med en konkurrent som har mer sensitiv REM-overvåking"
         correct: false
         feedback: "Alle impedansbaserte REM-systemer har den samme begrensningen. Å bytte merke adresserer ikke rotårsaken (kvalitet på padpåføring)."
@@ -120,7 +120,7 @@ learning_points:
   - text: "IEC 60601-2-2 §201.12.4.4 krever returelektrodeovervåking, men anerkjenner at impedansovervåking har begrensninger. Standarden krever at systemet alarmerer når impedansen overskrider terskelen — den garanterer ikke forebygging av brannskader i alle scenarioer."
     source: "IEC 60601-2-2 §201.12.4.4"
     source_type: standard
-  - text: "Hendelser med pasientskade krever formell undersøkelse: bevissikring, utstyrstesting, rotårsaksanalyse, korrigerende tiltak og regulatorisk rapportering (MIR/MDR). Klinisk ingeniøravdelings undersøkelsesrapport er primærbevis."
+  - text: "Hendelser med pasientskade krever formell undersøkelse: bevissikring, utstyrstesting, rotårsaksanalyse, korrigerende tiltak og hendelsesmelding. I Norge melder helseinstitusjonen alvorlige hendelser til Direktoratet for medisinske produkter (DMP) og varsler produsenten, som deretter sender produsentens hendelsesrapport (MIR) etter MDR artikkel 87. Undersøkelsesrapporten fra medisinsk-teknisk avdeling er primærbevis."
     source_type: best-practice
   - text: "Ved hendelsesundersøkelser, skill mellom enhetsfeil og bruksrelaterte årsaker. I dette tilfellet fungerte enheten innenfor spesifikasjonen — sikkerhetsgapet var i påføringsprosessen. Begge typer årsaker trenger korrigerende tiltak."
     source_type: best-practice

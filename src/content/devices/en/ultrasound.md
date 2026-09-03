@@ -3,9 +3,10 @@ title: "Ultrasound Systems"
 category: "ultrasound"
 description: "Reference guide for diagnostic ultrasound system maintenance, testing, and troubleshooting"
 equipment:
-  - "GE LOGIQ E10"
-  - "Philips EPIQ 7"
-  - "CIRS Multi-Purpose Ultrasound Phantom (Model 040GSE)"
+  - "GE LOGIQ S8 (MTE200 lab system)"
+  - "GE LOGIQ E10 (simulation scenarios)"
+  - "Kyoto Kagaku N-365 ultrasound phantom (MTE200 lab)"
+  - "CIRS Multi-Purpose Ultrasound Phantom, Model 040GSE (simulation scenarios)"
   - "Fluke ESA615 Electrical Safety Analyzer"
 standards:
   - "IEC 60601-2-37 (Diagnostic ultrasound)"
@@ -56,9 +57,9 @@ Perform at the interval specified by the manufacturer (typically annually, with 
 
 1. **Visual inspection** — Check system housing, wheels, display, keyboard/trackball, all cable connectors. Inspect each probe: acoustic lens for cracks/delamination, cable for cuts/kinks, connector pins for bending/corrosion, strain relief for damage.
 
-2. **Electrical safety testing** — Per IEC 62353: protective earth resistance (Class I systems), enclosure leakage current, and patient leakage current for each probe (Type BF applied parts: ≤ 100 µA normal, ≤ 500 µA SFC).
+2. **Electrical safety testing** — Per IEC 62353: protective earth resistance (≤ 0.3 Ω for Class I, measured including the mains cord), equipment leakage current (≤ 500 µA for Class I), and applied part leakage current for each probe. Transducers are Type BF applied parts, so the IEC 62353 applied part leakage limit is ≤ 5000 µA. Note that the ≤ 100 µA normal / ≤ 500 µA single-fault pair usually quoted for Type BF is the IEC 60601-1 patient leakage limit measured at type test — IEC 62353 does not test normal and single-fault conditions separately, so check which standard the analyser is set to before judging a reading.
 
-3. **Image quality — Phantom test** — Using a tissue-mimicking phantom (e.g., CIRS 040GSE), acquire standardised images and evaluate:
+3. **Image quality — Phantom test** — Using a tissue-mimicking phantom (e.g., the Kyoto Kagaku N-365 used in the MTE200 lab, or a CIRS 040GSE), acquire standardised images and evaluate:
    - **Uniformity** — even brightness across the image field
    - **Depth of penetration** — maximum depth at which targets are visible
    - **Axial and lateral resolution** — smallest resolvable target group
@@ -75,7 +76,7 @@ Perform at the interval specified by the manufacturer (typically annually, with 
 
 ## Related Standards
 
-- **IEC 60601-2-37:2024** — Particular requirements for the basic safety and essential performance of diagnostic and therapeutic ultrasound equipment. Covers acoustic output limits (MI, TI), transducer safety, and display requirements.
+- **IEC 60601-2-37:2024** — Particular requirements for the basic safety and essential performance of ultrasonic medical diagnostic and monitoring equipment. Covers acoustic output limits (MI, TI), transducer safety, and display requirements. It does not cover therapeutic ultrasound; ultrasonic physiotherapy equipment falls under IEC 60601-2-5.
 - **IEC 62359:2010+AMD1:2017** — Ultrasonics — Field characterisation: test methods for determining thermal and mechanical indices. Specifies how MI and TI are measured and reported.
 - **IEC 62353:2014** — Recurrent test and test after repair of medical electrical equipment.
 - **IEC 60601-1:2005+AMD2:2020** — General requirements for basic safety and essential performance.

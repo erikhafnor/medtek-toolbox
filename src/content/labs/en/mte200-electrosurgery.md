@@ -46,7 +46,7 @@ By the end of this lab you will be able to:
 
 1. Place the Olympus UES-40 on the bench. Inspect the housing, cables, and connectors for physical damage.
 2. Connect the Fluke QA-ES III Electrosurgery Analyzer to the monopolar output of the Olympus UES-40 following the analyser manual.
-3. Set the isolation impedance on the Fluke QA-ES III to **400 ohm**.
+3. Set the test load resistance on the Fluke QA-ES III to **400 Ω** — this is the resistive load the generator drives, chosen to represent typical tissue impedance; it is not an isolation impedance. Check the Olympus UES-40 documentation for the load at which its rated output power is specified, and note any difference from 400 Ω.
 4. Connect the Keysight InfiniiVision oscilloscope to the waveform output on the Fluke QA-ES III. Set the oscilloscope to an appropriate time base and vertical scale as a starting point (adjust during measurements).
 5. Power on all equipment and verify that each device completes its self-test without errors.
 6. Position the RapidVac Smoke Evacuator near the test area, but do not turn it on until Part 4.
@@ -74,7 +74,7 @@ By the end of this lab you will be able to:
 
 ### Part 2 — Power Output Measurements (60 min)
 
-Using the Fluke QA-ES III Electrosurgery Analyzer with isolation impedance set to **400 ohm**, measure the power output and crest factor for each of the following modes and settings. Record all results in a table.
+Using the Fluke QA-ES III Electrosurgery Analyzer with the test load set to **400 Ω**, measure the power output and crest factor for each of the following modes and settings. Record all results in a table.
 
 #### 2.1 CUT Modes
 
@@ -87,6 +87,7 @@ Using the Fluke QA-ES III Electrosurgery Analyzer with isolation impedance set t
 1. Select each mode on the Olympus UES-40 and set the specified power.
 2. Activate the ESU (for less than 10 seconds) and read the measured power and crest factor from the Fluke QA-ES III display.
 3. Record the results.
+4. **Acceptance criterion:** measured power within ±20% of the set value (IEC 60601-2-2). For 150 W the acceptable range is **120–180 W**; for 125 W it is **100–150 W**. Confirm the tolerance, and the load at which the rated output applies, in the Olympus UES-40 documentation before judging a reading.
 
 #### 2.2 COAG Modes
 
@@ -99,6 +100,7 @@ Using the Fluke QA-ES III Electrosurgery Analyzer with isolation impedance set t
 1. Select each coagulation mode and set the specified power.
 2. Activate the ESU (for less than 10 seconds) and read the measured power and crest factor.
 3. Record the results.
+4. **Acceptance criterion:** measured power within ±20% of the set value (IEC 60601-2-2). For 60 W the acceptable range is **48–72 W**.
 
 ---
 
@@ -119,7 +121,7 @@ For each CUT and COAG mode tested in Part 2, capture the output waveform on the 
 
 1. With the ESU in standby, connect the return electrode normally. Verify the REM/CQM indicator shows a normal state.
 2. Simulate a partial detachment of the return electrode (follow the analyser manual for the correct procedure).
-3. Record the impedance or condition at which the alarm triggers.
+3. Record the impedance at which the alarm triggers and compare it with the threshold given in the Olympus UES-40 documentation. **Acceptance criterion:** the generator must both alarm *and* disable the output when return electrode contact impedance exceeds the threshold (IEC 60601-2-2 §201.12.4.4). With the alarm active, briefly press the CUT footswitch and confirm on the Fluke QA-ES III that no power is delivered — the alarm on its own is not the safety function.
 4. Discuss in your lab notebook: what happens if the return electrode partially detaches during surgery? What injury could result, and how does the REM/CQM system prevent it?
 
 ---
@@ -128,7 +130,7 @@ For each CUT and COAG mode tested in Part 2, capture the output waveform on the 
 
 > **Turn on the RapidVac Smoke Evacuator before beginning this part.**
 
-**4.1** Using the monopolar functions on the Olympus UES-40, test the different CUT and COAG modes on a porcine specimen. Observe and record the tissue effects on different tissue types:
+**4.1** Reconfigure the bench before energising into tissue. With the ESU in standby, disconnect the Fluke QA-ES III from the monopolar output and fit a monopolar handpiece with a clean blade electrode. Place the porcine specimen on the dispersive (return) electrode used on this bench, connect that electrode to the return electrode connector on the UES-40, and confirm the REM/CQM indicator shows a normal state — without an intact return path the current finds an uncontrolled route back and can arc. Wear gloves when handling the specimen, and start at a low setting (30 W CUT, 30 W COAG), not the Part 2 settings. Then, using the monopolar functions on the Olympus UES-40, test the different CUT and COAG modes on the specimen. Observe and record the tissue effects on different tissue types:
 
 - Fat tissue
 - Vascular tissue
@@ -147,24 +149,23 @@ Answer the following questions in your lab notebook. You will discuss your answe
 
 1. Explain the difference between CUT and COAG waveforms. How does the crest factor relate to the tissue effect (cutting versus coagulation)?
 
-2. Why is the isolation impedance set to 400 ohm for testing? What does this value represent in a clinical context?
+2. Why is the test load set to 400 Ω for testing? What does this value represent in a clinical context?
 
 3. What is the purpose of the smoke evacuator, and what are the health hazards of surgical smoke? Reference at least two specific hazardous components.
 
-4. A clinical engineer performing annual maintenance on an ESU measures 180 W output when the device is set to 150 W CUT PURE at 400 ohm. Is this acceptable? What steps should be taken?
+4. A clinical engineer performing annual maintenance on an ESU measures 180 W output when the device is set to 150 W CUT PURE at 400 Ω. Is this acceptable? What steps should be taken?
 
 5. Explain why monopolar electrosurgery requires a return electrode but bipolar electrosurgery does not. What is the risk if the return electrode contact area is too small?
 
 ---
 
-## Lab Report Requirements
+## Approval
 
-Submit a typed lab report by the date specified in the course schedule. The report must include:
+You are approved in the lab once you can show and explain the following to the lab engineer:
 
-- A title page with your name, student number, course code, and date
-- A completed power measurement table for all modes tested in Part 2, including crest factors
-- Waveform sketches or screenshots for each mode (Part 3) with annotations describing the waveform characteristics
-- REM/CQM test results and discussion (Part 3.2)
-- Tissue effect observations from Part 4
-- Written answers to the review questions (Part 5)
-- A brief conclusion (200–300 words) discussing whether the ESU meets its specifications and the clinical engineering implications of your findings
+- Your completed power and crest factor table from Part 2, and whether each measured value meets the ±20% acceptance criterion
+- The waveforms you captured in Part 3.1, and the REM/CQM result from Part 3.2 — the impedance at which the alarm triggered and your check that the output was disabled
+- The tissue effects you observed in Part 4 and how they changed with mode and power setting
+- Your answers to the review questions in Part 5
+
+There is no written hand-in.

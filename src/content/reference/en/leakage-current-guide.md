@@ -36,12 +36,16 @@ This is why leakage current limits for CF (cardiac floating) applied parts are t
 **How to measure:**
 1. Connect the DUT to the safety analyser
 2. Measure the current in the PE conductor
-3. Test under normal condition (NC) and with PE open (SFC)
+3. Test under normal condition (NC), then under single fault condition (SFC: interruption of one supply conductor at a time)
 
 | Condition | Limit |
 |---|---|
-| Normal | ≤ 500 µA |
-| Single fault (PE open) | ≤ 1000 µA |
+| Normal condition (NC) | ≤ 5 mA |
+| Single fault (interruption of one supply conductor) | ≤ 10 mA |
+
+> These are the IEC 60601-1 3rd edition limits. The much stricter 500 µA / 1000 µA figures still
+> widely quoted come from the **withdrawn 2nd edition**. Note also that earth leakage current is
+> measured *in* the protective earth conductor, so an open PE cannot be its single fault condition.
 
 **Applies to:** Class I equipment only (equipment with a PE connection).
 
@@ -93,8 +97,8 @@ This is why leakage current limits for CF (cardiac floating) applied parts are t
 | Type | Symbol Hint | Isolation | Example Devices |
 |---|---|---|---|
 | **B** (Body) | No F suffix | Connected to earth | Ultrasound transducers (body surface), physiotherapy equipment |
-| **BF** (Body Floating) | F = floating | Isolated from earth | ECG monitors (surface electrodes), pulse oximeters, NIBP cuffs |
-| **CF** (Cardiac Floating) | C = cardiac | Highest isolation | Defibrillators, intracardiac ECG, pacemaker programmers, cardiac catheter equipment |
+| **BF** (Body Floating) | F = floating | Isolated from earth | Pulse oximeter probes, NIBP cuffs, skin temperature probes — but **not** the ECG inputs on a patient monitor, which are CF. Read the symbol on the device label rather than assuming BF |
+| **CF** (Cardiac Floating) | C = cardiac | Highest isolation | Defibrillators, ECG and invasive-pressure inputs on patient monitors, intracardiac ECG, pacemaker programmers, cardiac catheter equipment |
 
 > **Rule of thumb:** If the applied part could provide a direct electrical pathway to the heart (even theoretically), it's CF.
 
@@ -106,8 +110,8 @@ This is why leakage current limits for CF (cardiac floating) applied parts are t
 |---|---|---|
 | **Purpose** | Design qualification (factory) | In-service testing (field) |
 | **Performed by** | Manufacturer / test lab | Clinical engineering department |
-| **Dielectric test** | 1500 V AC for 60 s | 500 V DC for 1 s (optional, after repair only) |
-| **Earth bond test current** | Up to 25 A | ≤ 200 mA |
+| **Insulation / dielectric testing** | Dielectric strength (hipot) test, e.g. 1500 V AC for 60 s | No dielectric strength test; an optional insulation resistance measurement at 500 V DC, read in MΩ |
+| **Earth bond test current** | The greater of 25 A and 1.5 × the highest rated current, for 5–10 s | **At least** 200 mA, from a source of no more than 24 V |
 | **Risk level** | Destructive to sensitive circuits | Safe for assembled equipment |
 
 **Key point:** IEC 62353 provides equivalent safety verification to IEC 60601-1 but at test levels that are safe for in-service equipment with sensitive electronics installed.
@@ -155,8 +159,8 @@ All three methods are accepted by IEC 62353. Most modern analysers (Fluke ESA615
 
 2. **Earth leakage current** (Class I only)
    - Measure in normal condition (NC)
-   - Measure in single fault condition (SFC: PE open)
-   - Limits: 500 µA (NC), 1000 µA (SFC)
+   - Measure in single fault condition (SFC: interruption of one supply conductor)
+   - Limits: 5 mA (NC), 10 mA (SFC) — IEC 60601-1 3rd edition
 
 3. **Enclosure leakage current**
    - Probe each accessible metal part

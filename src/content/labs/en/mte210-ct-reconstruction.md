@@ -38,7 +38,7 @@ This lab runs on a lab PC with **3D Slicer** and a desktop FDM **3D printer**. N
 
 1. Copy your exported slice stack onto the lab PC, keeping the whole stack in one empty folder.
 2. Confirm **3D Slicer** starts and that the 3D printer is powered, levelled, and loaded with filament.
-3. Note the **voxel spacing** recorded in the imaging lab — you will need it in Part 4.2, and the print comes out the wrong size without it.
+3. Have the **voxel spacing** you recorded in the imaging lab (Part 3.3) ready — you will need it in Part 4.2, and the print comes out the wrong size without it.
 
 ---
 
@@ -46,9 +46,9 @@ This lab runs on a lab PC with **3D Slicer** and a desktop FDM **3D printer**. N
 
 ### Part 4 — Export and Segmentation in 3D Slicer (45 min)
 
-**4.1 Export the volume.** In measureCT, export the reconstructed volume as a stack of slice images (use the **Volview** export / save-image option to generate the bmp slice series, or save the reconstructed slices to a folder). Save the whole stack into one empty folder.
+**4.1 Check your slice stack.** You exported the reconstructed volume at the end of the CT imaging lab (Part 3.3), so start by confirming the whole stack is on the lab PC in one empty folder and that the slices open. If you never exported it, or the stack is incomplete, go back to the measureCT PC and export it now: in measureCT, export the reconstructed volume as a stack of slice images (use the **Volview** export / save-image option to generate the bmp slice series, or save the reconstructed slices to a folder), and save the whole stack into one empty folder.
 
-**4.2 Import into 3D Slicer.** Open **3D Slicer** on the lab PC. Drag the folder of slice images into the Slicer window (or use *Add Data*), and load the series **as a volume / image stack**. Because the exported images carry no scale information, set the **voxel spacing manually**: this scan reconstructs at **0.096 mm per voxel** in all three directions. Correct spacing is what makes your final 3D print the right physical size.
+**4.2 Import into 3D Slicer.** Open **3D Slicer** on the lab PC. Drag the folder of slice images into the Slicer window (or use *Add Data*), and load the series **as a volume / image stack**. Because the exported images carry no scale information, set the **voxel spacing manually** to the value measureCT reported and you wrote down in the imaging lab (Part 3.3): with the geometry and binning used there that is the binned detector pitch over the magnification, 0.096 mm ÷ 1.2 = **0.080 mm per voxel** in all three directions. Use the figure measureCT reported rather than this one if the two disagree. Correct spacing is what makes your final 3D print the right physical size.
 
 **4.3 Segment the tooth.** Open the **Segment Editor** module.
 
@@ -69,13 +69,13 @@ This lab runs on a lab PC with **3D Slicer** and a desktop FDM **3D printer**. N
 
 **5.2** Orient the model for printing, add supports if needed, and slice with the settings recommended for your lab printer. A small layer height (e.g. 0.1–0.15 mm) captures fine detail on a small object like a tooth.
 
-**5.3** Print the tooth. You keep your print. While it prints, complete the review questions.
+**5.3** Start the print. A tooth at 0.1–0.15 mm layer height typically takes one to three hours — far longer than the rest of the session — so before you start it, agree with the lab supervisor who keeps an eye on the printer and when you can collect your print. Never leave it running with nobody present. While the first layers go down, complete the review questions. You keep your print.
 
 ---
 
 ### Part 6 — Review Questions (15 min)
 
-Answer in your lab notebook; you will discuss these with the group.
+Answer in your lab notebook; you will discuss them with the group and with the lab engineer.
 
 1. Explain the difference between **tube voltage (kV)** and **tube current (mA)** and how each affects image contrast, image noise, and dose.
 2. Why does the **number of projections** matter? What would you expect to see in the reconstruction if you used far fewer projections?
@@ -86,15 +86,13 @@ Answer in your lab notebook; you will discuss these with the group.
 
 ---
 
----
+## Approval
 
-## Lab Report Requirements
+You are approved in the lab once you can show and explain the following to the lab engineer:
 
-Submit a typed lab report by the date specified in the course schedule. The report must include:
+- The voxel spacing you set and where the value came from (Part 4.2), and your segmented tooth in 3D Slicer with the threshold you settled on (Part 4.3)
+- The exported STL, shown to be watertight, and the model prepared in the slicing software with its dimensions checked against your size estimate from the CT imaging lab (Parts 4.4 and 5.1)
+- Your print — finished or still running — and how orientation, supports and layer height were chosen (Parts 5.2 and 5.3)
+- Your answers to the review questions in Part 6, in your own words
 
-- A title page with your name, student number, course code (MTE210), and date
-- A description of your **3D Slicer segmentation** workflow, including your threshold choice and a screenshot of the 3D model
-- The **voxel spacing** you set and the final printed dimensions, with a comment on whether they matched
-- A photo of your finished 3D print
-- Written answers to the review questions (Part 6)
-- A brief conclusion (150–200 words) on post-processing: how acquisition and segmentation choices propagate into the printed object
+There is no written hand-in.

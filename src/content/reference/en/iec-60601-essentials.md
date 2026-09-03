@@ -48,7 +48,7 @@ An *applied part* is any part of a medical device that comes into intentional ph
 
 ## Leakage Current Limits
 
-Leakage currents are measured in specific configurations defined in the standard. The table below summarises the primary limits. All values are in microamperes (µA) and represent **r.m.s. values for AC, or steady-state for DC**.
+Leakage currents are measured in specific configurations defined in the standard. The table below summarises the primary limits. Values are in microamperes (µA) unless another unit is stated, and represent **r.m.s. values for AC, or steady-state for DC**.
 
 ### Earth Leakage Current (Protective Earth Current)
 
@@ -56,8 +56,10 @@ Current flowing from the mains part to the PE terminal. Applies to Class I equip
 
 | Condition | Limit |
 |---|---|
-| Normal condition (NC) | 500 µA |
-| Single fault condition (SFC) — open PE | 1000 µA |
+| Normal condition (NC) | 5 mA |
+| Single fault condition (SFC) — interruption of one supply conductor at a time | 10 mA |
+
+> The much stricter figures of 500 µA (NC) and 1000 µA (SFC) still widely quoted for earth leakage come from the **withdrawn 2nd edition** of IEC 60601-1. Note also that earth leakage current is measured *in* the protective earth conductor, so an open PE cannot be its single fault condition — the fault applied is interruption of one supply conductor (the neutral). Do not confuse the old 500 µA figure with the 500 µA *equipment leakage* limit of IEC 62353 either: that is a different measurement.
 
 ### Enclosure (Touch) Leakage Current
 
@@ -87,7 +89,7 @@ Current that flows between applied parts through the patient (without an externa
 | Type B / BF | 100 µA | 500 µA |
 | Type CF | **10 µA** | **50 µA** |
 
-> **Single fault conditions** include: open protective earth, open neutral, reversal of supply voltage polarity, any single component failure. The device must remain safe under these conditions.
+> **Single fault conditions** include: interruption of the protective earth conductor, interruption of one supply conductor (open neutral), and failure of any single component. The device must remain safe under these conditions. Reversal of mains polarity is *not* a single fault condition — it is a measurement condition: leakage is measured with both normal and reversed polarity, in normal condition as well as in single fault condition.
 
 ---
 
@@ -100,7 +102,7 @@ IEC 60601-1 Clause 8 defines requirements for **creepage distances**, **clearanc
 - Minimum distances depend on: rated voltage, pollution degree (typically PD2 for medical environments), material group of insulation (I, II, or IIIa/IIIb).
 - **Dielectric withstand test (hipot):** Applied voltage (e.g., 1500 V AC for 1 min for basic insulation at 250 V mains) must not cause breakdown or excessive leakage.
 
-For recurrent testing in the field, IEC 62353 provides reduced dielectric test voltages (500 V DC) that are safer to apply to assembled equipment without risk of damaging internal components.
+The dielectric withstand test is a type test carried out by the manufacturer. IEC 62353 does not repeat it in the field: where insulation has to be checked on assembled equipment, it describes an optional **insulation resistance** measurement at 500 V DC, whose result is a resistance in MΩ — not a leakage current, and not a high-voltage test.
 
 ---
 
@@ -110,15 +112,15 @@ The IEC 60601-2 series are *particular standards* that extend the general requir
 
 | Standard | Scope | Key Additional Requirements |
 |---|---|---|
-| **IEC 60601-2-4** | Cardiac defibrillators | Energy delivery accuracy (±15%), charge time (≤ 10 s), sync delay (≤ 60 ms), biphasic waveform parameters |
-| **IEC 60601-2-12** | Critical care ventilators | Essential performance during ventilation, alarms, disconnection detection, gas delivery accuracy |
+| **IEC 60601-2-4** | Cardiac defibrillators | Energy delivery accuracy (±15% or ±4 J, whichever is greater), charge time (≤ 10 s), sync delay (≤ 60 ms), biphasic waveform parameters |
+| **ISO 80601-2-12:2020** (replaced IEC 60601-2-12, which is withdrawn) | Critical care ventilators | Essential performance during ventilation, alarms, disconnection detection, gas delivery accuracy |
 | **IEC 60601-2-24** | Infusion pumps and controllers | Flow rate accuracy, occlusion detection, free-flow prevention, air-in-line detection |
 | **IEC 60601-2-25** | ECG equipment | Bandwidth (0.05–150 Hz diagnostic), CMRR (≥ 89 dB at 50/60 Hz), electrode polarisation tolerance |
 | **IEC 60601-2-27** | ECG monitoring equipment | Signal acquisition during defibrillation, pacemaker pulse detection/rejection |
 | **IEC 60601-2-34** | Invasive blood pressure monitoring | Pressure accuracy, zero drift, transducer isolation |
 | **IEC 60601-2-49** | Multi-function patient monitoring | Combinations of monitoring functions in one device |
 
-> When a particular standard exists for a device type, use it as the primary reference. The general standard (60601-1) fills in any gaps.
+> When a particular standard exists for a device type, use it as the primary reference. The general standard (60601-1) fills in any gaps. Some particular standards have moved to the joint ISO/IEC **80601-2-x** series — critical care ventilators are one — and they play exactly the same role.
 
 ---
 
@@ -128,17 +130,17 @@ The IEC 60601-2 series are *particular standards* that extend the general requir
 
 ### Why a Separate Standard?
 
-IEC 60601-1 tests (e.g., full dielectric withstand at 1500 V AC) are destructive if applied to equipment with sensitive electronics already installed. IEC 62353 provides equivalent safety verification at safer test levels.
+IEC 60601-1 tests (e.g., full dielectric withstand at 1500 V AC) are destructive if applied to equipment with sensitive electronics already installed. IEC 62353 provides equivalent safety verification at test levels that are safe for assembled equipment.
 
 ### Key Tests Defined in IEC 62353
 
 | Test | Method | Typical Limit |
 |---|---|---|
-| **Protective earth resistance** | Direct measurement, ≤ 200 mA test current | ≤ 0.3 Ω (Class I equipment) |
-| **Equipment leakage current (direct method)** | Measured between mains applied and accessible parts | Per 60601-1 SFC limits above |
-| **Equipment leakage current (alternative method)** | Uses supply voltage and measured resistance | Equivalent to direct method |
-| **Patient leakage current** | Measured from applied parts with mains isolated | Per applied-part type limits above |
-| **Dielectric withstand (after repair)** | 500 V DC for 1 s or equivalent | No breakdown, < 1 mA leakage |
+| **Protective earth resistance** | Direct measurement with a test current of **at least 200 mA** (source no more than 24 V) | ≤ 0.3 Ω for the whole path including the mains cord (Class I equipment) |
+| **Equipment leakage current (direct or differential method)** | Total leakage from the mains part to earth *and* to accessible parts, measured as one figure | ≤ 500 µA (Class I); ≤ 100 µA (Class II) |
+| **Equipment leakage current (alternative method)** | Supply voltage applied across the shorted mains part; the current to earth and accessible parts is measured | ≤ 1000 µA (Class I); ≤ 500 µA (Class II) — the alternative method is allowed higher values |
+| **Applied part leakage current** | Test voltage applied to the applied part; type F applied parts only | ≤ 50 µA (Type CF); ≤ 5000 µA (Type BF) |
+| **Insulation resistance (optional)** | 500 V DC between the shorted mains conductors and protective earth / enclosure / applied parts, equipment disconnected from the supply | A resistance, not a leakage current — e.g. ≥ 2 MΩ from the mains part to protective earth for Class I; IEC 62353 gives the full set of values |
 
 ### Test Intervals
 

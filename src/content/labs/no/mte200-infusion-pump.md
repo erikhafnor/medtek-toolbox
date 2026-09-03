@@ -21,7 +21,7 @@ Etter denne laboratorieøvelsen skal du være i stand til å:
 
 - Identifisere hovedkontrollene, indikatorene og sikkerhetsfunksjonene på B. Braun Infusomat Space (volumetrisk pumpe) og B. Braun Perfusor Space (sprøytepumpe)
 - Opprette testmaler på IDA-5 og betjene den for å måle strømningshastighet og okklusjonstrykk
-- Tolke resultater for strømningsnøyaktighet opp mot akseptkriteriene i IEC 60601-2-24
+- Tolke resultater for strømningsnøyaktighet opp mot leveringsnøyaktigheten produsenten oppgir, målt etter metoden i IEC 60601-2-24
 - Teste okklusjonstrykk-deteksjon og undersøke hvordan trykknivåer påvirker alarmoppførsel
 - Teste luft-i-slange-deteksjon og upstream-sensor-sikkerhetssystemene
 - Forstå anti-fritt-flyt-mekanismen og dens rolle for pasientsikkerheten
@@ -34,7 +34,8 @@ Etter denne laboratorieøvelsen skal du være i stand til å:
 
 - IDA-5 bruker presisjonssensorer — håndter forsiktig og følg oppsettsinstruksjonene nøyaktig.
 - Ikke demonter pumpemekanismen.
-- Rapporter eventuell skade på utstyr til veileder.
+- **Avlast okklusjonstrykket før du åpner slangen.** Etter en okklusjonstest kan slangen mellom pumpen og IDA-5 fortsatt stå på flere hundre mmHg — 487 mmHg er rundt 0,65 bar. Stopp pumpen, la IDA-5 fullføre okklusjonssteget, og kontroller at trykkavlesningen har falt tilbake til null før du bryter en luer-kobling. Står avlesningen fortsatt høyt, avlast trykket ned i et avfallsbeger med koblingen holdt lavt og vendt bort fra pumpene: bryt aldri en trykksatt kobling over nettdrevet utstyr. Klinisk går det samme innestengte volumet inn i pasienten som en ukontrollert bolus når okklusjonen løsner, og derfor krever IEC 60601-2-24 at bolusen som frigjøres ved okklusjonsutløsning måles og oppgis.
+- Rapporter eventuell skade på utstyr til labingeniøren.
 
 ---
 
@@ -50,14 +51,14 @@ Før du kobler til pumpene, opprett testmalene på IDA-5.
 
 | Steg | Type | Rate | Vol/Press | Tid | Tol % |
 |---|---|---|---|---|---|
-| 1 | Flow | 100 ml/h | 25 ml | 02:30 | 5 |
+| 1 | Flow | 100 ml/h | 25 ml | 15:00 | 5 |
 | 2 | Occlusion | 200 ml/h | 487 mmHg | 01:00 | 5 |
 
 **Sprøytepumpe (Perfusor Space) mal:**
 
 | Steg | Type | Rate | Vol/Press | Tid | Tol % |
 |---|---|---|---|---|---|
-| 1 | Flow | 100 ml/h | 25 ml | 02:30 | 5 |
+| 1 | Flow | 100 ml/h | 25 ml | 15:00 | 5 |
 | 2 | Occlusion | 200 ml/h | 487 mmHg | 01:00 | 5 |
 
 ### Pumpe- og slangeoppsett
@@ -65,7 +66,7 @@ Før du kobler til pumpene, opprett testmalene på IDA-5.
 1. Plasser B. Braun Infusomat Space (volumetrisk pumpe) og B. Braun Perfusor Space (sprøytepumpe) på arbeidsbenken eller IV-stativfestet. Inspiser husene for fysisk skade.
 2. Fyll slanger med deionisert vann. Prim IDA-5 og slangene i henhold til IDA-5-manualen (side 7).
 3. **Volumetrisk pumpe:** Sett inn et standard B. Braun IV-administrasjonssett i Infusomat Space i henhold til veiledningen på pumpedøren. Koble administrasjonssettet til en pose med deionisert vann. Heng posen minst 50 cm over pumpen. Koble utløpet til IDA-5 **kanal 1**.
-4. **Sprøytepumpe:** Forhåndsfyll («prim») en sprøyte med **15 ml** deionisert vann. Sett sprøyta inn i Perfusor Space. Koble sprøyteutløpet til IDA-5 **kanal 2**.
+4. **Sprøytepumpe:** Forhåndsfyll («prim») en **50 ml sprøyte med 50 ml** deionisert vann — bare strømningstesten bruker 5 ml til priming pluss de 25 ml den leverer, og okklusjonstesten i del 3.3 trenger væske i tillegg. Sett sprøyta inn i Perfusor Space og bekreft at pumpen har kjent igjen riktig sprøytetype og -størrelse. Koble sprøyteutløpet til IDA-5 **kanal 2**.
 5. Velg riktig mal på IDA-5: Template → Select template → Start → Skriv inn kontrollnummer.
 6. Etter start, prim med 5 ml til IDA-5 viser **Auto Start**. Klikk Auto Start, deretter start pumpen.
 7. **Volumetrisk pumpe-innstillinger:** totalt volum 250 ml, rate 100 ml/t.
@@ -76,12 +77,12 @@ Før du kobler til pumpene, opprett testmalene på IDA-5.
 
 ## Prosedyre
 
-### Del 1 — Bli kjent med kontroller og sikkerhetsfunksjoner (20 min)
+### Del 1 — Bli kjent med kontroller og sikkerhetsfunksjoner (15 min)
 
 **1.1** Bruk hurtigreferansene for begge pumpene til å finne og notere funksjonen til hvert av følgende elementer i labboken din:
 
 **Infusomat Space (volumetrisk pumpe):**
-- Innstilling av strømningshastighet (mL/h)
+- Innstilling av strømningshastighet (ml/t)
 - Innstilling av volum som skal infunderes (VTBI)
 - Start/stopp-knapp
 - Bolusknapp og bolusrateindikator
@@ -93,7 +94,7 @@ Før du kobler til pumpene, opprett testmalene på IDA-5.
 - Batteristatusindikator
 
 **Perfusor Space (sprøytepumpe):**
-- Innstilling av strømningshastighet (mL/h)
+- Innstilling av strømningshastighet (ml/t)
 - Innstilling av volum som skal infunderes (VTBI)
 - Start/stopp-knapp
 - Bolusknapp
@@ -107,37 +108,37 @@ Før du kobler til pumpene, opprett testmalene på IDA-5.
 
 ---
 
-### Del 2 — Test av strømningsnøyaktighet (60 min)
+### Del 2 — Test av strømningsnøyaktighet (50 min)
 
-Test strømningsnøyaktigheten ved hjelp av IDA-5-malene som ble opprettet under oppsettet. Malen kjører strømningstest ved 100 ml/h for 25 ml over 2 minutter og 30 sekunder med 5 % toleranse.
+Test strømningsnøyaktigheten ved hjelp av IDA-5-malene som ble opprettet under oppsettet. Malen kjører strømningstesten ved 100 ml/t for 25 ml, noe som tar 15 minutter (25 ml ÷ 100 ml/t = 0,25 t), med toleransefeltet i malen satt til 5 %.
 
-#### 2.1 Volumetrisk pumpe (Infusomat Space) — 100 mL/h
+#### 2.1 Volumetrisk pumpe (Infusomat Space) — 100 ml/t
 
 1. Bekreft at Infusomat Space er satt til **100 ml/t** med totalt volum **250 ml**.
 2. Velg malen for volumetrisk pumpe på IDA-5 kanal 1. Start malen og skriv inn kontrollnummeret.
 3. Prim med 5 ml til IDA-5 viser **Auto Start**. Klikk Auto Start, deretter start pumpen.
-4. La IDA-5-malen kjøre. Testen måler 25 ml ved 100 ml/t over 2:30.
+4. La IDA-5-malen kjøre. Testen måler 25 ml ved 100 ml/t over 15:00.
 5. Registrer strømningshastighetsresultatet fra IDA-5.
-6. **Akseptkriterium:** Gjennomsnittlig strømningshastighet innenfor ±5 % av innstilt hastighet (IEC 60601-2-24 §201.12.1). For 100 mL/h er akseptabelt område **95–105 mL/h**.
+6. **Akseptkriterium:** gjennomsnittlig strømningshastighet må ligge innenfor leveringsnøyaktigheten B. Braun oppgir for Infusomat Space med et B. Braun-administrasjonssett — **±5 %**, altså **95–105 ml/t** ved innstilt hastighet 100 ml/t. IEC 60601-2-24 §201.12.1 fastsetter ikke selv en tallgrense: standarden beskriver hvordan leveringsnøyaktigheten måles (oppstarts- og trompetkurver) og krever at produsenten oppgir verdien pumpen deretter vurderes mot.
 
-#### 2.2 Sprøytepumpe (Perfusor Space) — 100 mL/h
+#### 2.2 Sprøytepumpe (Perfusor Space) — 100 ml/t
 
-1. Bekreft at Perfusor Space-sprøyta er forhåndsfylt med **15 ml** deionisert vann og at pumpen er satt til **100 ml/t** med totalt volum **50 ml**.
+1. Bekreft at Perfusor Space-sprøyta er forhåndsfylt med **50 ml** deionisert vann og at pumpen er satt til **100 ml/t** med totalt volum **50 ml**.
 2. Velg malen for sprøytepumpe på IDA-5 kanal 2. Start malen og skriv inn kontrollnummeret.
 3. Prim med 5 ml til IDA-5 viser **Auto Start**. Klikk Auto Start, deretter start pumpen.
 4. La IDA-5-malen kjøre.
 5. Registrer strømningshastighetsresultatet fra IDA-5.
-6. **Akseptkriterium:** 95–105 mL/h (±5 %).
+6. **Akseptkriterium:** leveringsnøyaktigheten B. Braun oppgir for Perfusor Space, som du slår opp i de tekniske dataene — ikke gjenbruk ±5 % fra Infusomat Space, for de to pumpene er ikke oppgitt med samme verdi. Noter den oppgitte verdien ved siden av målingen din. IDA-5-malen flagger 5 % uansett hvilken pumpe det er, så godkjent/ikke godkjent-vurderingen må du gjøre selv.
 
 ---
 
-### Del 3 — Okklusjonstrykk-testing (45 min)
+### Del 3 — Okklusjonstrykk-testing (30 min)
 
-IDA-5-malens steg 2 kjører en okklusjonstest ved 200 ml/h med et mål på 487 mmHg. I denne delen skal du også utforske pumpens justerbare trykknivåer.
+IDA-5-malens steg 2 kjører en okklusjonstest ved 200 ml/t med et mål på 487 mmHg. I denne delen skal du også utforske pumpens justerbare trykknivåer.
 
 #### 3.1 IDA-5 okklusjonstest (volumetrisk pumpe)
 
-1. Etter at strømstesten i del 2.1 er fullført, går IDA-5-malen automatisk videre til okklusjonssteget.
+1. Etter at strømningstesten i del 2.1 er fullført, går IDA-5-malen automatisk videre til okklusjonssteget.
 2. Registrer:
    - Tid fra okklusjon til alarm (sekunder)
    - Trykk ved alarm (mmHg) — avlest fra IDA-5
@@ -158,12 +159,12 @@ IDA-5-malens steg 2 kjører en okklusjonstest ved 200 ml/h med et mål på 487 m
 
 ---
 
-### Del 4 — Testing av luft-i-slange-deteksjon (30 min)
+### Del 4 — Testing av luft-i-slange-deteksjon (20 min)
 
 Infusomat Space (volumetrisk pumpe) har en luft-i-slange-sensor. I denne delen skal du teste hvordan pumpen reagerer på ulike mengder luft i slangen.
 
 **Oppsett:**
-1. Koble infusjonssettet fra IDA-5.
+1. Kontroller at trykkavlesningen på IDA-5 har falt tilbake til null etter okklusjonstestene (se sikkerhetsmerknadene), og koble deretter infusjonssettet fra IDA-5.
 2. Monter et dryppesett under drypptelleren.
 3. Plasser den distale enden av slangen i et dryppekammer.
 
@@ -183,7 +184,7 @@ Infusomat Space (volumetrisk pumpe) har en luft-i-slange-sensor. I denne delen s
 
 ---
 
-### Del 5 — Testing av upstream-sensor (15 min)
+### Del 5 — Testing av upstream-sensor (10 min)
 
 Infusomat Space har også en **upstream-sensor** som detekterer trykkendringer på inngangssiden av pumpen.
 
@@ -193,11 +194,11 @@ Infusomat Space har også en **upstream-sensor** som detekterer trykkendringer p
 
 ---
 
-### Del 6 — Repetisjonsspørsmål (15 min)
+### Del 6 — Repetisjonsspørsmål (10 min)
 
-Besvar følgende spørsmål i labboken din:
+Besvar følgende spørsmål i labboken din — du går gjennom dem muntlig med labingeniøren når du skal godkjennes:
 
-1. IEC 60601-2-24 spesifiserer at strømningsnøyaktigheten skal være innenfor ±5 % av innstilt hastighet under stabile forhold. Hvorfor er strømningsnøyaktighet klinisk kritisk — gi et konkret eksempel på et legemiddel der ±5 % avvik har betydning.
+1. IEC 60601-2-24 fastsetter ikke selv en tallgrense for strømningsnøyaktighet: standarden beskriver målemetoden og krever at produsenten oppgir pumpens leveringsnøyaktighet. Hvorfor er strømningsnøyaktighet klinisk kritisk — gi et konkret eksempel på et legemiddel der 5 % avvik fra innstilt hastighet har betydning.
 
 2. Forklar «trompetkurve»-fenomenet i infusjonspumper. Hvorfor varierer strømningshastigheten mer ved lave innstilte hastigheter enn ved høye?
 
@@ -211,11 +212,12 @@ Besvar følgende spørsmål i labboken din:
 
 ---
 
-## Krav til labrapport
+## Godkjenning
 
-Lever en maskinskrevet labrapport innen fristen angitt i emneplanen. Rapporten må inneholde:
+Du blir godkjent i laben når du kan vise og forklare følgende for labingeniøren:
 
-- En forside med navn, studentnummer, emnekode og dato
-- En fullstendig resultattabell for alle målinger i del 2, 3, 4 og 5
-- Skriftlige svar på de seks repetisjonsspørsmålene (del 6)
-- En kort konklusjon (200–300 ord) som drøfter om pumpene oppfyller spesifikasjonene og de kliniske implikasjonene av funnene dine
+- Strømnings- og okklusjonsmålingene fra del 2.1, 2.2 og 3.1–3.3, lest opp fra labboken din, sammen med akseptkriteriet du vurderte hver pumpe mot og hvor den verdien kommer fra
+- Sikkerhetsfunksjonene i praksis: anti-fritt-flyt-klemmen (del 1.2), pumpens respons på små og store luftvolum (del 4.1–4.3) og trykkreduksjonsalarmen fra upstream-sensoren (del 5) — vist på utstyret eller forklart ved benken
+- Svarene dine på de seks repetisjonsspørsmålene i del 6, og klassifiseringen av anvendt del som du kom fram til i del 1.3
+
+Ingen skriftlig innlevering.

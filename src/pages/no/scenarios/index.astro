@@ -23,7 +23,7 @@ const scenarios = allScenarios
             class="block bg-white rounded-xl border border-gray-200 p-5 hover:border-blue-400 hover:shadow-md transition-all"
           >
             <div class="flex items-start justify-between gap-2 mb-2">
-              <DifficultyBadge level={entry.data.level} client:load />
+              <DifficultyBadge level={entry.data.level} locale="no" client:load />
               <span class="text-xs text-gray-400 font-medium">{entry.data.estimated_time}</span>
             </div>
             <p class="text-xs text-blue-600 font-medium mb-1">{entry.data.device}</p>
@@ -35,7 +35,7 @@ const scenarios = allScenarios
 
     {scenarios.length === 0 && (
       <div class="rounded-xl border border-gray-200 bg-gray-50 px-6 py-8 text-center text-gray-400 text-sm">
-        Ingen scenarioer ennå — sjekk tilbake snart.
+        Ingen scenarioer ennå — kom tilbake snart.
       </div>
     )}
   </div>

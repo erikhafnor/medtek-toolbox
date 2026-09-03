@@ -30,7 +30,7 @@ En volumetrisk infusjonspumpe bruker en peristaltisk mekanisme (lineær eller ro
 | Okklusjonsalarmtrykk | 100–900 mmHg (justerbar) | Høy terskel forsinker deteksjon av infiltrasjon eller frakobling |
 | Bolus ved okklusjonsutløsning | ≤ 0,5 mL (IEC 60601-2-24) | Ukontrollert bolus etter okklusjonsutløsning kan gi en toksisk dose |
 | Luft-i-slangen-deteksjon | ≤ 50 µL enkeltboble (typisk) | Store luftembolier risikerer cerebrale eller kardiale komplikasjoner |
-| Friflytsforebygging | Antisifonventil i settet | Gravitasjonsdrevet friflyt kan levere hele posen på minutter |
+| Friflytsforebygging | Antifriflytsklemme i pumpens dørmekanisme | Gravitasjonsdrevet friflyt kan levere hele posen på minutter; antisifonventilen i settet forhindrer bare sifonering, ikke gravitasjonsflyt gjennom et åpent sett |
 | Oppstartstid (trompettkurve) | Stabiliserer innenfor ±5 % på < 5 min | Forsinket oppstart påvirker tidskritiske legemidler |
 
 ---
@@ -42,7 +42,7 @@ En volumetrisk infusjonspumpe bruker en peristaltisk mekanisme (lineær eller ro
 | Hyppige falske okklusjonsalarmer | Slitt pumpemekanisme (finger-/rullerslitasje), feil innlasting av sett, knekket slange | Test med IDA-5 ved innstilte trykkgrenser; inspiser pumpefingre for slitasjespor | Bytt slitt pumpemekanisme; opplæring av personale i innlasting av sett |
 | Unøyaktig strømningshastighet (over- eller underinfusjon) | Slitasje i pumpemekanisme, feil settype, kalibreringsdrift | Mål strømningshastighet med IDA-5 ved lav (5 mL/t), middels (100 mL/t) og høy (500 mL/t) hastighet | Rekalibrer eller bytt pumpemekanisme; verifiser at riktig settype brukes |
 | Luft-i-slangen-alarm uten synlig luft | Forurenset ultralydsensor, sensorfeiljustering, mikrobobler i væsken | Rengjør sensor med lofri klut; test med IDA-5 luftdeteksjonsmodul; kontroller IV-væske for løst gass | Rengjør eller bytt sensor; avgass væsken; sjekk for lekkasjer oppstrøms |
-| Friflytshendelse | Svikt i antisifonventil i administrasjonssettet, dørinterlock forbigått | Test antisifonventilfunksjon; verifiser dørinterlockbryter | Bytt administrasjonssett; reparer dørinterlock; rapporter som sikkerhetshendelse |
+| Friflytshendelse | Svikt i antifriflytsklemmen (slitt eller korrodert klemmefjær), feil på dørinterlock, rulleklemme stod åpen ved settbytte | Med et væskefylt sett lastet: åpne døren og kontroller at slangen er fullstendig okkludert; lukk døren uten å starte pumpen og bekreft null gravitasjonsflyt; verifiser dørinterlockbryteren | Reparer eller bytt antifriflytsklemmemekanismen; reparer dørinterlock; rapporter som sikkerhetshendelse |
 | Medikamentbibliotekfeil / feil konsentrasjon | Utdatert medikamentbibliotek, manuell overstyring av sikkerhetsgrenser | Verifiser bibliotekversjon mot apotekets gjeldende godkjente versjon | Oppdater medikamentbibliotek; gjennomgå overstyringslogger med apoteket |
 
 ---

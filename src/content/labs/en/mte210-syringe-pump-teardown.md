@@ -9,6 +9,9 @@ equipment:
   - "Torx driver set (T6, T8, T10, T20) and a torque screwdriver"
   - "Digital multimeter (DMM)"
   - "Two-channel oscilloscope with ×10 probes"
+  - "Fluke ESA615 electrical safety analyser, within its calibration period"
+  - "Vernier calipers or a steel rule for creepage and clearance measurement"
+  - "50 mL syringe filled with water — the pump will not run without a syringe loaded and size-detected"
   - "Camera or phone for documentation"
 prerequisites:
   - "Alaris CC Syringe Pump Technical Service Manual (1000SM00001) and Directions for Use (DFU)"
@@ -20,7 +23,7 @@ checklist:
   - title: "Before you dive in"
     items:
       - "Read the whole thing once. Big picture: a real infusion pump is a stack of EU MDR requirements made physical — you'll take it apart, prove each piece exists to satisfy a rule, put it back, and prove it's still safe."
-      - "Two power sources bite back here — mains *and* a battery. Switch off, pull the battery first, then unplug the mains."
+      - "Two power sources bite back here — mains *and* a battery. Switch off, unplug the mains first, then take the battery out."
   - title: "4.1 — Know what you're holding"
     items:
       - "Read the rating label like a detective: model, serial, and all those little symbols."
@@ -43,7 +46,7 @@ checklist:
       - "Power on and let it pass its own self-test. If it sulks, you missed a cable."
   - title: "4.6 — Watch it think (on battery)"
     items:
-      - "Scope the motor, the pressure sensor and the alarm while it runs on battery — safe, because there's no mains lurking inside."
+      - "Scope the motor, the pressure sensor and the alarm while it runs on battery — safer than mains, but the backlight inverter and the PSU primary side are still live."
   - title: "4.7 — Earn the right to use it again"
     items:
       - "Run the IEC 62353 test with a *calibrated* analyser, then write the service record — that's ISO 13485 in the flesh."
@@ -51,8 +54,8 @@ checklist:
   - title: "Wrap up"
     items:
       - "Answer the review questions — they tie what your hands did back to the rules behind it."
-      - "Hand in your tables, photos, the service record and a short reflection."
-duration: "2 hours 45 minutes"
+      - "Show your tables, photos and the service record to the lab engineer and talk them through — that is how you get approved, on the spot."
+duration: "6 hours"
 ---
 
 This lab uses a real infusion device as a lens on the **regulatory system** that lets it reach a patient. In the EU, a manufacturer may CE-mark and sell this pump only by (a) meeting the **General Safety and Performance Requirements (GSPRs)** of **EU MDR 2017/745**, Annex I, (b) doing so inside a certified **ISO 13485** quality management system, and (c) typically demonstrating it with **harmonised standards** (IEC 60601-1, IEC 60601-2-24, IEC 60601-1-8, …) that grant a *presumption of conformity*. After the device is in service, **ISO 13485** servicing and **IEC 62353** recurrent/after-repair testing keep it safe. You will see all of this in the hardware.
@@ -76,7 +79,7 @@ By the end of this lab you will be able to:
 
 > **MAINS AND STORED-ENERGY HAZARD.** This pump runs from the mains and from an internal battery. The switched-mode power supply has a mains **primary** side whose capacitors can hold a charge **after** the mains lead is removed. The service manual gives **no** discharge time — treat the primary side and any large capacitor as live until proven otherwise. An electric-shock hazard exists whenever the casing is open (service manual p.6).
 
-- **2.1 Isolate first, battery first.** Switch the pump OFF, remove the **battery before anything else** (battery cover = two screws), *then* disconnect the mains lead. Removing the internal source first de-energises the pump before you open it.
+- **2.1 Isolate first, mains first.** Switch the pump OFF, **disconnect the mains lead first**, and only then remove the battery (battery cover = two screws). While the mains lead is connected the pump is still fully energised and the PSU primary side sits at mains potential, so the external supply always comes off before the internal one. Leave the pump standing for at least 5 minutes after unplugging before you open the case — and still treat the primary side and any large capacitor as charged (§2.2).
 - **2.2 Treat the PSU primary side and capacitors as charged.** Do not probe the mains inlet, fuse holder or PSU primary side on a reassembled, recently-powered pump. All electrical-safety measurements in §4.4 are made with the pump **de-energised and open**.
 - **2.3 No live or leakage measurements during disassembly.** The only powered work is the post-reassembly oscilloscope captures (§4.6, on **battery only**) and the IEC 62353 test (§4.7) — both on a reassembled pump and both only with the supervising technician's authorisation.
 - **2.4 ESD precautions.** Wear the wrist strap and work on the ESD mat at all times — the PCBs are static-sensitive (service manual p.6, p.47). The PCBs are **non-serviceable**: never attempt board-level repair or touch component leads. Do not touch or short the soldered backup cell on the Control PCB.
@@ -92,7 +95,7 @@ By the end of this lab you will be able to:
 2. **3.2** Collect tools: **Torx T6/T8/T10/T20** drivers, a **torque screwdriver** (cNm/Nm), DMM, oscilloscope with ×10 probes, and the Fluke **ESA615** — and note the ESA615's **calibration due date** (you will need it for the service record in §4.7).
 3. **3.3** Have the **Technical Service Manual (1000SM00001)** and the **DFU** open. You will refer to the exploded views (Corrective Maintenance, p.47–78) and the torque guide (p.91–92) throughout.
 4. **3.4 Baseline functional check (before teardown).** With the technician's authorisation, power the pump on and confirm it completes its **power-on self-test** without errors, runs on battery, and sounds an alarm. Record the result — you will compare against it after reassembly. *A pump must be shown to work before you take it apart, or post-repair verification proves nothing.*
-5. **3.5** Switch OFF, **remove the battery**, then disconnect the mains lead before starting §4.2.
+5. **3.5** Switch OFF, **disconnect the mains lead**, then remove the battery before starting §4.2 (order as in §2.1).
 
 ---
 
@@ -133,11 +136,11 @@ Working from the rating label, the serial/status label and the DFU, complete the
 
 ### 4.2 Safe disassembly & parts inventory (70 min)
 
-> Confirm the battery is **out** and the mains lead is **disconnected** before you begin. Photograph every stage.
+> Confirm the mains lead is **disconnected** and the battery is **out** before you begin. Photograph every stage.
 
 **Disassembly sequence** (service manual Corrective Maintenance chapter, p.47; disassembly steps from p.48 — follow the exploded views):
 
-1. **4.2.1** Confirm OFF, battery removed (2 battery-cover screws), mains disconnected. Fit the pump into the support cradle if available.
+1. **4.2.1** Confirm OFF, mains disconnected, then battery removed (2 battery-cover screws). Fit the pump into the support cradle if available.
 2. **4.2.2** Remove the **six main-case screws** (T20).
 3. **4.2.3 CC only:** prise out the pressure-transducer **blanking plug / disc-holder cap** and remove its securing screw (p.48).
 4. **4.2.4** Carefully separate the front and rear case halves; **photograph the cable routing before disconnecting** any connector.
@@ -193,18 +196,18 @@ This is the core intellectual task. The MDR's **GSPRs (Annex I)** say *what* mus
 
 ### 4.4 Electrical-safety measurements — DMM (de-energised) (45 min)
 
-> **Pump must be OPEN, battery OUT, mains DISCONNECTED.** These are all dead-circuit measurements. Do not power the pump in this part.
+> **Pump must be OPEN, mains DISCONNECTED, battery OUT.** These are all dead-circuit measurements. Do not power the pump in this part.
 
 | # | Measurement | Method | Acceptance criterion | Reading | Pass/Fail |
 |---|---|---|---|---|---|
-| 4.4.1 | Protective-earth bonding: mains-inlet earth pin → chassis / PE stud | DMM continuity (Ω) | IEC 60601-1 **§8.6.4**: ≤ **0.1 Ω** PE terminal→earthed parts (no cord); ≤ **0.2 Ω** with a detachable cord. IEC 62353: ≤ **0.3 Ω** (incl. mains cord) | | |
+| 4.4.1 | Protective-earth bonding: mains-inlet earth pin → chassis / PE stud | DMM continuity (Ω) | IEC 60601-1 **§8.6.4** (type test: 25 A for 5–10 s from a source ≤ 6 V): ≤ **0.1 Ω** from the appliance-inlet earth pin to any protectively earthed part, cord *excluded*; ≤ **0.2 Ω** from the mains-plug earth pin where the supply cord is **non-detachable**. IEC 62353: ≤ **0.3 Ω** (incl. mains cord). A DMM cannot reproduce the 25 A test — null your lead resistance first and treat the reading as indicative | | |
 | 4.4.2 | Mains fuse continuity + printed rating | DMM continuity; read fuse body | Continuity ≈ 0 Ω; rating matches label (**T 1.25 A**) | | |
 | 4.4.3 | Battery pack open-circuit voltage | DMM DC volts at pack terminals | **7.2 V** nominal (6 × 1.2 V); typically ≈ 8.0–8.4 V charged (manual cal example ≈ 8.21 V, p.21) | | |
 | 4.4.4 | Creepage distance, mains **primary ↔ secondary** on the PSU/Power PCB | Calipers / ruler | Teaching target ≈ **8 mm** for 2× MOPP at ~250 V (IEC 60601-1 §8.9, MOPP Tables 13–16) | | |
 | 4.4.5 | Air clearance, mains **primary ↔ secondary** | Calipers / ruler | Teaching target ≈ **5 mm** for 2× MOPP at ~250 V (§8.9) | | |
 | 4.4.6 | Continuity of L and N from mains inlet to PSU input | DMM continuity | Continuous; no breaks | | |
 
-**Questions to consider:** Your protective-earth reading — does it pass the **IEC 60601-1 type-test** limit, the **IEC 62353 recurrent-test** limit, or both? Why are the two limits different? (The 62353 0.3 Ω limit is for the path *including* the mains cord.) How does a larger creepage distance deliver a higher *means of protection* (MOOP vs MOPP)?
+**Questions to consider:** Your protective-earth reading — does it pass the **IEC 60601-1 type-test** limit, the **IEC 62353 recurrent-test** limit, or both? Why are the two limits different? (The 62353 0.3 Ω limit is for the path *including* the mains cord.) And why can a DMM give you no more than an indication against the 60601-1 figure? How does a larger creepage distance deliver a higher *means of protection* (MOOP vs MOPP)?
 
 ---
 
@@ -241,7 +244,7 @@ Reassemble the pump **to the manufacturer's torque specification** (service manu
 
 ### 4.6 Signal measurements — oscilloscope, on battery (40 min)
 
-> **Authorised, battery-only.** With the technician's authorisation, run the reassembled pump on its **internal battery (mains lead disconnected)**. Because the mains primary is now absent, all internal nodes are SELV/low-energy. Probe only the points the technician indicates.
+> **Authorised, battery-only.** With the technician's authorisation, run the reassembled pump on its **internal battery (mains lead disconnected)**. Running on battery removes the mains supply, but it does **not** make the whole pump low-energy: the PSU primary-side capacitors can still hold a charge (§2.2), and the **CCFL backlight inverter runs off the battery and develops several hundred volts AC** at the lamp connector and its leads. Treat the PSU primary side and the backlight inverter as live at all times, and probe only the points the technician indicates.
 
 | # | Signal | How to capture | What a healthy trace looks like | Observation |
 |---|---|---|---|---|
@@ -252,7 +255,7 @@ Reassemble the pump **to the manufacturer's torque specification** (service manu
 
 Record your scope settings (V/div, time/div) for each capture.
 
-**Questions to consider:** From the stepper-drive trace, how does the pump achieve a smooth, accurate low flow rate from discrete motor steps (link this to **GSPR 21.1** delivery accuracy)? Why is it safe to take these captures on battery but **not** with the mains lead connected and the case open?
+**Questions to consider:** From the stepper-drive trace, how does the pump achieve a smooth, accurate low flow rate from discrete motor steps (link this to **GSPR 21.1** delivery accuracy)? Why is battery-only operation safer for these captures than running with the mains lead connected — and which nodes inside the pump are still hazardous even on battery?
 
 ---
 
@@ -296,14 +299,13 @@ Opening the enclosure disturbs the pump's means of protection (PE bond, insulati
 
 ---
 
-## 5. What to submit
+## 5. Approval
 
-Submit a typed lab report by the date specified in the course schedule. The report must include:
+You are approved in the lab once you can show and explain the following to the lab engineer:
 
-- A title page with your name, student number, course code, and date.
-- The completed **classification table** (§4.1), **parts-inventory table** (§4.2), and **GSPR→standard mapping table** (§4.3).
-- The completed **measurement tables** from §4.4, §4.6 and §4.7, with pass/fail status and your recorded scope settings/traces.
-- The completed **service record** (§4.7.1) and the **torque-spec reassembly record** (§4.5).
-- **Photographs** documenting the disassembly stages and the laid-out parts inventory.
-- Written answers to the six review questions (§4.8).
-- A brief conclusion (200–300 words) on how the Alaris CC demonstrates conformity with **EU MDR 2017/745** through **ISO 13485** processes and harmonised standards — and why a post-repair **IEC 62353** test is mandatory after the enclosure has been opened.
+- Your completed tables: the classification table (§4.1), the parts inventory (§4.2), the GSPR → harmonised-standard mapping (§4.3), the dead-circuit DMM readings (§4.4) and the scope captures with the settings you used (§4.6)
+- The pump itself: reassembled to the torque figures you recorded (§4.5.2) and passing its power-on self-test and functional verification (§4.5.4), with your disassembly photos (§4.2) to walk through how you got there
+- The IEC 62353 results and the service record (§4.7, §4.7.1): which means of protection your teardown disturbed, why the retest is mandatory before the pump goes back into use, and why the ESA615 has to be calibrated
+- Your answers to the six review questions (§4.8) and to §4.3.1 and §4.3.2, from your lab notebook and in your own words
+
+There is no written hand-in.

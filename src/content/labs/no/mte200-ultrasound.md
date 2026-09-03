@@ -2,12 +2,12 @@
 title: "Ultralydlab"
 course: "MTE200"
 shortTitle: "Ultralyd"
-description: "Ultralydundersøkelse, IHE Scheduled Workflow i et simulert klinisk IT-system og ytelsestesting med ultralyd-fantom"
+description: "Ultralydundersøkelse, IHE Scheduled Workflow i et simulert klinisk IT-system og ytelsestesting med ultralydfantom"
 equipment:
-  - "GE Logic S8"
-  - "Kyoto Kagaku N-365 ultralyd-fantom"
+  - "GE LOGIQ S8"
+  - "Kyoto Kagaku N-365 ultralydfantom"
 prerequisites:
-  - "Service- og brukermanual for GE Logic S8"
+  - "Service- og brukermanual for GE LOGIQ S8"
   - "Brukermanual for Kyoto Kagaku N-365 fantom"
   - "Springer Handbook of Medical Technology kapittel 17 (Ultralyddiagnostikk)"
   - "Forelesningsnotater om ultralyd"
@@ -20,8 +20,8 @@ Etter denne laboratorieøvelsen skal du være i stand til å:
 
 - Utføre en ultralydundersøkelse med optimaliserte bildeinnstillinger, målinger og analyse
 - Dokumentere undersøkelser fra bildemodaliteter (ultralyd, røntgen, MR, CT osv.) i et simulert klinisk IT-system ved hjelp av IHE Scheduled Workflow (SWF)-standarden
-- Registrere en pasient i et sykehusinformasjonssystem, sende HL7-meldinger, spørre arbeidsliste, ta bilder, lagre til PACS og verifisere i en DICOM-viewer
-- Utføre en ytelsestest av et ultralydapparat ved hjelp av et ultralyd-fantom og tolke resultatene
+- Registrere en pasient i et sykehusinformasjonssystem, sende HL7-meldinger, hente arbeidslisten fra RIS, ta opp bilder, lagre dem i PACS og verifisere dem i en DICOM-viewer
+- Utføre en ytelsestest av et ultralydapparat ved hjelp av et ultralydfantom og tolke resultatene
 - Forklare vanlige innstillinger for optimalisering av ultralydbilder og probebetegnelser
 
 ---
@@ -34,43 +34,45 @@ Etter denne laboratorieøvelsen skal du være i stand til å:
 - Ultralydgel må alltid påføres mellom proben og fantomoverflaten før skanning.
 - Ikke slipp, slå eller påfør overdrevent trykk på probene.
 - Rengjør probene etter bruk i henhold til produsentens instruksjoner.
+- Det er frivillig å la seg skanne, og samtykket kan trekkes tilbake når som helst.
+- Bilder som tas av en person i denne labben, tolkes som ikke-gyldige helsedata og skal ikke brukes til diagnostikk på noen måte.
 
 ---
 
 ## Oppsett av utstyr
 
 1. Slå på lab-PC-en og kontroller at HAPI Testpanel (HIS), DCM4CHE (RIS/PACS) og OHIF-viewer (DICOM-viewer) er tilgjengelige.
-2. Slå på GE Logic S8 og la den fullføre oppstartssekvensen.
-3. Plasser Kyoto Kagaku N-365 ultralyd-fantomet på arbeidsbenken. Påse at det er i romtemperatur og ikke har vært utsatt for direkte sollys eller ekstrem varme.
+2. Slå på GE LOGIQ S8 og la den fullføre oppstartssekvensen.
+3. Plasser Kyoto Kagaku N-365 ultralydfantomet på arbeidsbenken. Påse at det er i romtemperatur og ikke har vært utsatt for direkte sollys eller ekstrem varme.
 4. Påfør et raust lag med ultralydgel på skanneoverflaten på fantomet før du plasserer noen probe på det.
-5. Velg en probe på GE Logic S8 og bekreft at apparatet er i bildemodus.
+5. Velg en probe på GE LOGIQ S8 og bekreft at apparatet er i bildemodus.
 
 ---
 
 ## Prosedyre
 
-### Del 1 — IHE Scheduled Workflow (SWF) (45 min)
+### Del 1 — IHE Scheduled Workflow (SWF) (30 min)
 
 UiS medtek-labben har følgende komponenter som sammen utgjør et simulert helse-IT-system:
 
 - **HAPI Testpanel** — Sykehusinformasjonssystem (HIS)
 - **DCM4CHE** — Radiologisk informasjonssystem (RIS) / Picture Archiving and Communication System (PACS)
-- **GE Logic S8** — Modalitet
+- **GE LOGIQ S8** — Modalitet
 - **OHIF-viewer** — Arbeidsstasjon (DICOM-viewer)
 
 IHE Scheduled Workflow (SWF)-integrasjonsprofilen definerer hvordan disse systemene kommuniserer for å håndtere pasientundersøkelser fra rekvisisjon til bildegransking. Du skal følge denne arbeidsflyten steg for steg.
 
 **1.1** Åpne HIS (HAPI Testpanel) på lab-PC-en. Registrer pasientopplysningene fra HL7-filen som er tilgjengelig på Canvas. Send HL7-meldingen til RIS (DCM4CHE).
 
-**1.2** På GE Logic S8, spør RIS etter dagens arbeidsliste. Finn pasienten du registrerte i HIS. Start undersøkelsen fra arbeidslisten.
+**1.2** På GE LOGIQ S8 henter du dagens arbeidsliste fra RIS. Finn pasienten du registrerte i HIS, og start undersøkelsen fra arbeidslisten.
 
 **1.3** Dokumenter SWF-arbeidsflyten du følgte i labboken. Tegn et diagram som viser dataflyten mellom HIS, RIS, Modalitet, PACS og Arbeidsstasjon. For hvert steg, noter kommunikasjonsstandarden som brukes (HL7, DICOM Worklist, DICOM Store, DICOM Query/Retrieve).
 
 ---
 
-### Del 2 — Ytelsestest med fantom (75 min)
+### Del 2 — Ytelsestest med fantom (70 min)
 
-Utfør en ytelsestest av ultralydapparatets prober ved å følge alle testene beskrevet i brukermanualen for Kyoto Kagaku N-365-fantomet. Bruk kapittel 2 i brukermanualen for GE Logic S8 for å se hvordan du optimaliserer bildeinnstillingene. Ta bilder under hver test for å dokumentere resultatene og for å spore endringer over tid.
+Utfør en ytelsestest av ultralydapparatets prober ved å følge alle testene beskrevet i brukermanualen for Kyoto Kagaku N-365-fantomet. Bruk kapittel 2 i brukermanualen for GE LOGIQ S8 for å se hvordan du optimaliserer bildeinnstillingene. Ta bilder under hver test for å dokumentere resultatene og for å spore endringer over tid.
 
 #### 2.1 Aksial oppløsning
 
@@ -104,8 +106,8 @@ Utfør en ytelsestest av ultralydapparatets prober ved å følge alle testene be
 #### 2.5 Måling av intervaller på strengmål
 
 1. Finn «strengmålene» i fantomet.
-2. Mål intervallene mellom målene ved hjelp av målemarkørfunksjonen på GE Logic S8.
-3. Sammenlign dine målte verdier med fantomspesifikasjonene.
+2. Mål intervallene mellom målene ved hjelp av målemarkørfunksjonen på GE LOGIQ S8.
+3. Sammenlign de målte verdiene med fantomspesifikasjonene. En måling er godkjent når den ligger innenfor ±1 mm eller ±1 % av oppgitt avstand mellom målene — det som er størst. Marker mål som faller utenfor, og meld fra om dem til labingeniøren når du legger fram resultatene.
 4. Registrer alle verdier og avvik i en tabell.
 5. Ta og lagre bilder med målinger synlige.
 
@@ -113,19 +115,19 @@ Utfør en ytelsestest av ultralydapparatets prober ved å følge alle testene be
 
 ### Del 3 — Lagre undersøkelse og verifiser i PACS (15 min)
 
-**3.1** På GE Logic S8, avslutt og lagre ultralydundersøkelsen. Send undersøkelsen til PACS (DCM4CHE).
+**3.1** På GE LOGIQ S8, avslutt og lagre ultralydundersøkelsen. Send undersøkelsen til PACS (DCM4CHE).
 
-**3.2** Åpne DICOM-vieweren (OHIF-viewer) på lab-PC-en og spør PACS. Verifiser at undersøkelsen er mottatt og at alle bilder er til stede og kan vises.
+**3.2** Åpne DICOM-vieweren (OHIF-viewer) på lab-PC-en og søk i PACS. Verifiser at undersøkelsen er mottatt og at alle bilder er til stede og kan vises.
 
-**3.3** Ta et skjermbilde av undersøkelsen vist i OHIF-vieweren til labrapporten din.
+**3.3** Ta et skjermbilde av undersøkelsen slik den vises i OHIF-vieweren, og ta vare på det i labboken — du skal vise det til labingeniøren når du legger fram resultatene.
 
 ---
 
-### Del 4 — Begrenset funksjonstest (30 min)
+### Del 4 — Begrenset funksjonstest (20 min)
 
-**4.1** Start en ny undersøkelse på GE Logic S8. Utfør en begrenset funksjonstest som beskrevet i servicemanualen, seksjon 4.3.6.1 til 4.3.6.7. Registrer resultatene av hver test i labboken din.
+**4.1** Start en ny undersøkelse på GE LOGIQ S8. Utfør en begrenset funksjonstest som beskrevet i servicemanualen, seksjon 4.3.6.1 til 4.3.6.7. Registrer resultatene av hver test i labboken din.
 
-**4.2** Valgfritt: bruk en frivillig i gruppen som pasient. Utfør en skanning av arteria carotis eller arteria radialis, og øv på bildeoptimaliseringsteknikkene fra del 2. Lagre undersøkelsen og send til PACS.
+**4.2** Valgfritt: ett medlem av gruppen kan stille som forsøksperson — les sikkerhetsmerknadene før du starter. Tørk av all fantomgel, rengjør probeflaten og kabelen etter produsentens anvisninger, og påfør ny ultralydgel før proben settes mot hud. Skann arteria carotis eller arteria radialis, og øv på bildeoptimaliseringsteknikkene fra del 2. Følg ALARA-prinsippet: bruk lavest mulig akustisk utgangseffekt som fortsatt gir et brukbart bilde, hold MI- og TI-verdiene som vises på skjermen, så lave som bildet tillater, og hold skanningen kort. Lagre undersøkelsen på testpasienten du registrerte i del 1 — aldri under forsøkspersonens eget navn — og be labingeniøren slette den fra PACS før du forlater laben.
 
 ---
 
@@ -148,14 +150,13 @@ Besvar følgende spørsmål i labboken din. Du vil diskutere svarene med gruppen
 
 ---
 
-## Krav til labrapport
+## Godkjenning
 
-Lever en maskinskrevet labrapport innen fristen angitt i emneplanen. Rapporten må inneholde:
+Du blir godkjent i laben når du kan vise og forklare følgende for labingeniøren:
 
-- En forside med navn, studentnummer, emnekode og dato
-- Et SWF-arbeidsflytdiagram med dokumentasjon av hvert steg og kommunikasjonsstandarden som ble brukt
-- Fullstendige måletabeller for alle ytelsestester med fantom (del 2.1–2.5) med sammenligning mot fantomspesifikasjoner
-- DICOM-skjermbilder fra OHIF-vieweren som viser den lagrede undersøkelsen
-- Resultater fra den begrensede funksjonstesten (del 4)
-- Skriftlige svar på repetisjonsspørsmålene (del 5)
-- En kort konklusjon (200–300 ord) som drøfter tilstanden til ultralydapparatet basert på testene dine og verdien av IHE SWF-arbeidsflyten i klinisk praksis
+- Måletabellene fra ytelsestesten med fantom (del 2.1–2.5), med avvikene du har ført opp, og for strengmålene i 2.5 om hver måling ligger innenfor kravet på ±1 mm / ±1 %
+- SWF-diagrammet fra del 1.3 og den lagrede undersøkelsen åpnet i OHIF-vieweren (del 3), slik at du kan følge pasienten fra HIS via RIS og modalitet til PACS
+- Resultatene fra den begrensede funksjonstesten i del 4.1
+- Svarene dine på repetisjonsspørsmålene i del 5
+
+Ingen skriftlig innlevering.

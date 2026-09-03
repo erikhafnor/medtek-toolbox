@@ -12,10 +12,10 @@ const labsByCourse = courses.reduce<Record<string, typeof labs>>((acc, course) =
 }, {});
 ---
 
-<BaseLayout title="Labøvelser">
+<BaseLayout title="Laboppgaver">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <h1 class="text-3xl font-bold text-gray-900 mb-2">Labøvelser</h1>
-    <p class="text-gray-500 mb-10">Praktiske laboratorieøvelser for klinisk ingeniørfag.</p>
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Laboppgaver</h1>
+    <p class="text-gray-500 mb-10">Praktiske laboratorieoppgaver for emnene i klinisk ingeniørarbeid.</p>
 
     {courses.map((course) => {
       const courseLabs = labsByCourse[course];
@@ -57,7 +57,7 @@ const labsByCourse = courses.reduce<Record<string, typeof labs>>((acc, course) =
 
     {labs.length === 0 && (
       <div class="rounded-xl border border-gray-200 bg-gray-50 px-6 py-8 text-center text-gray-400 text-sm">
-        Ingen labøvelser ennå — sjekk tilbake snart.
+        Ingen laboppgaver ennå — kom tilbake snart.
       </div>
     )}
   </div>

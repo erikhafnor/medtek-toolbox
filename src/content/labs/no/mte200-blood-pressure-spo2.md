@@ -5,8 +5,12 @@ shortTitle: "Blodtrykk & SpO₂"
 description: "Ikke-invasiv blodtrykksmåling, pulsoksymetriovervåking og prinsipper for invasiv blodtrykksmåling"
 equipment:
   - "LIFEPAK 15 (Stryker/Physio-Control)"
+  - "NIBP-mansjett for voksne med slange og SpO2-fingersensor til LIFEPAK 15"
+  - "Fluke ProSim 8 Vital Signs and ECG Patient Simulator (statisk trykkreferanse for NIBP)"
+  - "Enveis håndpumpe med tømmeventil"
 prerequisites:
   - "LIFEPAK 15 brukermanualdokumentasjon"
+  - "LIFEPAK 15 Performance Inspection Procedure (PIP) fra utstyrsregisteret"
   - "Forelesningsnotater om hemodynamisk overvåking"
 duration: "2,5 timer"
 ---
@@ -17,7 +21,7 @@ Etter denne labøvelsen skal du kunne:
 
 - Utføre ikke-invasiv blodtrykksmåling (NIBP) og oksygenmetningsmåling (SpO2) med LIFEPAK 15
 - Identifisere måleprinsippet LIFEPAK 15 bruker for NIBP og forklare virkemåten
-- Gjennomføre en NIBP-kalibreringskontroll iht. prosedyren for periodisk vedlikehold (PIP)
+- Gjennomføre en NIBP-kalibreringskontroll etter Performance Inspection Procedure (PIP)
 - Kvantifisere det hydrostatiske bidraget til blodtrykksavlesninger forårsaket av armposisjon i forhold til hjertet
 - Tolke en pletysmografikurve og forklare effekten av mansjettoppblåsing på kontinuerlig SpO2-overvåking
 - Beskrive komponentene og prinsippene for invasiv arteriell blodtrykksovervåking
@@ -31,14 +35,18 @@ Etter denne labøvelsen skal du kunne:
 - Det er frivillig å utføre målinger på deg selv.
 - Målinger utenfor normalområdet skal ikke brukes til diagnostikk på noen måte.
 - Alle målinger som utføres tolkes som ikke-gyldige helsedata.
+- Legg aldri NIBP-mansjetten på en arm med venekanyle eller infusjon, dialysefistel eller shunt, skade eller hudlidelse, og aldri på samme arm som en annen mansjett som blir blåst opp.
+- Begrens antall målinger etter hverandre på samme arm, og la det gå minst ett minutt mellom hver måling. Gjentatt eller langvarig oppblåsing kan gi venestuvning, petekkier, blåmerker og nervekompresjon.
+- Den som har mansjetten på, bestemmer når en måling avsluttes. Avbryt og tøm mansjetten umiddelbart hvis vedkommende melder om smerte, nummenhet eller prikking.
+- Rapporter skade på utstyret eller uventet oppførsel til veiledende tekniker.
 
 ---
 
 ## Prosedyre
 
-Studentene må skrive en løpende protokoll under labarbeidet slik at de kan reprodusere resultatene etter oppgaven og få den godkjent i laben.
+Før en løpende protokoll i labnotatboken under labarbeidet, slik at du kan reprodusere resultatene og legge dem fram for labingeniøren for godkjenning.
 
-### Del 1 — Ikke-invasivt blodtrykk og pulsoksymetri
+### Del 1 — Ikke-invasivt blodtrykk og pulsoksymetri (75 min)
 
 For å måle kroppens arterielle blodtrykk og oksygenmetning bruker vi LIFEPAK 15, som er en defibrillator men også har multimonitorfunksjoner.
 
@@ -46,7 +54,9 @@ For å måle kroppens arterielle blodtrykk og oksygenmetning bruker vi LIFEPAK 1
 
 **1.2** Som med alt elektromedisinsk utstyr må LP15 ha periodisk vedlikehold. Det vedlagte dokumentet i utstyrsregisteret heter "Performance Inspection Procedure" — en veiledning for hvordan alle prosedyrer skal utføres under periodisk vedlikehold. Følg prosedyren som heter "PIP — NIBP Calibration Check."
 
-> **Merk:** Bruk en enveis håndpumpe i stedet for en sprøytepumpe på grunn av risiko for utstyrsskade.
+> **Merk:** Koble mansjett og slange fra alle personer før du setter trykk på NIBP-kretsen — kontrollen kjøres mot et stivt testvolum, ikke mot en arm. Sett trykk med en enveis håndpumpe, ikke med en sprøyte: en sprøyte kan gi trykkstøt og undertrykk som skader NIBP-transduceren.
+
+**Akseptkriterium:** ved hvert trykkpunkt i PIP-en skal trykket LIFEPAK 15 viser, stemme med den kalibrerte referansen innenfor toleransen PIP-en oppgir — **±3 mmHg** for LIFEPAK 15. Dette er minst like strengt som kravet i IEC 80601-2-30, særstandarden for automatiske ikke-invasive blodtrykksmålere (den erstattet den tilbaketrukne IEC 60601-2-30), som krever at visningen av mansjettrykket ligger innenfor ±3 mmHg, eller 2 % av avlesningen der dette er større. Noter hvert par av referanseverdi og vist verdi i labnotatboken, og angi bestått eller ikke bestått.
 
 **1.3** Ikke-invasive blodtrykksmålinger bør aldri brukes som eneste vitalparameter for diagnostikk/behandling. Hvilke eksterne faktorer kan manipulere en blodtrykksmåling? Når man justerer plasseringen av mansjetten i forhold til sirkulasjonssystemets nullpunkt (høyre atrium), forårsaker dette et hydrostatisk bidrag til målingen. Test hvor stort bidrag (+/- mmHg) du får ved å heve og senke armen med mansjetten.
 
@@ -56,7 +66,7 @@ For å måle kroppens arterielle blodtrykk og oksygenmetning bruker vi LIFEPAK 1
 
 ---
 
-### Del 2 — Invasiv blodtrykksmåling (IBP)
+### Del 2 — Invasiv blodtrykksmåling (IBP) (45 min)
 
 Denne delen dekker prinsippene for invasiv arteriell blodtrykksovervåking. Vi utfører ikke invasive prosedyrer i denne laben, men forståelse av IBP-systemet er essensielt for kliniske ingeniører som vedlikeholder og kalibrerer pasientmonitorer i intensivmiljøer.
 
@@ -115,7 +125,7 @@ Invasiv blodtrykksovervåking er indisert når:
 
 Kliniske ingeniører er ansvarlige for:
 
-- Kalibrering av transducere ved bruk av en sertifisert trykkkilde (f.eks. kvikksølv- eller digitalt manometer)
+- Kalibrering av transducere mot en sertifisert trykkreferanse, for eksempel en digital trykkalibrator. Kvikksølvmanometer skal ikke brukes: kvikksølvholdige måleinstrumenter har vært forbudt til profesjonell bruk i EU/EØS siden 2014 (REACH vedlegg XVII post 18a, forordning (EU) 2017/852)
 - Verifisering av trykkmodulnøyaktighet over det kliniske området (0–300 mmHg)
 - Inkludering av IBP-verifisering i prosedyrer for forebyggende vedlikehold (PM) av pasientmonitorer
 - Dokumentering av kalibreringsresultater i utstyrsforvaltningssystemet
@@ -123,13 +133,13 @@ Kliniske ingeniører er ansvarlige for:
 
 ---
 
-### Del 3 — Diskusjonsspørsmål
+### Del 3 — Diskusjonsspørsmål (30 min)
 
 Svar på følgende spørsmål i labnotatboken.
 
 1. Hvilket måleprinsipp bruker LIFEPAK 15 for NIBP? Hvordan fungerer oscillometrisk måling?
 
-2. Hvorfor påvirker armposisjon i forhold til hjertet blodtrykksavlesningen? Beregn den hydrostatiske trykkforskjellen for en høydeendring på 30 cm.
+2. Hvorfor påvirker armposisjon i forhold til hjertet blodtrykksavlesningen? Beregn den hydrostatiske trykkforskjellen for en høydeendring på 30 cm med p = ρgh, der blodets tetthet ρ = 1060 kg/m³, g = 9,81 m/s² og 1 mmHg = 133,3 Pa. Sammenlign den beregnede verdien med endringen du målte i Del 1.3, og angi hvilken vei avlesningen går når armen heves.
 
 3. Hvorfor blir SpO2-avlesningen upålitelig under en blodtrykksmåling på samme arm?
 
@@ -139,15 +149,13 @@ Svar på følgende spørsmål i labnotatboken.
 
 ---
 
-## Krav til labrapporten
+## Godkjenning
 
-Send inn en maskinskrevet labrapport innen datoen angitt i timeplanen. Rapporten skal inneholde:
+Du blir godkjent i laben når du kan vise og forklare følgende for labingeniøren:
 
-- En tittelside med navn, studentnummer, emnekode og dato
-- NIBP-måledata fra Del 1.1
-- Resultater fra kalibreringskontroll fra Del 1.2
-- Målinger av hydrostatisk effekt fra Del 1.3 med registrerte verdier i mmHg
-- Dokumentasjon av SpO2-observasjoner fra Del 1.4 og 1.5
-- Skriftlige svar på diskusjonsspørsmålene (Del 3)
-- En kort konklusjon (200–300 ord) der du diskuterer funnene dine og deres relevans for klinisk ingeniørfaget
-- En referanseliste med henvisninger til LIFEPAK 15 brukermanualen og alle andre kilder som er brukt
+- Blodtrykksmålingene dine fra Del 1.1, med måleprinsippet LIFEPAK 15 bruker, og det hydrostatiske bidraget i mmHg som du målte ved å heve og senke armen i Del 1.3, sammenlignet med verdien du regner ut med p = ρgh
+- Kalibreringskontrollen av NIBP fra Del 1.2: hvert par av referanseverdi og vist verdi, og om LIFEPAK 15 ligger innenfor toleransen i PIP-en
+- Pletysmografikurven fra Del 1.4 og hva som skjedde med den kontinuerlige SpO2-målingen da mansjetten ble blåst opp på samme arm i Del 1.5
+- Svarene dine på spørsmålene i Del 3, inkludert IBP-stoffet i Del 2
+
+Ingen skriftlig innlevering.

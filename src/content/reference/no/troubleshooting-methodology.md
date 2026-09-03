@@ -1,7 +1,7 @@
 ---
 title: "Systematisk feilsøkingsmetodikk"
 description: "En strukturert tilnærming til diagnostisering av feil på medisinsk utstyr — fra henvendelse til avslutning"
-tags: ["troubleshooting", "methodology", "clinical engineering"]
+tags: ["feilsøking", "metodikk", "klinisk ingeniørfag"]
 order: 2
 ---
 
@@ -75,7 +75,7 @@ Når du har isolert feilen til en spesifikk komponent:
 3. **Verifiser reparasjonen** — Etter reparasjon, test utstyret grundig:
    - Er det opprinnelige symptomet borte?
    - Fungerer alle andre funksjoner fortsatt korrekt?
-   - Består utstyret elektrisk sikkerhetstesting (hvis aktuelt)?
+   - Består utstyret en fullstendig IEC 62353-testsekvens? Etter enhver reparasjon som kan påvirke elektrisk sikkerhet — bytte av strømforsyning, nettkabel, verneleder eller kabel til applikasjonsdel, eller åpning av kapslingen — er testen obligatorisk før utstyret settes tilbake i klinisk bruk, ikke valgfri.
    - Er måleverdiene innenfor spesifikasjon?
 
 4. **Ikke skap nye problemer** — Etter enhver reparasjon, kjør gjennom en grunnleggende funksjonskontroll av alle parametere, ikke bare den du reparerte. Gjenmonteringsfeil er en reell risiko.
@@ -94,11 +94,11 @@ Dokumentasjon er ikke papirarbeid — det er grunnlaget for et kvalitetsvedlikeh
 - Identifisert rotårsak
 - Korrigerende tiltak (hva du reparerte/byttet, artikkelnumre)
 - Verifiseringsresultater (funksjonstester, sikkerhetstester, måleverdier)
-- Anbefalinger (endringer i PM-plan, brukeropplæring, flåteinspeksjon)
+- Anbefalinger (endringer i plan for forebyggende vedlikehold, brukeropplæring, inspeksjon av hele utstyrsparken)
 
 **Hvorfor dette er viktig:**
 - **Mønstergjenkjenning** — Gjentatte feil på samme modell avslører systematiske problemer
-- **Flåtestyring** — Hvis ett utstyr har en korrodert kontakt, har sannsynligvis andre med samme alder i samme miljø det også
+- **Forvaltning av utstyrsparken** — Hvis ett apparat har en korrodert kontakt, har sannsynligvis andre apparater av samme alder i samme miljø det også
 - **Bevis** — Dine serviceregistreringer er primærbevis ved hendelsesundersøkelser og regulatoriske revisjoner
 - **Læring** — Fremtidige ingeniører (inkludert ditt fremtidige jeg) vil ha nytte av tydelige diagnostiske registreringer
 

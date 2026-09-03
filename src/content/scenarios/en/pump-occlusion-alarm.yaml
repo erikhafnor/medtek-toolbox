@@ -47,7 +47,7 @@ steps:
         feedback: "Correct — the IDA-5 in pressure mode will show you the actual pressure generated during infusion. If the new sets generate higher back-pressure at the same flow rate, you've found the cause."
       - text: "Measure the tubing inner diameter of both sets with calipers"
         correct: false
-        feedback: "Useful supporting evidence, but tubing compliance matters as much as diameter. The IDA-5 test will show the functional impact."
+        feedback: "Useful supporting evidence, and it will point straight at the lumen — but a dimension on its own doesn't tell you whether the pump will alarm. The IDA-5 test shows the functional impact."
       - text: "Load the new set and run the pump self-test"
         correct: false
         feedback: "The self-test checks pump mechanism function, not set compatibility. You need to measure actual infusion pressure."
@@ -78,14 +78,14 @@ steps:
         - setting: "New batch set — tubing wall thickness"
           delivered: "0.9 mm (old batch: 0.7 mm)"
           status: warning
-          error: "Thicker walls reduce compliance"
+          error: "Same outer diameter — the thicker wall narrows the lumen by 0.4 mm"
   - type: multiple-choice
     id: diagnosis
     question: "The new batch sets generate 63% higher back-pressure (465 vs 285 mmHg), triggering the 500 mmHg occlusion alarm. The tubing wall is 0.9 mm vs 0.7 mm. What's the root cause and corrective action?"
     choices:
-      - text: "The new batch sets have stiffer (less compliant) tubing that generates higher pressure in the pump mechanism — quarantine the batch and revert to the previous set supplier/lot"
+      - text: "The new batch sets are out of specification and force the pump to run at a much higher line pressure — quarantine the batch and revert to the previous set supplier/lot"
         correct: true
-        feedback: "Correct — the thicker tubing walls are less compliant, so the peristaltic mechanism generates higher pressure to achieve the same flow. When this pressure approaches the occlusion alarm threshold, normal pressure fluctuations trigger false alarms. Quarantine the batch, switch back, and file a supplier quality report."
+        feedback: "Correct — administration sets are built to a fixed outer diameter so they fit the pumping mechanism, so a 0.2 mm thicker wall costs 0.4 mm of lumen. Flow resistance is inversely proportional to the fourth power of the lumen radius (Hagen–Poiseuille), so the pump has to build a far higher line pressure to hold 100 mL/h — and the stiffer wall additionally biases the pump's force-based pressure sensor high. With the running pressure already at 465 mmHg, normal pressure fluctuations cross the 500 mmHg threshold and trigger false alarms. Quarantine the batch, switch back, and file a supplier quality report."
       - text: "Raise the occlusion alarm threshold to 700 mmHg to accommodate the new sets"
         correct: false
         feedback: "Raising the threshold masks the problem and delays detection of real occlusions. High thresholds also increase bolus-on-release volume, which is a patient safety concern (IEC 60601-2-24)."
@@ -97,7 +97,7 @@ steps:
         feedback: "The alarm threshold is correct. The new sets operate too close to the threshold, which is a set quality issue, not a pump calibration issue."
 learning_points:
   - text: "When multiple pumps show the same problem, look at the consumables first. Administration set changes (new supplier, new lot, different tubing material) are a common cause of fleet-wide infusion pump issues."
-  - text: "Tubing compliance significantly affects pump back-pressure. A seemingly minor change in wall thickness (0.2 mm) caused a 63% pressure increase — enough to trigger false occlusion alarms."
+  - text: "It is lumen geometry, not compliance, that sets the pressure a pump must generate at a given flow rate. On a set built to the same outer diameter, a 0.2 mm thicker wall costs 0.4 mm of lumen, and resistance rises as the fourth power of 1/radius — here a 63% pressure increase, enough to trigger false occlusion alarms. Wall stiffness matters as well, but mainly through what the pump's force-based pressure sensor reads."
     source: "IEC 60601-2-24 §201.12.1 — accuracy requirements are tested with manufacturer-specified administration sets"
     source_type: standard
   - text: "Never raise occlusion alarm thresholds to compensate for set incompatibility. Higher thresholds delay real occlusion detection and increase bolus-on-release volume, both of which are patient safety risks."

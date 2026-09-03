@@ -1,16 +1,20 @@
 <script lang="ts">
+  import { t } from '../../lib/i18n';
+  import type { Locale } from '../../lib/i18n';
+
   interface Props {
     level: 1 | 2 | 3;
+    locale?: Locale;
   }
 
-  let { level }: Props = $props();
+  let { level, locale = 'en' }: Props = $props();
 
   const config = $derived(
     level === 1
-      ? { bg: 'bg-green-100 text-green-800 border-green-200', label: 'Level 1 — Basic' }
+      ? { bg: 'bg-green-100 text-green-800 border-green-200', label: t(locale, 'level.1') }
       : level === 2
-        ? { bg: 'bg-yellow-100 text-yellow-800 border-yellow-200', label: 'Level 2 — Multi-system' }
-        : { bg: 'bg-red-100 text-red-800 border-red-200', label: 'Level 3 — Intermittent' }
+        ? { bg: 'bg-yellow-100 text-yellow-800 border-yellow-200', label: t(locale, 'level.2') }
+        : { bg: 'bg-red-100 text-red-800 border-red-200', label: t(locale, 'level.3') }
   );
 </script>
 

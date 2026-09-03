@@ -75,7 +75,7 @@ Once you've isolated the fault to a specific component:
 3. **Verify the fix** — After repair, test the device comprehensively:
    - Does the original symptom resolve?
    - Do all other functions still work correctly?
-   - Does the device pass electrical safety testing (if applicable)?
+   - Does the device pass a full IEC 62353 test sequence? After any repair that could affect electrical safety — replacing a power supply, mains cable, protective earth connection or applied-part cable, or opening the enclosure — this test is mandatory before the device returns to clinical use, not optional.
    - Do the measurements fall within specification?
 
 4. **Don't create new problems** — After any repair, run through a basic functional check of all parameters, not just the one you fixed. Reassembly errors are a real risk.

@@ -57,7 +57,7 @@ Where: E = energy (joules), C = capacitance (farads), V = voltage (volts)
 E = ½ × 0.0002 × 1000² = 100 J
 ```
 
-**Delivered energy** is always less than stored energy due to losses in the circuit and patient impedance. IEC 60601-2-4 specifies delivered energy must be within ±15% of the selected setting.
+**Delivered energy** is always less than stored energy due to losses in the circuit and patient impedance. IEC 60601-2-4 specifies that the delivered energy, measured into a 50 Ω test load, must be within ±15% of the selected energy **or ±4 J, whichever is greater**.
 
 ---
 
@@ -67,7 +67,7 @@ E = ½ × 0.0002 × 1000² = 100 J
 Error (%) = ((Delivered - Selected) / Selected) × 100
 ```
 
-**Acceptance criterion:** |Error| ≤ 15% per IEC 60601-2-4
+**Acceptance criterion:** delivered energy within ±15% of the selected energy **or ±4 J, whichever is greater**, measured into a 50 Ω test load (IEC 60601-2-4). The ±4 J allowance is what governs at low settings: at a selected 5 J the acceptable window is 1–9 J, not 4.25–5.75 J.
 
 **Example:** Selected 200 J, delivered 185 J:
 
@@ -99,7 +99,7 @@ Z = V / I   (for AC circuits)
 Error (%) = ((Measured - Set) / Set) × 100
 ```
 
-**Acceptance criterion:** |Error| ≤ 5% at steady state per IEC 60601-2-24
+**Acceptance criterion:** |Error| ≤ 5% at steady state. Note what ±5% is: the delivery accuracy a manufacturer declares for a volumetric pump — it is the figure B. Braun declares for the Infusomat Space used in the MTE200 infusion pump lab — not a limit fixed by IEC 60601-2-24. That standard prescribes how delivery accuracy is measured (start-up and trumpet curves) and requires the pump to meet the figure its manufacturer declares, so read that figure from the accompanying documents before judging pass/fail.
 
 **Example:** Set rate 100 mL/h, measured 97 mL/h:
 
@@ -165,7 +165,7 @@ V̇E = 0.5 × 14 = 7.0 L/min
 Error (%) = ((Measured - Set) / Set) × 100
 ```
 
-**Acceptance criterion:** |Error| ≤ 10% or ≤ 10 mL (whichever is greater) per IEC 60601-2-12
+**Acceptance criterion:** |Error| ≤ 10% or ≤ 10 mL (whichever is greater). This is a practical in-house limit, not a value taken from a standard: IEC 60601-2-12 has been withdrawn and replaced by **ISO 80601-2-12:2020** (critical care ventilators), which allows the delivered volume to differ from the set volume by ±(4 mL + 15% of the set volume), and leaves the accuracy of the monitored (displayed) volume to the manufacturer's declaration. Check the operator's manual for the ventilator under test before judging pass/fail.
 
 **Example:** Set 500 mL, measured 465 mL:
 
@@ -244,7 +244,7 @@ Pulse oximetry is based on the ratio of red (660 nm) to infrared (940 nm) light 
 R = (AC_red / DC_red) / (AC_IR / DC_IR)
 ```
 
-The R value is mapped to SpO₂ using an empirical calibration curve (stored in the oximeter firmware). This is why SpO₂ accuracy is specified as ±2% — it's based on a calibration curve, not a direct physical measurement.
+The R value is mapped to SpO₂ using an empirical calibration curve (stored in the oximeter firmware). This is why SpO₂ accuracy is specified statistically, as an A_rms value of about 2 percentage points against co-oximetry (ISO 80601-2-61) — it rests on a calibration curve, not a direct physical measurement.
 
 ---
 
@@ -264,10 +264,13 @@ When a measurement has a stated accuracy of ±X%:
 True value range = Measured ± (Measured × X/100)
 ```
 
-**Example:** SpO₂ reads 94% with ±2% accuracy:
+**Example:** SpO₂ reads 94% on a monitor whose accuracy is stated as 2% — a case where the formula above does **not** apply:
 
 ```
-True SpO₂ = 94% ± 2% = 92–96%
+SpO₂ accuracy is A_rms = 2 percentage points (ISO 80601-2-61), NOT 2% of the reading
+→ the band is 94% ± 2 = 92–96%, not 94 ± (94 × 0.02) = 92.1–95.9%
+→ A_rms is a statistical spread, not a guaranteed band: roughly 1 reading in 3
+  falls outside it, and the figure is only validated over 70–100% SpO₂
 ```
 
 ### Decibel Conversion

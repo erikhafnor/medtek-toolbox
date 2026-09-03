@@ -37,11 +37,11 @@ By the end of this lab you will be able to:
 
 ## Equipment Setup
 
-This lab uses the PHYWE XR 4.0 X-ray expert unit with the **XRstage** rotation stage, the **XRIS** digital flat-panel detector, and the **measureCT** software, plus a lab PC running **3D Slicer** and a desktop FDM **3D printer**.
+This lab uses the PHYWE XR 4.0 X-ray expert unit with the **XRstage** rotation stage, the **XRIS** digital flat-panel detector, and the **measureCT** software. Segmentation in 3D Slicer and 3D printing of the hidden object come afterwards, in the separate 3D Reconstruction and Printing Lab.
 
 1. Connect the XRstage rotation stage and the XRIS detector to the X-ray unit, and connect both to the PC via USB. Start the **measureCT** program and activate the software (Options → Activation Assistant) if prompted.
 2. In the live view, confirm that the green indication LED is lit for the X-ray unit, the stage, and the detector — this means each component has been detected.
-3. Mount the specimen — a **walnut** — on the rotation stage so it sits centred in the X-ray beam, roughly midway between the tube and the detector. Close the chamber door.
+3. Mount the specimen — a **walnut** — on the rotation stage so it sits centred in the X-ray beam and close to the detector: the stage position has to give the SOD = 250 mm / SDD = 300 mm geometry of step 4, so the walnut ends up about 50 mm in front of the detector. Mounting it halfway between tube and detector instead would give a magnification of 2.0× rather than 1.2×, which changes the reconstructed voxel size and can push the projected nut off the edge of the detector. Close the chamber door.
 
    ![Walnut mounted on the XRstage rotation stage, with the XRIS detector behind it](/labs/ct-imaging/01-setup-walnut-stage.jpg)
 
@@ -49,7 +49,7 @@ This lab uses the PHYWE XR 4.0 X-ray expert unit with the **XRstage** rotation s
 
    ![Beam geometry inside the chamber: X-ray source, rotation stage with specimen, and detector](/labs/ct-imaging/02-chamber-geometry.jpg)
 
-5. **Calibrate the detector** before acquiring any data: remove all objects from the beam (or close the door with the stage empty), make sure the X-rays are **switched off**, and click **Calibrate**. The calibration measures the detector's offset and per-pixel gain so the recorded images are corrected automatically. The red LED on the Calibrate button turns green when calibration succeeds.
+5. **Calibrate the detector** before acquiring any data, with the beam path empty. Do this *before* you mount the walnut in step 3 — or, if it is already on the stage, switch the X-rays off, wait for the warning lamp to go out, and take it off again. Set the kV and mA you will use for the scan (Part 2.2), leave the stage empty, close the chamber door, and click **Calibrate**. The calibration records both a dark frame with the tube off, which gives the detector's offset, and a flat field with the tube on and nothing in the beam, which gives the per-pixel gain; every image you record afterwards is corrected with them automatically. The red LED on the Calibrate button turns green when calibration succeeds. Remount the walnut only once the calibration has finished and the warning lamp is out.
 
 > Recalibrate whenever you change kV, mA, binning, or detector position — the previous calibration is no longer valid.
 
@@ -76,7 +76,7 @@ A CT image is built from many X-ray **projections** taken as the specimen rotate
 
 ### Part 2 — CT Acquisition (45 min)
 
-**2.1** Switch on the X-rays and open the **Live view**. Place the specimen and adjust the contrast so the walnut is clearly visible. Watch the **detector exposure load bar**: it must stay **below** the maximum fill level. If it turns red, the detector is saturating — reduce mA or exposure time.
+**2.1** With the walnut mounted and the chamber door closed, switch on the X-rays and open the **Live view**. Adjust the contrast so the walnut is clearly visible. Watch the **detector exposure load bar**: it must stay **below** the maximum fill level. If it turns red, the detector is saturating — reduce mA or exposure time. If you need to move the specimen, switch the X-rays off and wait for the warning lamp to go out before opening the door.
 
 **2.2** Set the acquisition parameters. These values give good results for a walnut on this unit:
 
@@ -107,7 +107,7 @@ A CT image is built from many X-ray **projections** taken as the specimen rotate
 
 **3.2** Click **Test** to reconstruct a single slice. Adjust the COR value (start near 254 for 500 × 500 binning) and re-test until the slice looks sharp — edges crisp, no doubling, the hidden object well defined.
 
-**3.3** When a test slice is sharp, click **Reconstruct** to reconstruct the full volume.
+**3.3** When a test slice is sharp, click **Reconstruct** to reconstruct the full volume. When it has finished, export the volume as a stack of slice images into one empty folder, and write down the reconstructed **voxel spacing** in mm per voxel that measureCT reports. In object space that is the binned detector pitch divided by the geometric magnification — 0.096 mm ÷ 1.2 = **0.080 mm per voxel** with the geometry and binning used here. Write down what measureCT actually reports: if it disagrees with 0.080 mm, trust the software and tell the supervisor, because the print size depends on this one number. You need both the exported stack and the voxel spacing in the 3D Reconstruction and Printing Lab — without them the 3D print comes out the wrong size.
 
 **3.4** Open the **3D View**. Inspect the volume in the axial, sagittal, and coronal slice windows and in the 3D rendering. Identify the hidden object in all three slice directions and estimate its size in millimetres.
 
@@ -119,12 +119,13 @@ The dense object inside the walnut is a **human tooth** — your target for segm
 
 ---
 
-## Lab Report Requirements
+## Approval
 
-Submit a typed lab report by the date specified in the course schedule. The report must include:
+You are approved in the lab once you can show and explain the following to the lab engineer:
 
-- A title page with your name, student number, course code (MTE210), and date
-- The acquisition parameters you used (Part 2.2) and a labelled projection image of the specimen
-- A short description of how you tuned the **centre of rotation**, with before/after slice images showing the effect
-- Reconstructed slice images (axial, sagittal, coronal) identifying the hidden object, with your size estimate
-- A brief conclusion (150–200 words) linking the benchtop workflow to clinical CT: acquisition, dose/ALARA, and reconstruction
+- The acquisition parameters you used (Part 2.2) and a live projection of the walnut in which you can point out the hidden dense object and say what it is (Part 2.3)
+- How you tuned the **centre of rotation** (Part 3.2) — show a blurred and a sharp test slice — and the reconstructed volume with the hidden object identified in all three slice directions and its size in millimetres (Part 3.4)
+- Your answers to the radiation protection and CT physics questions in Part 1 (1.2 and 1.3), in your own words
+- The exported slice stack and the voxel spacing you noted in Part 3.3, which you need in the next lab
+
+There is no written hand-in.

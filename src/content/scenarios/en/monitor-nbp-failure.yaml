@@ -25,9 +25,9 @@ steps:
     question: "Multiple cuffs and patients have been tried — the problem follows the monitor. The cuff inflates (so the pump works) but the measurement fails. What's the most likely cause?"
     hint: "The NIBP system has three main components: the air pump (inflates the cuff), the air hose (connects pump to cuff), and the pressure transducer (measures oscillometric signals). The pump works — which component is next to suspect?"
     choices:
-      - text: "The air hose between the monitor and the cuff has a slow leak — it inflates but can't maintain stable pressure for oscillometric measurement"
+      - text: "The air hose between the monitor and the cuff has a slow leak — it inflates but can't hold the controlled deflation the oscillometric measurement needs"
         correct: true
-        feedback: "Correct — a slow leak in the air hose allows initial inflation but causes a gradual pressure drop during the measurement phase. The monitor needs stable pressure to detect the small oscillometric variations from arterial pulsation. A leak creates a pressure drift that masks these oscillations, causing the measurement to fail."
+        feedback: "Correct — a slow leak in the air hose allows initial inflation but causes a gradual pressure drop during the measurement phase. The monitor needs a controlled deflation to sample the small oscillometric variations from arterial pulsation at each cuff pressure. A leak makes the pressure fall faster than the deflation valve commands, so too few pulses are captured per pressure step and the monitor aborts the measurement."
       - text: "The NIBP module inside the monitor has failed"
         correct: false
         feedback: "Possible but less common. The pump works (inflation occurs), so the module is at least partially functional. Check the simpler external components first."
@@ -65,24 +65,24 @@ steps:
           status: pass
           spec: "< 6 mmHg/min"
         - setting: "Pneumatic leak test (old hose) — pressure drop over 60 s"
-          delivered: "18 mmHg drop"
+          delivered: "90 mmHg drop"
           status: fail
-          error: "Leak at connector — 3x above spec"
+          error: "Leak at connector — 15x above spec"
         - setting: "NIBP simulation — 120/80 mmHg"
           delivered: "118/78 mmHg"
           status: pass
-          spec: "±3 mmHg"
+          spec: "±5 mmHg vs. simulator (functional check)"
         - setting: "NIBP simulation — 180/110 mmHg (hypertensive)"
           delivered: "177/108 mmHg"
           status: pass
-          spec: "±3 mmHg"
+          spec: "±5 mmHg vs. simulator (functional check)"
         - setting: "NIBP simulation — 80/50 mmHg (hypotensive)"
           delivered: "82/52 mmHg"
           status: pass
-          spec: "±3 mmHg"
+          spec: "±5 mmHg vs. simulator (functional check)"
   - type: multiple-choice
     id: diagnosis
-    question: "The new hose passes the leak test (2 mmHg/min vs 18 mmHg/min with the old hose), and all three NIBP simulations are accurate. What do you recommend?"
+    question: "The new hose passes the leak test (2 mmHg/min vs 90 mmHg/min with the old hose), and all three NIBP simulations are accurate. What do you recommend?"
     choices:
       - text: "Return the monitor to service with the new hose. Recommend adding NIBP hose inspection to the regular PM checklist and keeping spare hoses in the PACU supply cabinet"
         correct: true
@@ -97,11 +97,11 @@ steps:
         correct: false
         feedback: "Replacing all hoses proactively is wasteful. Instead, add hose inspection to the PM checklist so they're replaced when worn."
 learning_points:
-  - text: "NIBP measurement failures are most commonly caused by pneumatic leaks in the air hose or cuff, not by monitor malfunction. A slow leak disrupts the oscillometric measurement by creating pressure drift that masks arterial pulsations."
+  - text: "NIBP measurement failures are most commonly caused by pneumatic leaks in the air hose or cuff, not by monitor malfunction. Oscillometric measurement depends on a controlled deflation — typically 3–5 mmHg/s, or fixed steps — so that enough pulses are captured at each cuff pressure to build the oscillation envelope; a leak makes the pressure fall faster than the deflation valve commands, so the envelope is distorted and the monitor aborts the determination."
   - text: "NIBP air hoses are high-wear consumables — the connectors loosen with repeated cuff changes and daily use. Stock spares in clinical areas and inspect hoses during PM."
     source_type: best-practice
-  - text: "IEC 60601-2-30 requires NIBP accuracy of ±3 mmHg for static pressure. Always verify accuracy after any repair to the pneumatic circuit using a calibrated NIBP simulator."
-    source: "IEC 60601-2-30 §201.12.1"
+  - text: "IEC 80601-2-30, which superseded the withdrawn IEC 60601-2-30, requires the cuff pressure indication to be within ±3 mmHg — or 2% of the reading where that is greater — under static conditions, and limits air leakage to 6 mmHg/min. That ±3 mmHg applies to the pressure indication, not to the blood pressure determination: the clinical accuracy of the determination is validated to ISO 81060-2. Verify both after any repair to the pneumatic circuit, using a calibrated NIBP simulator."
+    source: "IEC 80601-2-30:2018 (supersedes IEC 60601-2-30), clause 201.12.1 — cuff pressure indication accuracy and air leakage; determination accuracy per ISO 81060-2"
     source_type: standard
   - text: "When troubleshooting NIBP, the diagnostic sequence is: cuff → hose → monitor connections → internal pneumatic valve → NIBP module. Work from the cheapest/simplest component outward."
     source_type: best-practice

@@ -10,11 +10,11 @@ briefing:
   location: Intensiv seng 8
   facility: Stavanger universitetssjukehus
   time: "Søndag 03:20"
-  message: "Evita V500 på seng 8 alarmerer hele tiden for kretslekkasje — den viser lekkasje på 400 mL, og alarmen går hvert 30. sekund. Pasienten er på volumstyrt ventilasjon med 500 mL tidalvolum og virker grei, men ekspirert volum viser bare 320 mL. Jeg har sjekket kretsen og finner ingenting som er åpenbart frakoblet. Kan du komme og se?"
+  message: "Evita V500 på seng 8 alarmerer hele tiden for kretslekkasje — den viser en lekkasje på 190 mL per pust, rundt 37 %, og alarmen går hvert 30. sekund. Pasienten er på volumstyrt ventilasjon med 500 mL tidalvolum og virker grei, men ekspirert volum viser bare 320 mL. Jeg har sjekket kretsen og finner ingenting som er åpenbart frakoblet. Kan du komme og se?"
   urgency: high
   context:
     - "Pasient på volumstyrt ventilasjon, Vt 500 mL, PEEP 8, FiO₂ 0,4"
-    - "Lekkasje-alarm: 400 mL lekkasje (inspirert minus ekspirert)"
+    - "Lekkasje-alarm: 190 mL lekkasje per pust (inspirert 510 mL − ekspirert 320 mL ≈ 37 %)"
     - "Ekspirert Vt på display: 320 mL (burde vært ~500 mL)"
     - "Ingen synlig frakobling i kretsen"
     - "Aktiv oppvarmet befukter (Fisher & Paykel MR850)"
@@ -93,8 +93,8 @@ steps:
         feedback: "Aktiv befuktning er klinisk foretrukket for de fleste intensivpasienter, spesielt de på langvarig ventilasjon. Å eliminere en klinisk fordel for å unngå et vedlikeholdsproblem er uforholdsmessig."
 learning_points:
   - text: "Sprekker i befukterkamre er en av de vanligste årsakene til 'usynlige' respirator-kretslekkasjer. Sprekken er ofte skjult under varmeplaten og ikke synlig uten å fjerne kammeret."
-  - text: "En stor kretslekkasje reduserer levert tidalvolum, noe som kan forårsake hypoksi og hyperkapni. Respiratoralarmen er en kritisk sikkerhetsfunksjon — aldri ignorer den uten å undersøke."
-    source: "IEC 60601-2-12 §201.13 — alarmkrav for respiratorer"
+  - text: "En stor kretslekkasje reduserer levert tidalvolum, noe som kan forårsake hypoksi og hyperkapni. Respiratoralarmen er en kritisk sikkerhetsfunksjon — alarmen skal aldri avstilles uten at årsaken er undersøkt."
+    source: "ISO 80601-2-12:2020, kapittel 208 (alarmsystemer, anvender IEC 60601-1-8) — alarmtilstander for respiratorer"
     source_type: standard
   - text: "Ved feilsøking av kretslekkasjer, arbeid systematisk fra respiratoren utover: respiratorport → befukterinngang → befukterkammer → befukterutgang → inspiratorisk slange → Y-stykke → ekspiratorisk slange → ekspirasjonsventil → endotrakealtubemansjett."
     source_type: best-practice

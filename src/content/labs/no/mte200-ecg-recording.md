@@ -19,7 +19,7 @@ Etter denne labøvelsen skal du kunne:
 
 - Identifisere sikkerhetssymboler (Type B, BF, CF, defibrillasjonssikker) og forklare deres betydning for pasientsikkerhet
 - Koble et 12-avlednings-EKG til en pasientsimulator og ta opp diagnostiske registreringer
-- Utføre ytelsetest av avledningsledninger og følsomhetstest av kardiografen iht. servicemanualen
+- Utføre ytelsestest av avledningsledninger og følsomhetstest av kardiografen iht. servicemanualen
 - Gjenkjenne vanlige EKG-artefakter (nettfrekvensinterferens, muskelbevegelse, basislinjevandring, respiratorisk) og forklare årsakene
 - Måle standard EKG-intervaller (R-R, P-R, ST-segment) og beregne hjertefrekvens
 - Bestemme den elektriske aksen til QRS-komplekset, P-bølgen og T-bølgen ved hjelp av Einthovens trekant
@@ -38,12 +38,12 @@ Gjør deg kjent med EKG-apparatet og pasientsimulatoren iht. brukermanualene. V�
 
 Pasientsimulatoren genererer EKG-signaler for en rekke mulige simulerte hjertearytmier (arytmier, artefakter), og alle innstillinger styres via brukergrensesnittet.
 
-1. Koble alle 12 EKG-elektroder til pasientsimulatoren.
+1. Koble alle de 10 avledningsledningene på PageWriter TC30-pasientkabelen (RA, LA, RL, LL og V1–V6) til de tilsvarende merkede EKG-pluggene på ProSim 8.
 2. Slå på EKG-apparatet.
 3. EKG-kurver vises når du trykker på en knapp på pasientsimulatoren.
 4. EKG-registreringer skal eksporteres som PDF til en USB-enhet koblet til EKG-apparatet (prosedyre beskrevet i brukermanualen).
 
-Studentene må skrive en løpende protokoll under labarbeidet.
+Studentene må skrive en løpende protokoll under labarbeidet slik at de kan reprodusere resultatene etter oppgaven og få den godkjent i laben.
 
 ---
 
@@ -62,9 +62,9 @@ Følgende spørsmål kan besvares før du ankommer laben. Bruk Philips PageWrite
 
 **1.2** Hvilke kriterier må være oppfylt for å koble det medisinske utstyret til en annen enhet som er koblet til strømnettet?
 
-**1.3** Finn informasjon om nøyaktigheten til elektrokardiogrammet enheten produserer. Hva er nøyaktighetskravet for diagnostisk EKG-visning, og i hvilken IEC 60601-protokoll finnes disse kravene?
+**1.3** Finn informasjon om nøyaktigheten til elektrokardiogrammet enheten produserer. Hva er nøyaktighetskravet for diagnostisk EKG-visning, og i hvilken særstandard i IEC 60601-2-serien finnes disse kravene? Merk at serien har egne særstandarder for diagnostiske elektrokardiografer og for EKG-overvåkingsutstyr — pass på at du oppgir den som gjelder for TC30.
 
-**1.4** Finn enhetens filter- og grensefrekvensalternativer, f.eks. 50 Hz og 60 Hz, og dokumenter hvor du finner dem.
+**1.4** Finn filterinnstillingene til apparatet og noter hvor i manualen de er beskrevet. Skill mellom nettfilteret (AC-/notchfilter), som settes til 50 Hz i Norge og 60 Hz i Nord-Amerika, og grensefrekvensene for båndbredden, altså høypassfilteret (basislinje) og lavpassfilteret (muskelstøy). Hvilken kombinasjon bruker TC30 for en diagnostisk registrering, og hvordan forholder den seg til den diagnostiske båndbredden som særstandarden du fant i 1.3 krever?
 
 **1.5** Forklar hvordan den anatomiske visningen av elektrodeplassering på enheten oppnås. Hvorfor kalles det et 12-avlednings-EKG når bare 10 elektroder er festet til pasienten?
 
@@ -72,9 +72,9 @@ Følgende spørsmål kan besvares før du ankommer laben. Bruk Philips PageWrite
 
 ### Del 2 — Ytelses- og følsomhetstesting
 
-**2.1 Ytelsetest av avledningsledninger**
+**2.1 Ytelsestest av avledningsledninger**
 
-Utfør en ytelsetest av elektrodene ved å følge servicemanual-prosedyren "Lead Wire Performance Test (2-15)."
+Utfør en ytelsestest av avledningsledningene ved å følge servicemanual-prosedyren "Lead Wire Performance Test (2-15)."
 
 > **Merk:** Ledningene må være frakoblet pasientsimulatoren under denne testen.
 
@@ -101,7 +101,7 @@ Bruk følgende artefakter tilgjengelige på pasientsimulatoren og observer forsk
 
 > **Merk:** EKG-apparatet har aktiv filtrering som i noen tilfeller må deaktiveres for å vise artefakten på EKG-et. Registrer hvilke filterinnstillinger du brukte for hver observasjon.
 
-Eksporter en registrering av hver artefakttype til USB-enheten for inkludering i labrapporten.
+Eksporter en registrering av hver artefakttype til USB-enheten, slik at du kan vise og forklare de fire kurvene for labingeniøren når du legger fram resultatene.
 
 ---
 
@@ -133,20 +133,17 @@ Bruk Einthovens trekant for å utføre aksebestemmelsen. Mål nettoamplituden (s
 
 **5.3** Standard ekstremitetsavledningene I, II og III er bipolare fordi de måler mellom to elektroder der signalpotensialet varierer på begge steder. De forsterkede ekstremitetsavledningene (aVF, aVL og aVR) er monopolare/unipolare. Hvordan oppnås dette når de samme 3 elektrodene brukes?
 
-> **Hint:** Vurder hvordan Wilsons sentralterminal dannes og hvordan de forsterkede avledningene modifiserer referanseelektrodekonfigurasjonen. Se figuren som viser Einthovens trekant og forsterkede avledninger.
+> **Hint:** Vurder hvordan Wilsons sentralterminal dannes og hvordan de forsterkede avledningene modifiserer referanseelektrodekonfigurasjonen. Tegn Einthovens trekant med de tre forsterkede avledningsvektorene inntegnet, og bruk skissen til å svare.
 
 ---
 
-## Krav til labrapporten
+## Godkjenning
 
-Send inn en maskinskrevet labrapport innen datoen angitt i timeplanen. Rapporten skal inneholde:
+Du blir godkjent i laben når du kan vise og forklare følgende for labingeniøren:
 
-- En tittelside med navn, studentnummer, emnekode og dato
-- Skriftlige svar på de forberedende spørsmålene (Del 1)
-- Resultater fra ytelsetest av avledningsledninger og følsomhetstest (Del 2)
-- Observasjoner av artefaktsammenligning med eksporterte EKG-registreringer (Del 3)
-- EKG-intervallmålinger med beregnet hjertefrekvens (Del 4)
-- Bestemmelse av elektrisk akse ved bruk av Einthovens trekant, inkludert plottede vektorer (Del 5)
-- Skriftlig svar på spørsmålet om bipolare kontra unipolare avledninger (Del 5.3)
-- En kort konklusjon (200–300 ord) der du diskuterer funnene dine og deres relevans for klinisk ingeniørfaglig kvalitetssikring
-- En referanseliste med henvisninger til Philips PageWriter TC30 bruker- og servicemanual, refererte IEC 60601-standarder og alle andre kilder som er brukt
+- Resultatene fra ytelsestesten av avledningsledningene og den samlede følsomhetstesten av kardiografen i Del 2, vurdert mot akseptkriteriene i servicemanualen
+- De fire eksporterte artefaktregistreringene fra Del 3 med filterinnstillingene du brukte for hver av dem, og R-R-, P-R- og ST-målingene med beregnet hjertefrekvens fra Del 4
+- Aksebestemmelsen fra Del 5 — Einthovens trekant med de inntegnede vektorene for QRS-komplekset, P-bølgen og T-bølgen — og hvordan du koblet de 10 avledningsledningene og fikk en diagnostisk registrering
+- Svarene dine på de forberedende spørsmålene i Del 1 og på spørsmålet om bipolare kontra unipolare avledninger i Del 5.3
+
+Ingen skriftlig innlevering.

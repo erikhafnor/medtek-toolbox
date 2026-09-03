@@ -22,11 +22,11 @@ steps:
   - type: multiple-choice
     id: assessment
     question: "Lineærproben viser intet bilde, men kurvilineærproben fungerer fint på samme system. Dette bekrefter at problemet er proben, ikke systemet. Hva er det mest sannsynlige feilpunktet?"
-    hint: "Komplett bildetap (ikke bare bortfall) tyder på et totalt tilkoblingsproblem snarere enn gradvis elementdegradring."
+    hint: "Komplett bildetap (ikke bare bortfall) tyder på et totalt tilkoblingsproblem snarere enn gradvis elementdegradering."
     choices:
       - text: "Probekontaktproblem — skadede pinner, dårlig kontakt eller kabelbrudd nær kontakten som hindrer signal fra å nå systemet"
         correct: true
-        feedback: "Riktig — komplett bildetap (kun støy) indikerer vanligvis et totalt signalveibrudd. Det vanligste feilpunktet er kontakten (bøyde/knekte pinner, korrosjon) eller et kabelbrudd nær trekkavlastningen. Elementdegradring forårsaker delvis bildetap (mørke linjer), ikke total svikt."
+        feedback: "Riktig — komplett bildetap (kun støy) indikerer vanligvis et totalt signalveibrudd. Det vanligste feilpunktet er kontakten (bøyde/knekte pinner, korrosjon) eller et kabelbrudd nær trekkavlastningen. Elementdegradering forårsaker delvis bildetap (mørke linjer), ikke total svikt."
       - text: "Alle piezoelektriske elementer har sviktet samtidig"
         correct: false
         feedback: "Samtidig svikt av alle elementer er ekstremt usannsynlig. Selv kraftige fall skader vanligvis en del av arrayen, ikke alle elementene."
@@ -49,7 +49,7 @@ steps:
         feedback: "Hvis bildet kommer tilbake når du retter ut kabelen ved trekkavlastningen, er tilkoblingen i kontaktenden irrelevant. Feilen er ved bøyepunktet."
       - text: "Probehuset er sprukket og fuktighet har trengt inn"
         correct: false
-        feedback: "Fuktighetsinntrenging ville forårsaket gradvis degradring eller feil på elektrisk sikkerhetstest, ikke den posisjonsavhengige intermitterende feilen du observerer."
+        feedback: "Fuktighetsinntrenging ville forårsaket gradvis degradering eller feil på elektrisk sikkerhetstest, ikke den posisjonsavhengige intermitterende feilen du observerer."
       - text: "Proben trenger rekalibrering av systemet"
         correct: false
         feedback: "Rekalibrering fikser ikke et fysisk kabelbrudd. Den intermitterende tilkoblingen er en mekanisk feil."
@@ -81,10 +81,10 @@ steps:
     choices:
       - text: "Umiddelbart: lån en kompatibel lineærprobe fra radiologisk avdeling for helgen. Langsiktig: send L3-12 til kabelreparasjon (tredjeparts probereparasjonstjeneste), og inspiser alle hyppig brukte prober for trekkavlastningsskade."
         correct: true
-        feedback: "Riktig — det kliniske behovet er akutt (DVT-undersøkelse), så ordne en låneprobr. L3-12 trenger profesjonell kabelreparasjon — de brutte lederne og forhøyet lekkasjestrøm betyr at den ikke er trygg for pasientbruk selv om den midlertidig fungerer. Inspiser andre mye brukte prober fordi kabelutmatting ved trekkavlastningen er en risiko for hele utstyrsparken."
+        feedback: "Riktig — det kliniske behovet er akutt (DVT-undersøkelse), så ordne en låneprobe. L3-12 trenger profesjonell kabelreparasjon — de brutte lederne og forhøyet lekkasjestrøm betyr at den ikke er trygg for pasientbruk selv om den midlertidig fungerer. Inspiser andre mye brukte prober fordi kabelutmatting ved trekkavlastningen er en risiko for hele utstyrsparken."
       - text: "Tape kabelen i rett posisjon som en midlertidig løsning for helgen"
         correct: false
-        feedback: "En probe med kompromittert isolasjon (85 µA lekkasje, nær 100 µA-grensen) er ikke trygg for pasientbruk uavhengig av kabelposisjon. Lekkasjestrømmen alene diskvalifiserer den."
+        feedback: "Å tape kabelen reparerer ikke en brutt leder — bruddet er intermitterende og vil svikte igjen midt i en undersøkelse. Merk at 85 µA fortsatt ligger innenfor grensen på ≤ 100 µA ved normalforhold, så lekkasjemålingen alene underkjenner ikke proben. Det som underkjenner den, er den bekreftede mekaniske feilen sammen med en lekkasjestrøm nesten fire ganger høyere enn på den friske C1-6 (22 µA) på samme system — det betyr at skjermingen og isolasjonen rundt bruddet ikke lenger kan stoles på. Utstyr med en kjent, ureparert feil skal ikke brukes på pasient."
       - text: "Bestill en ny L3-12-probe og bruk kun kurvilineærproben til den ankommer"
         correct: false
         feedback: "En ny probe koster €8 000–15 000 og tar uker å levere. Kabelreparasjon er mye billigere (€1 000–3 000) og raskere (dager). Det kliniske behovet er i kveld — lån fra radiologisk avdeling."

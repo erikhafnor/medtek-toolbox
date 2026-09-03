@@ -99,8 +99,8 @@ learning_points:
     source_type: incident-data
   - text: "Always test the ENTIRE pad circuit (device connector → cable → pads or test load) after any connector repair or cable replacement. A resistance measurement of the connector alone is not sufficient."
     source_type: best-practice
-  - text: "IEC 60601-2-4 requires defibrillators to detect pad connection status before allowing discharge. The typical impedance threshold is device-specific (LIFEPAK 15: approximately 180 Ω)."
-    source: "IEC 60601-2-4 §201.12"
+  - text: "The 'Check Pads' alert is a manufacturer feature, not something IEC 60601-2-4 requires of a manual defibrillator — the standard sets delivered-energy accuracy and the patient impedance range the device must work into, but leaves pad-connection detection to the manufacturer. The threshold is therefore device-specific: the LIFEPAK 15 flags the pad circuit at roughly 180 Ω, the top of the 25–180 Ω working range in the device reference."
+    source: "LIFEPAK 15 service manual (device-specific threshold); IEC 60601-2-4 (patient impedance range)"
     source_type: standard
   - text: "When one cable fails from environmental damage, inspect all cables of the same type and age in the department. Connector corrosion is often a fleet-wide issue, not an isolated incident."
     source_type: best-practice

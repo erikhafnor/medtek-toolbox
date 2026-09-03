@@ -28,14 +28,14 @@ By the end of this lab you will be able to:
 
 ## Safety Notes
 
-> **HIGH VOLTAGE HAZARD.** The LIFEPAK 15 charges its capacitor to several hundred volts. Always connect the device to the approved defibrillator analyser before charging. Never charge the device with pads or paddles disconnected from a load. Keep bystanders clear of the test bench during discharge.
+> **HIGH VOLTAGE HAZARD.** The LIFEPAK 15 charges its capacitor to as much as 2 kV — that is what it reaches at the 360 J setting used once in Part 3.2. Always connect the device to the approved defibrillator analyser before charging. Never charge the device with pads or paddles disconnected from a load. Keep bystanders clear of the test bench during discharge.
 
 - Do not handle the QUICK-COMBO connector pins while the device is in a charged state.
 - Ensure the defibrillator tester is grounded and its leads are rated for the discharge energy used.
-- Wear insulating gloves when connecting the oscilloscope probe across the analyser's output terminals.
-- If you observe smoke, unusual odour, or sparks, immediately press the shock button to safely discharge the capacitor into the tester, then power off and notify the supervising technician.
-- All tests in this lab are performed at **5 J** unless the procedure explicitly states otherwise.
-- Use only low energy levels (5 J) while getting familiar with the device, to avoid draining the battery unnecessarily. After completing the lab, set the defibrillators to charge so the battery is ready for the next group.
+- Never connect an oscilloscope probe directly across the high-voltage therapy output or the analyser's 50 Ω load terminals. Use the analyser's **Scope Output** jack instead, and make and break oscilloscope connections only with the LIFEPAK 15 switched off and disarmed.
+- If you observe smoke, unusual odour, or sparks, do **not** press the shock button. Disarm the LIFEPAK 15 instead — select **DISARM** on the display, or switch the device off; either discharges the capacitor internally. Keep clear of the therapy cable and connector until the charge indicator has cleared, then notify the supervising technician. Never deliberately discharge a device that is smoking or arcing: the fault may lie in the therapy cable or the output relay, and the shock would put the full stored energy into it.
+- All tests in this lab are performed at **5 J** unless the procedure explicitly states otherwise — the maximum-energy discharge in Part 3.2 is the one exception.
+- Use low energy (5 J) while getting familiar with the device, to avoid draining the battery unnecessarily. Part 3.2 needs a discharge at 360 J; take no more high-energy shocks than the capture requires. After completing the lab, set the defibrillators to charge so the battery is ready for the next group.
 - Leakage current measurements would normally be part of the safety check but will be covered in a separate electrical safety lab.
 
 ---
@@ -46,7 +46,7 @@ By the end of this lab you will be able to:
 2. Connect the QUICK-COMBO therapy cable from the LIFEPAK 15 to the Fluke Impulse 7000DP (use the 50 Ω input — **DEFIB** port).
 3. Power on the Fluke Impulse 7000DP and select **DEFIB** mode. Verify the tester displays a ready state.
 4. Power on the LIFEPAK 15. Allow it to complete its boot-up self-test sequence. Note any fault messages in your lab notebook.
-5. Connect the Keysight oscilloscope: attach the 10× voltage probe across the **DEFIB OUT** BNC terminals on the Fluke Impulse 7000DP. Set the time base to 2 ms/div and vertical scale to 200 V/div as a starting point.
+5. Connect the Keysight oscilloscope to the **Scope Output** BNC on the rear panel of the Fluke Impulse 7000DP with a BNC lead (or a 1× probe). This jack carries an isolated, scaled-down copy of the discharge, and its ratio autoranges (2000:1, 400:1 or 80:1, depending on the range in use) — so read the ratio that applies to your capture off the analyser before you convert anything, and multiply every voltage you read on the oscilloscope by it. Do **not** put a standard 10× passive probe (commonly rated 300 V CAT II) across the high-voltage output: the LIFEPAK 15 reaches roughly 2 kV at maximum energy, far beyond the probe's rating. Set the time base to 2 ms/div; set the vertical scale after the first discharge (see 3.1).
 
 ---
 
@@ -73,7 +73,7 @@ By the end of this lab you will be able to:
 
 ### Part 2 — Fluke Impulse 7000DP QUICK-COMBO Test Sequence (60 min)
 
-Perform the following tests in order. For each test, record the selected setting, the tester reading, and whether the result meets the acceptance criterion. Use **5 J** for all discharge tests.
+Perform the following tests in order. For each test, record the selected setting, the tester reading, and whether the result meets the acceptance criterion. Use **5 J** for all discharge tests in this part; the one high-energy discharge comes later, in Part 3.2.
 
 #### 2.1 Delivered Energy Test
 
@@ -81,7 +81,7 @@ Perform the following tests in order. For each test, record the selected setting
 2. Press **Charge**. Wait for the ready tone.
 3. Press **Shock** (into the tester — do not touch paddles).
 4. Read the delivered energy from the Fluke Impulse 7000DP display.
-5. **Acceptance criterion:** Delivered energy within ±15% of selected energy (IEC 60601-2-4 §201.7.9.3). For 5 J, the acceptable range is **4.25 J – 5.75 J**.
+5. **Acceptance criterion:** IEC 60601-2-4:2010+AMD1:2018 requires the delivered energy into a 50 Ω load to be within **±15% of the selected energy, or ±4 J, whichever is greater**. At 5 J the ±4 J term governs (1 J – 9 J), so this setting cannot separate a healthy device from a faulty one. Use the ±15% band (**4.25 J – 5.75 J**) here only as a working figure, compare it with the energy-accuracy specification in the LIFEPAK 15 service manual, and apply the criterion again to the 360 J discharge in Part 3.2, where ±15% (**306 J – 414 J**) is the binding limit.
 6. Repeat three times and record all results. Calculate the mean and standard deviation.
 
 #### 2.2 Charge Time Test
@@ -104,12 +104,13 @@ Perform the following tests in order. For each test, record the selected setting
 #### 2.4 Pacer Characteristics Test
 
 1. Enable the pacer on the LIFEPAK 15. Set rate to **70 ppm** and output to **20 mA**.
-2. On the Fluke Impulse 7000DP, select **PACER** mode.
+2. On the Fluke Impulse 7000DP, select **PACER** mode and set the pacer load as instructed — the load is selectable, and the readings mean nothing without it.
 3. Record the following from the tester display:
+   - Pacer load used (Ω)
    - Measured rate (ppm)
    - Pulse width (ms)
    - Amplitude (mA)
-4. **Acceptance criteria:** Rate within ±5% of set value; pulse width 20–40 ms; amplitude within ±10% of set value (verify against LIFEPAK 15 service manual specifications).
+4. **Acceptance criteria:** Rate within ±5% of set value; pulse width **20 ms**, within the tolerance given in the LIFEPAK 15 service manual — the LIFEPAK 15 pacing pulse is a fixed-width rectangular constant-current pulse, so a reading anywhere near 40 ms is a fault, not a pass; amplitude within ±10% of set value (verify against LIFEPAK 15 service manual specifications). Quote the pacer load with every reading.
 
 ---
 
@@ -121,16 +122,16 @@ This procedure follows the "Test and Calibration Procedures" in the LIFEPAK 15 s
 
 Confirm the Keysight InfiniiVision is configured:
 - Coupling: DC
-- Vertical scale: 200 V/div (adjust after first discharge)
+- Vertical scale: set after the first discharge so the waveform fills 60–80% of the screen — the right setting depends on the ratio the analyser's Scope Output is using, so it is not a volts-at-the-therapy-connection figure
 - Time base: 2 ms/div
-- Trigger: edge trigger on the rising edge of the waveform; level at approximately +50 V
+- Trigger: edge trigger on the rising edge of the waveform; level at roughly 10% of the expected peak amplitude at the BNC
 
 **3.2 Waveform Capture**
 
-1. With the therapy cable connected to the Fluke Impulse 7000DP (50 Ω load), select **5 J** on the LIFEPAK 15.
-2. Charge and discharge the device.
-3. Capture the waveform on the oscilloscope. Use **Single** acquisition mode to capture a single-shot event.
-4. Adjust vertical scale so the waveform fills approximately 60–80% of the display.
+1. With the therapy cable connected to the Fluke Impulse 7000DP (50 Ω load), select **360 J** on the LIFEPAK 15. This is the only part of the lab that uses high energy: the service manual limits in 3.3 are maximum-energy figures. At 5 J the peak would be only about 235 V and 4.7 A into 50 Ω — nowhere near the 35 A – 42 A in the table — so the table cannot be checked at the familiarisation energy.
+2. Arm the oscilloscope in **Single** acquisition mode so it captures the one-shot discharge.
+3. Charge and discharge the device into the tester. Record the delivered energy the analyser reports: at 360 J the ±15% term governs, so the acceptable range is **306 J – 414 J**.
+4. Adjust the vertical scale so the waveform fills approximately 60–80% of the display, and repeat the capture if the first trace was clipped or too small. Return the energy selector to 5 J when Part 3 is finished.
 
 **3.3 Waveform Analysis**
 
@@ -145,9 +146,9 @@ Record the following measurements from the oscilloscope display or its automatic
 | Phase 2 peak voltage (V) | | — | — |
 | Total waveform duration (ms) | | — | — |
 
-> **Note:** The peak current is calculated from the peak voltage using Ohm's law and the 50 Ω test load: I = V / 50 Ω. For example, a peak voltage of 1900 V corresponds to 38 A.
+> **Note:** The peak current is calculated from the peak voltage at the therapy connection using Ohm's law and the 50 Ω test load: I = V / 50 Ω. Multiply the voltage you read on the oscilloscope by the ratio the analyser's Scope Output is using before you use it here. For example, a peak voltage of 1900 V corresponds to 38 A.
 
-**3.4** Verify that your measured values fall within the service manual specifications in the table above. If any parameter is out of range, note this in your report and discuss possible causes.
+**3.4** Verify that your measured values fall within the service manual specifications in the table above. If any parameter is out of range, note it in your lab notebook and be ready to explain the likely causes when you present your results orally to the lab engineer.
 
 **3.5** Sketch the captured waveform in your lab notebook, labelling Phase 1, Phase 2, the polarity reversal point, and the truncation point.
 
@@ -157,7 +158,7 @@ Record the following measurements from the oscilloscope display or its automatic
 
 Answer the following questions in your lab notebook. You will discuss your answers with the group at the end of the session.
 
-1. IEC 60601-2-4 specifies that the delivered energy shall be within ±15% of the selected energy. Why is energy accuracy clinically important — what could happen if a defibrillator consistently delivers significantly less energy than selected?
+1. IEC 60601-2-4 specifies that the delivered energy shall be within ±15% of the selected energy, or ±4 J, whichever is greater. Why is energy accuracy clinically important — what could happen if a defibrillator consistently delivers significantly less energy than selected?
 
 2. Explain why biphasic waveforms are preferred over monophasic waveforms for defibrillation. Reference at least one physiological mechanism in your answer.
 
@@ -169,13 +170,13 @@ Answer the following questions in your lab notebook. You will discuss your answe
 
 ---
 
-## Lab Report Requirements
+## Approval
 
-Submit a typed lab report by the date specified in the course schedule. The report must include:
+You are approved in the lab once you can show and explain the following to the lab engineer:
 
-- A title page with your name, student number, course code, and date
-- A completed results table for all measurements in Parts 2 and 3
-- Your oscilloscope waveform trace (exported image or clear photo) with all measurements annotated
-- Written answers to the four review questions (Part 4)
-- A brief conclusion (200–300 words) discussing whether the device under test meets its specifications and the clinical engineering implications of your findings
-- A reference list citing the IEC 60601-2-4 standard, the LIFEPAK 15 service manual, and any other sources used
+- Your delivered-energy, charge-time, sync-delay and pacer readings from Part 2, each judged against its acceptance criterion — including the pacer load you used in 2.4
+- The 360 J waveform capture from Part 3.2, the completed measurement table in 3.3 with the peak current worked out from the peak voltage, and your labelled sketch from 3.5
+- The controls, connectors and applied-part classification you identified in Part 1, and how you would follow up any parameter that fell outside the service manual limits (3.4)
+- Your answers to the five review questions in Part 4
+
+There is no written hand-in.

@@ -37,11 +37,11 @@ Etter denne laboratorieøvelsen skal du kunne:
 
 ## Oppsett av utstyr
 
-Denne øvelsen bruker PHYWE XR 4.0 røntgenenhet med rotasjonsbordet **XRstage**, den digitale flatpanel-detektoren **XRIS** og programvaren **measureCT**, samt en lab-PC med **3D Slicer** og en FDM-basert **3D-printer**.
+Denne øvelsen bruker PHYWE XR 4.0 røntgenenhet med rotasjonsbordet **XRstage**, den digitale flatpanel-detektoren **XRIS** og programvaren **measureCT**. Segmentering i 3D Slicer og 3D-printing av det skjulte objektet gjøres etterpå, i den egne labben 3D-rekonstruksjon og printing.
 
 1. Koble rotasjonsbordet XRstage og detektoren XRIS til røntgenenheten, og koble begge til PC-en via USB. Start **measureCT**-programmet og aktiver programvaren (Options → Activation Assistant) hvis du blir bedt om det.
 2. I live-visningen, bekreft at den grønne indikator-LED-en lyser for røntgenenheten, bordet og detektoren — dette betyr at hver komponent er registrert.
-3. Monter prøveobjektet — en **valnøtt** — på rotasjonsbordet slik at det står sentrert i røntgenstrålen, omtrent midtveis mellom røret og detektoren. Lukk kammerdøren.
+3. Monter prøveobjektet — en **valnøtt** — på rotasjonsbordet slik at det står sentrert i røntgenstrålen og nær detektoren: bordposisjonen skal gi geometrien SOD = 250 mm / SDD = 300 mm i steg 4, altså omtrent 50 mm foran detektoren. Står valnøtten midt mellom røret og detektoren i stedet, blir forstørrelsen 2,0× i stedet for 1,2×, voxelstørrelsen i rekonstruksjonen en annen, og projeksjonen av nøtten kan falle utenfor kanten av detektoren. Lukk kammerdøren.
 
    ![Valnøtt montert på rotasjonsbordet XRstage, med XRIS-detektoren bak](/labs/ct-imaging/01-setup-walnut-stage.jpg)
 
@@ -49,7 +49,7 @@ Denne øvelsen bruker PHYWE XR 4.0 røntgenenhet med rotasjonsbordet **XRstage**
 
    ![Strålegeometri inni kammeret: røntgenkilde, rotasjonsbord med prøveobjekt og detektor](/labs/ct-imaging/02-chamber-geometry.jpg)
 
-5. **Kalibrer detektoren** før du tar opp data: fjern alle objekter fra strålen (eller lukk døren med tomt bord), forsikre deg om at røntgenstrålingen er **slått av**, og klikk **Calibrate**. Kalibreringen måler detektorens offset og pikselvise forsterkning slik at de opptatte bildene korrigeres automatisk. Den røde LED-en på Calibrate-knappen blir grønn når kalibreringen lykkes.
+5. **Kalibrer detektoren** før du tar opp data, med fri strålegang. Gjør dette *før* du monterer valnøtten i steg 3 — eller, hvis den allerede står på bordet, slå av røntgenstrålingen, vent til varsellampen er slukket, og ta den av igjen. Still inn kV og mA du skal bruke i skanningen (del 2.2), la bordet stå tomt, lukk kammerdøren og klikk **Calibrate**. Kalibreringen tar opp både et mørkebilde med røret av, som gir detektorens offset, og et flatfeltbilde med røret på og fri strålegang, som gir den pikselvise forsterkningen; alle bilder du tar opp etterpå korrigeres automatisk med disse. Den røde LED-en på Calibrate-knappen blir grønn når kalibreringen lykkes. Monter valnøtten tilbake først når kalibreringen er ferdig og varsellampen er slukket.
 
 > Kalibrer på nytt hver gang du endrer kV, mA, binning eller detektorposisjon — den forrige kalibreringen er da ikke lenger gyldig.
 
@@ -76,7 +76,7 @@ Et CT-bilde bygges opp fra mange røntgen-**projeksjoner** tatt mens prøveobjek
 
 ### Del 2 — CT-opptak (45 min)
 
-**2.1** Slå på røntgenstrålingen og åpne **Live view**. Plasser prøveobjektet og juster kontrasten slik at valnøtten er tydelig synlig. Følg med på **detektorens eksponerings-/belastningsindikator**: den må holde seg **under** maksimalt fyllingsnivå. Hvis den blir rød, mettes detektoren — reduser mA eller eksponeringstid.
+**2.1** Med valnøtten montert og kammerdøren lukket, slå på røntgenstrålingen og åpne **Live view**. Juster kontrasten slik at valnøtten er tydelig synlig. Følg med på **detektorens eksponerings-/belastningsindikator**: den må holde seg **under** maksimalt fyllingsnivå. Hvis den blir rød, mettes detektoren — reduser mA eller eksponeringstid. Må du flytte prøveobjektet, slå av røntgenstrålingen og vent til varsellampen er slukket før du åpner døren.
 
 **2.2** Still inn opptaksparameterne. Disse verdiene gir gode resultater for en valnøtt på denne enheten:
 
@@ -107,7 +107,7 @@ Et CT-bilde bygges opp fra mange røntgen-**projeksjoner** tatt mens prøveobjek
 
 **3.2** Klikk **Test** for å rekonstruere ett enkelt snitt. Juster COR-verdien (start nær 254 for 500 × 500 binning) og test på nytt til snittet ser skarpt ut — skarpe kanter, ingen dobling, det skjulte objektet godt definert.
 
-**3.3** Når et testsnitt er skarpt, klikk **Reconstruct** for å rekonstruere hele volumet.
+**3.3** Når et testsnitt er skarpt, klikk **Reconstruct** for å rekonstruere hele volumet. Når rekonstruksjonen er ferdig, eksporter volumet som en stabel av snittbilder i én tom mappe, og noter **voxelavstanden** i mm per voxel som measureCT oppgir. I objektrommet er den den binnede detektorpitchen delt på den geometriske forstørrelsen — 0,096 mm ÷ 1,2 = **0,080 mm per voxel** med geometrien og binningen som brukes her. Noter det measureCT faktisk oppgir: hvis det avviker fra 0,080 mm, stol på programvaren og si det til veileder, for utskriftsstørrelsen henger på dette ene tallet. Du trenger både den eksporterte snittstabelen og voxelavstanden i labben 3D-rekonstruksjon og printing — uten dem får 3D-utskriften feil størrelse.
 
 **3.4** Åpne **3D View**. Inspiser volumet i snittvinduene for aksial, sagittal og koronal retning samt i 3D-gjengivelsen. Identifiser det skjulte objektet i alle tre snittretninger og anslå størrelsen i millimeter.
 
@@ -119,12 +119,13 @@ Det tette objektet inni valnøtten er en **menneskelig tann** — målet ditt fo
 
 ---
 
-## Krav til labrapport
+## Godkjenning
 
-Lever en maskinskrevet labrapport innen fristen angitt i emneplanen. Rapporten må inneholde:
+Du blir godkjent i laben når du kan vise og forklare følgende for labingeniøren:
 
-- En forside med navn, studentnummer, emnekode (MTE210) og dato
-- Opptaksparameterne du brukte (del 2.2) og et merket projeksjonsbilde av prøveobjektet
-- En kort beskrivelse av hvordan du justerte **rotasjonssenteret**, med før/etter-snittbilder som viser effekten
-- Rekonstruerte snittbilder (aksial, sagittal, koronal) som identifiserer det skjulte objektet, med ditt størrelsesanslag
-- En kort konklusjon (150–200 ord) som knytter benkearbeidsflyten til klinisk CT: opptak, dose/ALARA og rekonstruksjon
+- Opptaksparameterne du brukte (del 2.2) og en live-projeksjon av valnøtten der du kan peke ut det skjulte, tette objektet og si hva det er (del 2.3)
+- Hvordan du justerte **rotasjonssenteret** (del 3.2) — vis et uskarpt og et skarpt testsnitt — og det rekonstruerte volumet der du identifiserer det skjulte objektet i alle tre snittretninger og anslår størrelsen i millimeter (del 3.4)
+- Svarene dine på spørsmålene om strålevern og CT-fysikk i del 1 (1.2 og 1.3), med egne ord
+- Den eksporterte snittstabelen og voxelavstanden du noterte i del 3.3, som du trenger i neste lab
+
+Ingen skriftlig innlevering.

@@ -27,7 +27,7 @@ A defibrillator stores energy in a high-voltage capacitor and discharges it thro
 
 | Parameter | Typical Specification | Clinical Significance |
 |---|---|---|
-| Delivered energy (adult) | 120–200 J (biphasic) | Must match selected setting ±15% per IEC 60601-2-4 |
+| Delivered energy (adult) | 120–200 J (biphasic) | Must match selected setting within ±15% or ±4 J, whichever is greater (IEC 60601-2-4) |
 | Charge time (full charge) | ≤ 10 s from a new battery | Delays > 15 s indicate capacitor or battery degradation |
 | Synchronisation delay (SYNC mode) | ≤ 60 ms after R-wave peak | Longer delays risk R-on-T phenomenon |
 | Patient leakage current (CF) | ≤ 10 µA (normal), ≤ 50 µA (single-fault) | High leakage indicates pad cable or chassis insulation failure |
@@ -55,17 +55,17 @@ Perform at the interval specified by the manufacturer and your facility's PM pro
 
 2. **Battery capacity test** — Using the device's built-in self-test or a load tester, confirm the battery delivers at least 80% of rated capacity. Record state of health (SoH) from the BMS if accessible.
 
-3. **Energy delivery accuracy test** — Using a calibrated defibrillator tester (e.g., Fluke Impulse 7000DP) at a 50 Ω load, verify delivered energy at 50 J, 100 J, 150 J, and maximum joules. Each result must be within ±15% of the selected energy per IEC 60601-2-4 §201.7.9.3.
+3. **Energy delivery accuracy test** — Using a calibrated defibrillator tester (e.g., Fluke Impulse 7000DP) at a 50 Ω load, verify delivered energy at 50 J, 100 J, 150 J, and maximum joules. Each result must be within ±15% of the selected energy, or ±4 J, whichever is greater (IEC 60601-2-4, delivered-energy accuracy). At low settings the ±4 J term is the one that governs.
 
 4. **Charge time test** — From a full battery, time charge to maximum energy. New devices should charge in ≤ 8 s (LIFEPAK 15 spec); flag if > 10 s.
 
-5. **Electrical safety testing** — Per IEC 62353, measure earth/ground bond resistance (< 0.3 Ω on CF-rated equipment), touch current, and patient leakage current. Defibrillators are Type CF (cardiac floating) — apply the CF limits.
+5. **Electrical safety testing** — Per IEC 62353, measure protective earth resistance (< 0.3 Ω) on Class I equipment only — the limit follows the protection class, not the applied-part type, so it does not apply to an internally powered or Class II device. Then measure touch current and patient leakage current. Defibrillators have Type CF (cardiac floating) applied parts, so the IEC 62353 applied part leakage limit is ≤ 50 µA. Note that the ≤ 10 µA normal / ≤ 50 µA single-fault pair in the table above is the IEC 60601-1 Type CF patient leakage limit measured at type test — IEC 62353 does not test normal and single-fault conditions separately.
 
 ---
 
 ## Related Standards
 
-- **IEC 60601-2-4:2010+AMD1:2020** — Particular requirements for defibrillators. Specifies energy delivery accuracy, charge time, synchronisation, and waveform requirements.
+- **IEC 60601-2-4:2010+AMD1:2018** — Particular requirements for defibrillators. Specifies energy delivery accuracy, charge time, synchronisation, and waveform requirements.
 - **IEC 60601-2-27:2011+AMD1:2018** — Particular requirements for ECG monitoring equipment. Governs bandwidth, CMRR, electrode polarisation, and pacemaker pulse rejection.
 - **IEC 62353:2014** — Recurrent test and test after repair of medical electrical equipment. Defines simplified safety test methods for in-service testing.
 - **IEC 60601-1:2005+AMD2:2020** — General requirements for basic safety and essential performance (the parent standard).

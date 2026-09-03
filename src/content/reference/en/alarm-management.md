@@ -11,7 +11,7 @@ Clinical alarms are a critical safety feature — they alert staff to changes in
 
 Studies consistently show that **72–99% of clinical alarms are non-actionable** — they don't require clinical intervention. This creates alarm fatigue: staff become desensitised to alarms and may delay or miss response to real events.
 
-ECRI Institute has ranked alarm management as the **#1 health technology hazard** multiple times. The Joint Commission has issued a National Patient Safety Goal specifically addressing alarm management.
+ECRI Institute ranked alarm hazards as the **#1 health technology hazard** on its Top 10 lists for 2012–2015 — later editions are topped by other hazards, so cite the year with this ranking. The Joint Commission has issued a National Patient Safety Goal specifically addressing alarm management.
 
 ---
 
@@ -25,7 +25,7 @@ IEC 60601-1-8 standardises alarm signals for medical devices into three priority
 | **Medium** | Potentially dangerous condition | Slower repeating pattern | Yellow flashing | Prompt assessment |
 | **Low** | Awareness required | Single tone or quiet | Yellow steady or cyan | Assessment at convenience |
 
-Additionally, devices generate **technical alarms** (also called informational or advisory) for equipment issues (lead disconnect, low battery, sensor fault). These are distinct from clinical alarms about patient condition.
+Additionally, devices generate **technical alarm conditions** for equipment issues (lead disconnect, low battery, sensor fault). IEC 60601-1-8 treats these as alarm conditions in their own right, with the same three priorities as physiological alarm conditions — a leads-off condition during asystole monitoring is a *high-priority* technical alarm, not a mere notice. Do not confuse them with *information signals*, which the standard defines as signals that are **not** alarm signals. The counterpart term for an alarm derived from a patient parameter is *physiological alarm condition*.
 
 ---
 
@@ -68,12 +68,12 @@ Most monitors ship with factory defaults designed for acute care (ICU-level thre
 | Parameter | Typical ICU Default | General Ward (Elderly) | Cardiac Stepdown |
 |---|---|---|---|
 | HR low | 50 bpm | 40–45 bpm | 50 bpm |
-| HR high | 120 bpm | 110–120 bpm | 100–110 bpm |
-| SpO₂ low | 90% | 85–88% | 90% |
+| HR high | 120 bpm | 125–130 bpm | 100–110 bpm |
+| SpO₂ low | 90% | 88% | 90% |
 | NIBP systolic high | 160 mmHg | 170–180 mmHg | 160 mmHg |
 | NIBP systolic low | 90 mmHg | 80–85 mmHg | 90 mmHg |
 | RR low | 8/min | 6–8/min | 8/min |
-| RR high | 30/min | 24–28/min | 24/min |
+| RR high | 30/min | 30–32/min | 24/min |
 
 > These are examples — actual thresholds must be determined by the clinical team based on the patient population and approved by the responsible physician.
 
@@ -122,7 +122,7 @@ Clinical engineering sits at the intersection of technology and clinical practic
 
 ### Education
 - Train clinical staff on proper electrode application, probe placement, and alarm response
-- Educate on the difference between clinical and technical alarms
+- Educate on the difference between physiological (patient) and technical alarms
 - Participate in alarm management committees
 
 ---

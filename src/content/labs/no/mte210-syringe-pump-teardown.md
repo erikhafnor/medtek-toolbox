@@ -9,6 +9,9 @@ equipment:
   - "Torx-bitssett (T6, T8, T10, T20) og momentskrutrekker"
   - "Digitalt multimeter (DMM)"
   - "Tokanals oscilloskop med ×10 prober"
+  - "Fluke ESA615 elektrisk sikkerhetsanalysator, innenfor kalibreringsfristen"
+  - "Skyvelære eller stållinjal for måling av krype- og luftavstand"
+  - "50 ml sprøyte fylt med vann — pumpen går ikke uten at det står en sprøyte i den som blir gjenkjent"
   - "Kamera eller mobil for dokumentasjon"
 prerequisites:
   - "Teknisk servicemanual for Alaris CC sprøytepumpe (1000SM00001) og bruksanvisning (DFU)"
@@ -20,7 +23,7 @@ checklist:
   - title: "Før du starter"
     items:
       - "Les gjennom hele øvelsen én gang. Hovedpoenget: en ekte infusjonspumpe er en haug med EU MDR-krav gjort fysiske — du tar den fra hverandre, viser at hver del finnes for å oppfylle en regel, setter den sammen igjen og viser at den fortsatt er trygg."
-      - "To strømkilder kan bite her — nett *og* batteri. Slå av, ta ut batteriet først, og koble så fra nettkabelen."
+      - "To strømkilder kan bite her — nett *og* batteri. Slå av, koble fra nettkabelen først, og ta så ut batteriet."
   - title: "4.1 — Bli kjent med apparatet"
     items:
       - "Les merkeskiltet som en detektiv: modell, serienummer og alle de små symbolene."
@@ -43,7 +46,7 @@ checklist:
       - "Slå på og la den bestå sin egen selvtest. Hvis den furter, har du glemt en kabel."
   - title: "4.6 — Se den tenke (på batteri)"
     items:
-      - "Mål motoren, trykksensoren og alarmen med oscilloskop mens den går på batteri — trygt, fordi det ikke skjuler seg noe nett inni."
+      - "Mål motoren, trykksensoren og alarmen med oscilloskop mens den går på batteri — tryggere enn nettdrift, men baklysomformeren og PSU-ens primærside er fortsatt farlige."
   - title: "4.7 — Fortjen retten til å bruke den igjen"
     items:
       - "Kjør IEC 62353-testen med en *kalibrert* analysator, og skriv så serviceprotokollen — det er ISO 13485 i praksis."
@@ -51,8 +54,8 @@ checklist:
   - title: "Avslutning"
     items:
       - "Svar på repetisjonsspørsmålene — de knytter det hendene dine gjorde til reglene bak."
-      - "Lever tabellene, bildene, serviceprotokollen og en kort refleksjon."
-duration: "2 timer 45 minutter"
+      - "Vis tabellene, bildene og serviceprotokollen til labingeniøren og forklar dem — det er slik du blir godkjent, der og da."
+duration: "6 timer"
 ---
 
 Denne øvelsen bruker et ekte infusjonsapparat som et vindu inn i **regelverket** som lar det nå en pasient. I EU kan en produsent CE-merke og selge denne pumpen kun ved å (a) oppfylle de **generelle kravene til sikkerhet og ytelse (GSPR)** i **EU MDR 2017/745**, Vedlegg I, (b) gjøre det innenfor et sertifisert **ISO 13485**-kvalitetssystem, og (c) vanligvis vise det med **harmoniserte standarder** (IEC 60601-1, IEC 60601-2-24, IEC 60601-1-8, …) som gir en *samsvarsformodning*. Etter at apparatet er tatt i bruk, holder **ISO 13485**-service og **IEC 62353**-testing (periodisk / etter reparasjon) det trygt. Alt dette skal du se i maskinvaren.
@@ -76,7 +79,7 @@ Etter denne laboratorieøvelsen skal du være i stand til å:
 
 > **NETT- OG LAGRET ENERGI-FARE.** Denne pumpen drives fra nettet og fra et internt batteri. Den koblede strømforsyningen (switch-mode) har en nett-**primærside** med kondensatorer som kan holde på ladning **etter** at nettkabelen er trukket ut. Servicemanualen oppgir **ingen** utladningstid — behandle primærsiden og alle store kondensatorer som spenningsførende til det motsatte er bevist. Det er fare for elektrisk støt når kapslingen er åpen (servicemanual s.6).
 
-- **2.1 Isoler først, batteri først.** Slå pumpen AV, fjern **batteriet før alt annet** (batterideksel = to skruer), og koble *deretter* fra nettkabelen. Å fjerne den interne kilden først gjør pumpen spenningsløs før du åpner den.
+- **2.1 Isoler først, nett først.** Slå pumpen AV, **koble fra nettkabelen først**, og ta deretter ut batteriet (batterideksel = to skruer). Så lenge nettkabelen sitter i, er pumpen fortsatt fullt spenningssatt og PSU-ens primærside ligger på nettpotensial — den eksterne kilden skal alltid kobles fra før den interne. La pumpen stå i minst 5 minutter etter frakobling før du åpner kapslingen, og behandle uansett primærsiden og alle store kondensatorer som ladet (§2.2).
 - **2.2 Behandle PSU-ens primærside og kondensatorer som ladet.** Ikke prob nettinntak, sikringsholder eller PSU-ens primærside på en remontert, nylig spenningssatt pumpe. Alle elektriske sikkerhetsmålinger i §4.4 gjøres med pumpen **spenningsløs og åpen**.
 - **2.3 Ingen målinger under spenning eller lekkasjemålinger under demontering.** Det eneste arbeidet under spenning er oscilloskopopptakene etter remontering (§4.6, kun på **batteri**) og IEC 62353-testen (§4.7) — begge på en remontert pumpe og begge kun med veileders godkjenning.
 - **2.4 ESD-forholdsregler.** Bruk håndleddsstropp og arbeid på ESD-matten hele tiden — kretskortene er statisk-følsomme (servicemanual s.6, s.47). Kretskortene er **ikke reparerbare på komponentnivå**: forsøk aldri kortreparasjon eller berør komponentben. Ikke berør eller kortslutt det loddede backup-cellebatteriet på kontrollkortet.
@@ -92,7 +95,7 @@ Etter denne laboratorieøvelsen skal du være i stand til å:
 2. **3.2** Skaff verktøy: **Torx T6/T8/T10/T20**, en **momentskrutrekker** (cNm/Nm), DMM, oscilloskop med ×10 prober og Fluke **ESA615** — og noter ESA615-ens **kalibreringsfrist** (du trenger den til serviceprotokollen i §4.7).
 3. **3.3** Ha **servicemanualen (1000SM00001)** og **bruksanvisningen (DFU)** åpne. Du vil bruke sprengskissene (Corrective Maintenance, s.47–78) og momenttabellen (s.91–92) gjennom hele øvelsen.
 4. **3.4 Funksjonstest før demontering (referanse).** Med veileders godkjenning, slå på pumpen og bekreft at den fullfører **selvtest ved oppstart** uten feil, går på batteri og gir alarm. Noter resultatet — du skal sammenligne med det etter remontering. *En pumpe må vises å virke før du demonterer den, ellers beviser ikke etterkontrollen noe.*
-5. **3.5** Slå AV, **fjern batteriet**, og koble deretter fra nettkabelen før du starter §4.2.
+5. **3.5** Slå AV, **koble fra nettkabelen**, og ta deretter ut batteriet før du starter §4.2 (rekkefølge som i §2.1).
 
 ---
 
@@ -133,11 +136,11 @@ Med utgangspunkt i merkeskiltet, serie-/statusetiketten og bruksanvisningen, fyl
 
 ### 4.2 Trygg demontering og delinventar (70 min)
 
-> Bekreft at batteriet er **ute** og nettkabelen er **frakoblet** før du begynner. Fotografer hvert trinn.
+> Bekreft at nettkabelen er **frakoblet** og batteriet er **ute** før du begynner. Fotografer hvert trinn.
 
 **Demonteringssekvens** (servicemanual Corrective Maintenance-kapittel, s.47; demonteringstrinn fra s.48 — følg sprengskissene):
 
-1. **4.2.1** Bekreft AV, batteri fjernet (2 batteridekselskruer), nett frakoblet. Sett pumpen i støttebrakett hvis tilgjengelig.
+1. **4.2.1** Bekreft AV, nett frakoblet, deretter batteri fjernet (2 batteridekselskruer). Sett pumpen i støttebrakett hvis tilgjengelig.
 2. **4.2.2** Fjern de **seks hovedkapslingsskruene** (T20).
 3. **4.2.3 Kun CC:** lirk ut **blindpluggen / skivedekselet** for trykkgiveren og fjern festeskruen (s.48).
 4. **4.2.4** Skill forsiktig fram- og bakdekselet; **fotografer kabelføringen før** du kobler fra noen kontakt.
@@ -193,18 +196,18 @@ Dette er den sentrale oppgaven. MDR-ens **GSPR (Vedlegg I)** sier *hva* som må 
 
 ### 4.4 Elektriske sikkerhetsmålinger — DMM (spenningsløs) (45 min)
 
-> **Pumpen må være ÅPEN, batteriet UTE, nettet FRAKOBLET.** Dette er målinger på spenningsløs krets. Ikke spenningssett pumpen i denne delen.
+> **Pumpen må være ÅPEN, nettet FRAKOBLET, batteriet UTE.** Dette er målinger på spenningsløs krets. Ikke spenningssett pumpen i denne delen.
 
 | # | Måling | Metode | Akseptkriterium | Avlesning | Godkjent/Ikke godkjent |
 |---|---|---|---|---|---|
-| 4.4.1 | Beskyttelsesjording: jordpinne på nettinntak → chassis / PE-stuss | DMM kontinuitet (Ω) | IEC 60601-1 **§8.6.4**: ≤ **0,1 Ω** PE-terminal→jordede deler (uten kabel); ≤ **0,2 Ω** med avtakbar kabel. IEC 62353: ≤ **0,3 Ω** (inkl. nettkabel) | | |
+| 4.4.1 | Beskyttelsesjording: jordpinne på nettinntak → chassis / PE-stuss | DMM kontinuitet (Ω) | IEC 60601-1 **§8.6.4** (typetest: 25 A i 5–10 s fra kilde ≤ 6 V): ≤ **0,1 Ω** fra jordpinnen i apparatinntaket til enhver beskyttelsesjordet del, *uten* nettkabel; ≤ **0,2 Ω** fra jordpinnen i nettstøpselet når nettkabelen er **fast tilkoblet**. IEC 62353: ≤ **0,3 Ω** (inkl. nettkabel). Et DMM kan ikke gjenskape 25 A-testen — nullstill prøveledningsmotstanden først og regn avlesningen som veiledende | | |
 | 4.4.2 | Sikringskontinuitet + trykt verdi | DMM kontinuitet; les sikringen | Kontinuitet ≈ 0 Ω; verdi stemmer med merkeskilt (**T 1,25 A**) | | |
 | 4.4.3 | Batteripakkens tomgangsspenning | DMM DC-volt på pakkepolene | **7,2 V** nominelt (6 × 1,2 V); typisk ≈ 8,0–8,4 V ladet (manualens kal.-eksempel ≈ 8,21 V, s.21) | | |
 | 4.4.4 | Krypeavstand, nett **primær ↔ sekundær** på PSU/Power-kort | Skyvelære / linjal | Veiledende mål ≈ **8 mm** for 2× MOPP ved ~250 V (IEC 60601-1 §8.9, MOPP-tabell 13–16) | | |
 | 4.4.5 | Luftavstand, nett **primær ↔ sekundær** | Skyvelære / linjal | Veiledende mål ≈ **5 mm** for 2× MOPP ved ~250 V (§8.9) | | |
 | 4.4.6 | Kontinuitet for L og N fra nettinntak til PSU-inngang | DMM kontinuitet | Sammenhengende; ingen brudd | | |
 
-**Spørsmål å tenke over:** Din beskyttelsesjordingsavlesning — består den **IEC 60601-1 typetest**-grensen, **IEC 62353 periodisk test**-grensen, eller begge? Hvorfor er grensene forskjellige? (62353-grensen på 0,3 Ω gjelder banen *inkludert* nettkabelen.) Hvordan gir en større krypeavstand et høyere *beskyttelsesmiddel* (MOOP vs MOPP)?
+**Spørsmål å tenke over:** Din beskyttelsesjordingsavlesning — består den **IEC 60601-1 typetest**-grensen, **IEC 62353 periodisk test**-grensen, eller begge? Hvorfor er grensene forskjellige? (62353-grensen på 0,3 Ω gjelder banen *inkludert* nettkabelen.) Og hvorfor kan et DMM bare gi deg en pekepinn mot 60601-1-verdien? Hvordan gir en større krypeavstand et høyere *beskyttelsesmiddel* (MOOP vs MOPP)?
 
 ---
 
@@ -241,7 +244,7 @@ Remonter pumpen **til produsentens tiltrekkingsmoment** (servicemanualens moment
 
 ### 4.6 Signalmålinger — oscilloskop, på batteri (40 min)
 
-> **Godkjent, kun batteri.** Med veileders godkjenning, kjør den remonterte pumpen på det interne **batteriet (nettkabel frakoblet)**. Siden nett-primærsiden nå er borte, er alle interne noder SELV/lavenergi. Prob bare punktene veileder anviser.
+> **Godkjent, kun batteri.** Med veileders godkjenning, kjør den remonterte pumpen på det interne **batteriet (nettkabel frakoblet)**. Batteridrift fjerner nettforsyningen, men gjør **ikke** hele pumpen lavenergi: kondensatorene på PSU-ens primærside kan fortsatt holde på ladning (§2.2), og **CCFL-baklysets omformer drives fra batteriet og gir flere hundre volt vekselspenning** ved lampekontakten og lampeledningene. Behandle PSU-ens primærside og baklysomformeren som spenningsførende hele tiden, og prob bare punktene veileder anviser.
 
 | # | Signal | Slik tar du opp | Slik ser et sunt spor ut | Observasjon |
 |---|---|---|---|---|
@@ -252,7 +255,7 @@ Remonter pumpen **til produsentens tiltrekkingsmoment** (servicemanualens moment
 
 Noter oscilloskopinnstillingene dine (V/div, tid/div) for hvert opptak.
 
-**Spørsmål å tenke over:** Ut fra trinnmotorsporet — hvordan oppnår pumpen en jevn, nøyaktig lav strømningsrate fra diskrete motortrinn (koble dette til **GSPR 21.1** om nøyaktig tilførsel)? Hvorfor er det trygt å ta disse opptakene på batteri, men **ikke** med nettkabelen tilkoblet og kapslingen åpen?
+**Spørsmål å tenke over:** Ut fra trinnmotorsporet — hvordan oppnår pumpen en jevn, nøyaktig lav strømningsrate fra diskrete motortrinn (koble dette til **GSPR 21.1** om nøyaktig tilførsel)? Hvorfor er det tryggere å ta disse opptakene på batteri enn med nettkabelen tilkoblet — og hvilke noder inne i pumpen er fortsatt farlige selv på batteri?
 
 ---
 
@@ -296,14 +299,13 @@ Noter oscilloskopinnstillingene dine (V/div, tid/div) for hvert opptak.
 
 ---
 
-## 5. Hva du skal levere
+## 5. Godkjenning
 
-Lever en maskinskrevet labrapport innen fristen angitt i emneplanen. Rapporten må inneholde:
+Du blir godkjent i laben når du kan vise og forklare følgende for labingeniøren:
 
-- En forside med navn, studentnummer, emnekode og dato.
-- Den utfylte **klassifiseringstabellen** (§4.1), **delinventartabellen** (§4.2) og **GSPR→standard-koblingstabellen** (§4.3).
-- De utfylte **måletabellene** fra §4.4, §4.6 og §4.7, med godkjent/ikke godkjent-status og noterte oscilloskopinnstillinger/spor.
-- Den utfylte **serviceprotokollen** (§4.7.1) og **momentprotokollen for remontering** (§4.5).
-- **Fotografier** som dokumenterer demonteringstrinnene og det utlagte delinventaret.
-- Skriftlige svar på de seks repetisjonsspørsmålene (§4.8).
-- En kort konklusjon (200–300 ord) om hvordan Alaris CC viser samsvar med **EU MDR 2017/745** gjennom **ISO 13485**-prosesser og harmoniserte standarder — og hvorfor en **IEC 62353**-test etter reparasjon er obligatorisk etter at kapslingen har vært åpnet.
+- De utfylte tabellene dine: klassifiseringstabellen (§4.1), delinventaret (§4.2), koblingen GSPR → harmonisert standard (§4.3), DMM-avlesningene på spenningsløs krets (§4.4) og oscilloskopopptakene med innstillingene du brukte (§4.6)
+- Selve pumpen: remontert til momentverdiene du noterte (§4.5.2), med bestått selvtest ved oppstart og funksjonsverifisering (§4.5.4), og demonteringsbildene (§4.2) som viser hvordan du kom dit
+- IEC 62353-resultatene og serviceprotokollen (§4.7, §4.7.1): hvilke beskyttelsesmidler demonteringen forstyrret, hvorfor testen er obligatorisk før pumpen kan tas i bruk igjen, og hvorfor ESA615 må være kalibrert
+- Svarene dine på de seks repetisjonsspørsmålene (§4.8) og på §4.3.1 og §4.3.2, fra labboken og med dine egne ord
+
+Ingen skriftlig innlevering.

@@ -38,18 +38,18 @@ steps:
         feedback: "For tidlig — du trenger diagnostiske data før du eskalerer. Dette kan være et batteri-, BMS- eller ladeproblem."
   - type: multiple-choice
     id: investigation
-    question: "Hendelsesloggen viser: batteri på 11,1V da enheten slo seg av (nominelt 11,1V = ~20 % kapasitet), men drivstoffmåleren rapporterte 75 %. Batteriet har 847 ladesykluser. Hva forteller dette avviket deg?"
-    hint: "Drivstoffmålerchipet estimerer gjenværende kapasitet basert på en innlært modell. Hva skjer med den modellen over tid?"
+    question: "Hendelsesloggen viser: batteriet var på 9,6V da enheten slo seg av (en 3-cellers pakke med nominell spenning 11,1V er utladet ved rundt 9,0–9,6V), men ladenivåmåleren rapporterte 75 %. Batteriet har 847 ladesykluser. Hva forteller dette avviket deg?"
+    hint: "Ladenivåmålerbrikken estimerer gjenværende kapasitet ut fra en innlært modell. Hva skjer med den modellen over tid?"
     choices:
-      - text: "Drivstoffmålerchipet har mistet kalibreringen — det overestimerer gjenværende kapasitet fordi cellekapasiteten har degradert"
+      - text: "Ladenivåmålerbrikken har mistet kalibreringen — den overestimerer gjenværende kapasitet fordi cellekapasiteten har degradert"
         correct: true
-        feedback: "Riktig — litiumionceller mister kapasitet med alder og sykling, men drivstoffmålerens innlærte modell følger ikke nødvendigvis denne degraderingen nøyaktig. Måleren 'tror' batteriet holder mer enn det faktisk kan."
+        feedback: "Riktig — litiumionceller mister kapasitet med alder og sykling, men ladenivåmålerens innlærte modell følger ikke nødvendigvis denne degraderingen nøyaktig. Måleren «tror» batteriet holder mer enn det faktisk kan."
       - text: "Batteriet er i orden, men laderen lader det ikke fullt"
         correct: false
-        feedback: "Hvis laderen underlader, ville drivstoffmåleren vist lavere ladetilstand, ikke høyere — avviket går feil vei."
+        feedback: "Hvis laderen underlader, ville ladenivåmåleren vist lavere ladetilstand, ikke høyere — avviket går feil vei."
       - text: "Det er en programvarefeil i strømstyringsfastvaren"
         correct: false
-        feedback: "Mulig men usannsynlig — den spenningsbaserte avslåingen ved 11,1V er en maskinvaresikkerhetsmekanisme. Problemet er kapasitetsestimeringen, ikke avslåingslogikken."
+        feedback: "Mulig men usannsynlig — den spenningsbaserte utkoblingen ved 9,6V er en maskinvaresikkerhetsmekanisme. Problemet er kapasitetsestimeringen, ikke avslåingslogikken."
       - text: "Batterikontakten har intermitterende kontakt som forårsaker spenningsfall"
         correct: false
         feedback: "Intermitterende kontakt ville forårsake plutselige avslåinger ved varierende ladenivåer, ikke et konsistent avvik mellom måler og virkelighet."
@@ -62,7 +62,7 @@ steps:
         - setting: "Fulladingsspenning"
           delivered: "12,6V"
           status: pass
-          spec: "12,6V nominelt"
+          spec: "12,6V ved full lading (pakken er 11,1V nominelt)"
         - setting: "Ladesykluser (fra BMS)"
           delivered: "847 sykluser"
           status: warning
@@ -75,34 +75,34 @@ steps:
           delivered: "89 sjokk"
           status: fail
           spec: "≥250 sjokk"
-        - setting: "Drivstoffmåler rapportert SoC ved faktisk 50 % kapasitet"
+        - setting: "Ladenivåmålerens SoC ved faktisk 50 % kapasitet"
           delivered: "82 %"
           status: fail
           error: "Måleren overestimerer med ~32 %"
   - type: multiple-choice
     id: diagnosis
-    question: "Batteriet lader til full spenning (12,6V) men leverer bare 51 % av nominell kapasitet, og drivstoffmåleren overrapporterer med 32 %. Batteriet har 847 sykluser (beregnet for 500). Hva er rotårsaken og korrigerende tiltak?"
+    question: "Batteriet lader til full spenning (12,6V) men leverer bare 51 % av nominell kapasitet, og ladenivåmåleren overrapporterer med 32 %. Batteriet har 847 sykluser (beregnet for 500). Hva er rotårsaken og korrigerende tiltak?"
     choices:
-      - text: "Celledegradring fra overskredet nominell sykluslevetid — bytt batteri og kalibrer drivstoffmåleren på nytt batteri"
+      - text: "Celledegradering fra overskredet nominell sykluslevetid — bytt batteri og kalibrer ladenivåmåleren på nytt batteri"
         correct: true
-        feedback: "Riktig — ved 170 % av nominelt syklustall har litiumioncellene betydelig redusert kapasitet. Drivstoffmålerens innlærte modell er trent på den opprinnelige kapasiteten og har ikke fulgt degraderingen. Bytt batteri, og det nye batteriets drivstoffmåler starter med en nøyaktig modell."
+        feedback: "Riktig — ved 170 % av nominelt syklustall har litiumioncellene betydelig redusert kapasitet. Ladenivåmålerens innlærte modell er trent på den opprinnelige kapasiteten og har ikke fulgt degraderingen. Bytt batteri, og det nye batteriets ladenivåmåler starter med en nøyaktig modell."
       - text: "Defekt BMS-chip — bytt BMS-kortet og behold eksisterende celler"
         correct: false
-        feedback: "BMS rapporterer spenning korrekt (12,6V lading, 11,1V avslåing). Problemet er at cellene ikke lenger kan holde sin nominelle kapasitet."
+        feedback: "BMS rapporterer spenning korrekt (12,6V ved full lading, 9,6V utkobling). Problemet er at cellene ikke lenger kan holde sin nominelle kapasitet."
       - text: "Degradert ladekrets — batteriet blir ikke fulladet"
         correct: false
         feedback: "Batteriet når full ladespenning (12,6V), så laderen fungerer korrekt. Problemet er at full spenning ikke lenger tilsvarer full kapasitet i aldrede celler."
       - text: "Fastvareoppdatering nødvendig for å rekalibrere kapasitetsalgoritmen"
         correct: false
-        feedback: "Drivstoffmåleren lærer fra det spesifikke batteriet som er installert. En fastvareoppdatering kan forbedre fremtidig kalibrering, men det grunnleggende problemet er at disse cellene har passert sin brukbare levetid."
+        feedback: "Ladenivåmåleren lærer fra det spesifikke batteriet som er installert. En fastvareoppdatering kan forbedre fremtidig kalibrering, men det grunnleggende problemet er at disse cellene har passert sin brukbare levetid."
 learning_points:
-  - text: "Batteridrivstoffmålere kan gi farlig misvisende informasjon i aldrede batterier. Måleren estimerer kapasitet basert på spenning og en innlært modell, men litiumiondegradring reduserer faktisk kapasitet uten at modellen nødvendigvis oppdateres proporsjonalt."
+  - text: "Ladenivåmålere for batteri kan gi farlig misvisende informasjon i aldrede batterier. Måleren estimerer kapasitet basert på spenning og en innlært modell, men litiumiondegradering reduserer faktisk kapasitet uten at modellen nødvendigvis oppdateres proporsjonalt."
   - text: "Litiumionbatterier i kliniske miljøer med høy bruksintensitet degraderer ofte før utskiftingsintervallet basert på kalenderalder. Følg med på ladesykluser, ikke bare installasjonsdato."
     source: "FDA MAUDE — batterirelaterte defibrillatorklager utgjør ~18 % av alle uønskede hendelser med defibrillatorer"
     source_type: incident-data
   - text: "Etter en batterirelatert hendelse, test ALLE batterier av samme alder/parti i avdelingen. Én svikt signaliserer ofte at en kohort nærmer seg slutten av levetiden."
     source_type: best-practice
-  - text: "IEC 60601-1 §16 krever at batteridrevet livsopprettholdende utstyr indikerer når gjenværende batterikapasitet er utilstrekkelig for sikker drift. En unøyaktig drivstoffmåler kan bryte dette kravet."
+  - text: "IEC 60601-1 §16 krever at batteridrevet livsopprettholdende utstyr indikerer når gjenværende batterikapasitet er utilstrekkelig for sikker drift. En unøyaktig ladenivåmåler kan bryte dette kravet."
     source: "IEC 60601-1 §16 (ME-utstyr drevet av intern elektrisk kraftkilde)"
     source_type: standard
   - text: "Dokumenter feilmønsteret (overrapportering fra måler, faktisk kapasitet, syklustall) og anbefal en syklusbasert utskiftingspolicy for avdelingen — f.eks. bytt ved 500 sykluser uavhengig av tilsynelatende tilstand."

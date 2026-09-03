@@ -38,12 +38,12 @@ Familiarise yourself with the ECG device and patient simulator per the user manu
 
 The patient simulator generates ECG signals for a range of possible simulated cardiac arrhythmias (arrhythmias, artifacts) and all settings are controlled via the user interface.
 
-1. Connect all 12 ECG electrodes to the patient simulator.
+1. Connect all 10 lead wires of the PageWriter TC30 patient cable (RA, LA, RL, LL and V1–V6) to the correspondingly labelled ECG posts on the ProSim 8.
 2. Power on the ECG device.
 3. ECG traces appear once you press a button on the patient simulator.
 4. ECG recordings should be exported as PDF to a USB drive connected to the ECG device (procedure described in the user manual).
 
-Students must write a running protocol during lab work.
+Students must write a running protocol during the lab work so they can reproduce the results after the assignment and get it approved in the lab.
 
 ---
 
@@ -62,9 +62,9 @@ The following questions can be completed before arriving at the lab. Use the Phi
 
 **1.2** What criteria must be met to connect the medical device to another device connected to the power grid?
 
-**1.3** Find information about the accuracy of the electrocardiogram the device produces. What is the accuracy requirement for diagnostic ECG display, and in which IEC 60601 protocol are these requirements found?
+**1.3** Find information about the accuracy of the electrocardiogram the device produces. What is the accuracy requirement for diagnostic ECG display, and in which particular standard of the IEC 60601-2 series are these requirements found? Note that the series has separate particular standards for diagnostic electrocardiographs and for ECG monitoring equipment — make sure you cite the one that applies to the TC30.
 
-**1.4** Find the device's filter and cut-off frequency alternatives, e.g., 50 Hz and 60 Hz, and document where to find them.
+**1.4** Find the device's filter settings and note where in the manual they are described. Distinguish the AC (mains notch) filter — 50 Hz in Norway, 60 Hz in North America — from the bandwidth cut-off frequencies, that is the high-pass (baseline) and low-pass (muscle) limits. Which combination does the TC30 use for a diagnostic-quality recording, and how does it compare with the diagnostic bandwidth required by the particular standard you identified in 1.3?
 
 **1.5** Explain how the anatomical view of electrode placement on the device is obtained. Why is it called a 12-lead ECG when only 10 electrodes are attached to the patient?
 
@@ -74,7 +74,7 @@ The following questions can be completed before arriving at the lab. Use the Phi
 
 **2.1 Lead Wire Performance Test**
 
-Perform a performance test of the electrodes by following the service manual procedure "Lead Wire Performance Test (2-15)."
+Perform a performance test of the lead wires by following the service manual procedure "Lead Wire Performance Test (2-15)."
 
 > **Note:** Leads must be disconnected from the patient simulator during this test.
 
@@ -101,7 +101,7 @@ Apply the following artifacts available on the patient simulator and observe the
 
 > **Note:** The ECG device has active filtering that in some cases must be deactivated to show the artifact on the ECG. Record which filter settings you used for each observation.
 
-Export a recording of each artifact type to the USB drive for inclusion in your lab report.
+Export a recording of each artifact type to the USB drive so you can show and explain the four traces to the lab engineer when you present your results.
 
 ---
 
@@ -133,20 +133,17 @@ Use Einthoven's triangle to perform the axis determination. Measure the net ampl
 
 **5.3** The standard extremity leads I, II, and III are bipolar because they measure between two electrodes where the signal potential varies at both locations. The augmented extremity leads (aVF, aVL, and aVR) are monopolar/unipolar. How is this achieved when the same 3 electrodes are used?
 
-> **Hint:** Consider how Wilson's central terminal is formed and how the augmented leads modify the reference electrode configuration. Refer to the figure showing the Einthoven triangle and augmented leads.
+> **Hint:** Consider how Wilson's central terminal is formed and how the augmented leads modify the reference electrode configuration. Sketch the Einthoven triangle with the three augmented lead vectors added, and use your sketch to answer.
 
 ---
 
-## Lab Report Requirements
+## Approval
 
-Submit a typed lab report by the date specified in the course schedule. The report must include:
+You are approved in the lab once you can show and explain the following to the lab engineer:
 
-- A title page with your name, student number, course code, and date
-- Written answers to the preliminary questions (Part 1)
-- Lead wire performance test results and sensitivity test results (Part 2)
-- Artifact comparison observations with exported ECG recordings (Part 3)
-- ECG interval measurements with calculated heart rate (Part 4)
-- Electrical axis determination using Einthoven's triangle, including your plotted vectors (Part 5)
-- Written answer to the bipolar vs unipolar lead question (Part 5.3)
-- A brief conclusion (200--300 words) discussing your findings and their relevance to clinical engineering quality assurance
-- A reference list citing the Philips PageWriter TC30 user and service manuals, IEC 60601 standards referenced, and any other sources used
+- The lead wire performance test and cardiograph overall sensitivity test results from Part 2, judged against the acceptance criteria in the service manual
+- The four exported artifact recordings from Part 3 with the filter settings you used for each, and the R-R, P-R and ST measurements with the calculated heart rate from Part 4
+- The axis determination from Part 5 — your Einthoven triangle with the plotted QRS, P-wave and T-wave vectors — and how you connected the 10 lead wires and obtained a diagnostic-quality recording
+- Your answers to the preliminary questions in Part 1 and to the bipolar versus unipolar lead question in Part 5.3
+
+There is no written hand-in.

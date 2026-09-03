@@ -8,8 +8,8 @@ equipment:
   - "Fluke VT900A Gas Flow Analyzer"
   - "Dräger test lung"
 standards:
-  - "IEC 60601-2-12 (Critical care ventilators)"
-  - "ISO 80601-2-12 (Home care ventilators)"
+  - "ISO 80601-2-12 (Critical care ventilators)"
+  - "ISO 80601-2-72 (Home healthcare ventilators)"
   - "IEC 62353 (Recurrent testing)"
 order: 3
 ---
@@ -34,7 +34,7 @@ A critical care ventilator uses either a turbine-driven blower (increasingly com
 | Peak pressure alarm | Set by clinician (typical 35–40 cmH₂O) | High pressure indicates obstruction, bronchospasm, or pneumothorax |
 | Disconnect/low pressure alarm | ≤ 15 s detection time | Delayed disconnect detection can cause hypoxia and death |
 | Inspiratory flow accuracy | ±10% of set flow | Affects delivered volume and patient-ventilator synchrony |
-| Battery backup | ≥ 30 min (IEC 60601-2-12) | Transport and power failure survival |
+| Battery backup | ≥ 30 min (in-house value; manufacturer declares runtime) | Transport and power failure survival |
 
 ---
 
@@ -68,7 +68,7 @@ Perform at the interval specified by the manufacturer (typically annually for IC
 
 7. **Leak test** — Occlude the patient wye and run a circuit leak test per the manufacturer's procedure. Maximum allowable leak varies by manufacturer (typically < 200 mL/min at 60 cmH₂O).
 
-8. **Battery test** — Run the ventilator on battery with a test lung at typical settings until low-battery alarm. Must provide ≥ 30 minutes per IEC 60601-2-12.
+8. **Battery test** — Run the ventilator on battery with a test lung at typical settings until low-battery alarm. Must provide ≥ 30 minutes — our in-house acceptance value; compare it with the battery runtime the manufacturer declares for the ventilator under test.
 
 9. **Oxygen cell check** — Record the O₂ cell reading at room air (20.9%) and 100% O₂. If the cell cannot calibrate, replace it.
 
@@ -76,9 +76,9 @@ Perform at the interval specified by the manufacturer (typically annually for IC
 
 ## Related Standards
 
-- **IEC 60601-2-12:2014** — Particular requirements for critical care ventilators. Specifies performance, alarm, and safety requirements.
-- **ISO 80601-2-12:2020** — Particular requirements for home care ventilators. Covers ventilator-dependent patients outside the ICU.
-- **ISO 80601-2-80:2018** — Particular requirements for ventilatory support equipment (CPAP/BiPAP for obstructive sleep apnoea).
+- **ISO 80601-2-12:2020** — Particular requirements for the basic safety and essential performance of critical care ventilators. Specifies performance, alarm, and safety requirements. It replaced IEC 60601-2-12:2001, which is withdrawn.
+- **ISO 80601-2-72** — Particular requirements for home healthcare environment ventilators for ventilator-dependent patients, i.e. long-term ventilation outside the ICU.
+- **ISO 80601-2-80:2018** — Particular requirements for ventilatory support equipment for ventilatory insufficiency (bilevel non-invasive support). CPAP/APAP therapy for obstructive sleep apnoea is covered by ISO 80601-2-70 instead.
 - **IEC 62353:2014** — Recurrent test and test after repair of medical electrical equipment.
 - **IEC 60601-1:2005+AMD2:2020** — General requirements for basic safety and essential performance.
 

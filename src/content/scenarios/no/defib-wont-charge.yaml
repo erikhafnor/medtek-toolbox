@@ -25,7 +25,7 @@ steps:
     choices:
       - text: "Åpne utstyret og sjekk innvendige komponenter"
         correct: false
-        feedback: "For invasivt som første steg — begynn alltid med observasjon og informasjonsinnsamling."
+        feedback: "For invasivt som første steg — begynn alltid med observasjon og informasjonsinnsamling. Å åpne en defibrillator er aldri noe du gjør ved pasientsengen: høyspenningskondensatoren kan holde på en dødelig ladning."
       - text: "Snakk med sykepleieren, reproduser feilen, sjekk det grunnleggende (strøm, batteri, kabler, pads)"
         correct: true
         feedback: "Riktig — systematisk tilnærming: samle info, observer, sjekk det åpenbare før du går dypere."
@@ -39,7 +39,7 @@ steps:
     choices:
       - text: "Åpne enheten og se visuelt etter kondensator med buling eller lekkasje"
         correct: false
-        feedback: "Visuell inspeksjon alene bekrefter sjelden kondensatordegradring — du trenger målinger."
+        feedback: "Nei — og ikke bare fordi visuell inspeksjon sjelden bekrefter kondensatordegradering. Denne enheten har vært under lading, og høyspenningskondensatoren kan holde på en dødelig ladning selv etter at enheten er slått av og batteriet tatt ut. Åpne aldri kabinettet ute i avdelingen: karakteriser først feilen utenfra med en defibrillatoranalysator, og må enheten åpnes, gjør det på verkstedet etter produsentens utladings- og verifiseringsprosedyre. Du trenger målinger uansett."
       - text: "Bytt til et kjent godt batteri og test på nytt"
         correct: false
         feedback: "Rimelig steg, men batteriindikatoren er konsistent — følg ladekretsen først."
@@ -51,7 +51,7 @@ steps:
         feedback: "God praksis, men vil ikke diagnostisere den nåværende feilen — gjør dette parallelt."
   - type: lab-handoff
     id: measurement
-    instruction: "Koble LIFEPAK 15 til Fluke Impulse 7000DP. Kjør levert energitest ved 50J, 100J, 150J, 200J. Registrer levert energi og ladetid for hvert innstilling."
+    instruction: "Koble LIFEPAK 15 til Fluke Impulse 7000DP. Kjør levert energitest ved 50J, 100J, 150J, 200J. Registrer levert energi og ladetid for hver innstilling."
     simulated_data:
       tool: "Fluke Impulse 7000DP — Levert energitest"
       load: "50 Ω"
@@ -61,9 +61,10 @@ steps:
           status: pass
         - setting: "Innstilling: 100J → Levert"
           delivered: "96J"
-          status: pass
+          status: warning
           charge_time: "8,2s"
-          spec: "≤6s"
+          spec: "Energi innenfor ±15 %; ladetid ≤6 s"
+          error: "Energien er innenfor toleranse, men ladetiden på 8,2 s overskrider spesifikasjonen på 6 s"
         - setting: "Innstilling: 150J → Levert"
           delivered: null
           status: fail
@@ -79,7 +80,7 @@ steps:
       - text: "Defekte laderele-kontakter"
         correct: false
         feedback: "Ville sannsynligvis forårsake total ladefeil på alle energinivåer, ikke bare høye."
-      - text: "Degradert høyspanningskondensator"
+      - text: "Degradert høyspenningskondensator"
         correct: true
         feedback: "Riktig — delvis ladekapasitet + langsom ladetid = kondensator som mister kapasitet. Den kan lagre noe ladning men kan ikke nå nominell energi."
       - text: "Programvarefeil som krever fastvareoppdatering"
@@ -87,9 +88,9 @@ steps:
         feedback: "Programvare ville ikke forårsake progressiv energiavhengig feil med degraderte ladetider."
       - text: "Skadet HV-transformator"
         correct: false
-        feedback: "Mulig men mye sjeldnere — kondensatordegradring er den vanligste årsaken til dette feilvmønsteret."
+        feedback: "Mulig men mye sjeldnere — kondensatordegradering er den vanligste årsaken til dette feilmønsteret."
 learning_points:
-  - text: "Fungerer ved lav energi + feiler ved høy energi = kondensatordegradring. Kondensatoren kan fortsatt lagre delvis ladning men kan ikke nå nominell energi."
+  - text: "Fungerer ved lav energi + feiler ved høy energi = kondensatordegradering. Kondensatoren kan fortsatt lagre delvis ladning men kan ikke nå nominell energi."
   - text: "Langsom ladetid er et tidlig varseltegn på kondensatorproblemer, selv før total feil."
     source: "IEC 60601-2-4 §201.12.1"
     source_type: standard

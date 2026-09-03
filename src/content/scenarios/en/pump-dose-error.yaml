@@ -91,8 +91,8 @@ learning_points:
   - text: "Drug library governance is a shared responsibility between pharmacy (defining limits), clinical engineering (implementing and deploying), and nursing (using the guardrails). A breakdown in any link can allow dose errors."
   - text: "When a drug library discrepancy is found, audit the ENTIRE library — not just the drug that triggered the investigation. If one entry is outdated, others are likely outdated too."
     source_type: best-practice
-  - text: "IEC 60601-2-24 requires infusion pumps to support dose-rate limits and alerts. But the standard addresses the platform capability — the accuracy of the limits depends entirely on hospital configuration and maintenance."
-    source: "IEC 60601-2-24 §201.12"
+  - text: "IEC 60601-2-24:2012 governs delivery accuracy, occlusion detection, free-flow protection and alarm behaviour — it does not require a pump to carry a drug library or dose error reduction software (DERS). Dose limits are a layer the hospital configures on top of a certified pump, so their correctness depends entirely on local governance, never on the pump's certification."
+    source: "IEC 60601-2-24:2012 (scope); AAMI and ISMP guidance on smart pump DERS"
     source_type: standard
   - text: "Drug library mismatches are a recognised patient safety risk. ECRI Institute and ISMP consistently rank infusion pump dose errors among the top technology-related safety concerns."
     source: "ISMP (Institute for Safe Medication Practices) — Smart pump drug library management"

@@ -10,7 +10,7 @@ equipment:
 standards:
   - "IEC 60601-2-27 (EKG-overvåkingsutstyr)"
   - "IEC 60601-2-49 (Multifunksjons pasientovervåking)"
-  - "IEC 60601-2-30 (NIBP-overvåking)"
+  - "IEC 80601-2-30 (Automatiske ikke-invasive blodtrykksmålere)"
   - "IEC 62353 (Periodisk testing)"
 order: 5
 ---
@@ -27,8 +27,8 @@ En pasientmonitor henter fysiologiske signaler gjennom flere kanaler samtidig:
 
 - **EKG** — Differensialforsterkere måler spenningen mellom elektrodepar på pasientens hud. Råsignalet filtreres, digitaliseres og bearbeides for å trekke ut hjertefrekvens, rytmeanalyse, ST-segmentmålinger og arytmideteksjon.
 - **SpO₂** — En pulsoksymeterprobe sender rødt (660 nm) og infrarødt (940 nm) lys gjennom vev. Forholdet mellom absorbert lys ved de to bølgelengdene angir arteriell oksygenmetning.
-- **NIBP** — En oppblåsbar mansjett okkluderer en arterie. Når mansjetten deflater, detekterer monitoren oscillometriske trykkvariationer for å beregne systolisk, diastolisk og middelarterielt trykk.
-- **Temperatur** — Termistorprober (hud, rektal, øsofagal) gir kontinuerlig eller punktvis temperaturavlesning.
+- **NIBP** — En oppblåsbar mansjett okkluderer en arterie. Når mansjetten tømmes for luft, detekterer monitoren oscillometriske trykkvariasjoner for å beregne systolisk, diastolisk og middelarterielt trykk.
+- **Temperatur** — Termistorprober (hud, rektal, øsofageal) gir kontinuerlig eller punktvis temperaturavlesning.
 
 ### Nøkkelparametere
 
@@ -40,7 +40,7 @@ En pasientmonitor henter fysiologiske signaler gjennom flere kanaler samtidig:
 | NIBP-nøyaktighet | ±3 mmHg (statisk) | Behandlingsbeslutninger avhenger av nøyaktige blodtrykksmålinger |
 | Hjertefrekvensnøyaktighet | ±1 % eller ±1 bpm | Brukes til medikamentdosering og arytmideteksjon |
 | Alarmresponstid | ≤ 10 s for kritiske alarmer | Forsinkede alarmer kompromitterer pasientsikkerheten |
-| Pasientlekkasjestrøm (CF) | ≤ 10 µA normal, ≤ 50 µA SFC | EKG-elektroder har direkte hjerterisikobane |
+| Pasientlekkasjestrøm (CF) | ≤ 10 µA normaltilstand, ≤ 50 µA enkeltfeil (IEC 60601-1) | EKG-elektroder har direkte hjerterisikobane |
 
 ---
 
@@ -51,7 +51,7 @@ En pasientmonitor henter fysiologiske signaler gjennom flere kanaler samtidig:
 | Støyfullt EKG-spor / falske arytmialarmer | EKG-kabelfeil (brutt ledningskabel), dårlig elektrodekontakt, EMI fra nærliggende utstyr | Systematisk kabel-/ledningstest med ProSim 8; sjekk elektrodeimpedans; identifiser EMI-kilder | Bytt kabel; forbedre hudforberedelse; fjern EMI-kilde |
 | Falske asystoli-/VF-alarmer | Ledningsfrakobling ikke oppdaget, EKG-amplitude for lav, feil i lead-off-deteksjon | Test lead-off-deteksjon med ProSim 8; verifiser alarmterskler; sjekk elektrodeimpedans | Bytt kabel; juster følsomhet; opplæring av personell i elektrodeplassering |
 | SpO₂-avlesning uregelmessig eller fraværende | Probe plassert feil, omgivelseslysinterferens, lav perfusjon, neglelakk | Sjekk probeplassering og fingerperfusjon; test med ProSim 8 SpO₂-simulering; skjerm mot omgivelseslys | Reposisjonér probe; bruk annen plassering; rengjør sensor |
-| NIBP-feil / kan ikke måle | Feil mansjettstr., mansjetlekkasje, luftslange i kink, overdreven pasientbevegelse | Inspiser mansjett og slange for lekkasjer; verifiser mansjettstørrelse; test med NIBP-simulator | Bytt mansjett/slange; velg riktig størrelse; prøv igjen når pasienten er i ro |
+| NIBP-feil / kan ikke måle | Feil mansjettstørrelse, mansjettlekkasje, luftslange i kink, overdreven pasientbevegelse | Inspiser mansjett og slange for lekkasjer; verifiser mansjettstørrelse; test med NIBP-simulator | Bytt mansjett/slange; velg riktig størrelse; prøv igjen når pasienten er i ro |
 | Alarmtretthet (overdrevent mange ikke-handlingsbare alarmer) | Alarmterskler for stramme, standardinnstillinger ikke tilpasset, arytmialgoritme overfølsom | Gjennomgå alarmlogger; vurder terskelinnstillinger mot kliniske behov; sammenlign alarmfrekvens mellom enheter | Tilpass terskler per avdeling/pasientens alvorlighetsgrad; deaktiver ikke-kritiske alarmer etter protokoll |
 
 ---
@@ -62,7 +62,7 @@ Utfør ved intervallet spesifisert av produsenten (vanligvis årlig, med mellomk
 
 1. **Visuell og mekanisk inspeksjon** — Kontroller huset, skjermen, monteringsarmen, strømkabelen, batterirommet og alle kabelkontakter. Verifiser at berøringsskjermen eller kontrollene responderer korrekt. Inspiser EKG-kabler, SpO₂-sensorer, NIBP-mansjetter og temperaturprober for skade.
 
-2. **Elektrisk sikkerhetstest** — Per IEC 62353: beskyttelsesjordresistans (< 0,3 Ω for klasse I), kapslingslekkasjestrøm og pasientlekkasjestrøm. EKG-innganger er Type CF-tilkoblingsdeler — bruk CF-grenseverdier (≤ 10 µA normal, ≤ 50 µA SFC).
+2. **Elektrisk sikkerhetstest** — Per IEC 62353: beskyttelsesjordresistans (≤ 0,3 Ω for klasse I, målt inkludert nettkabelen), utstyrslekkasjestrøm (≤ 500 µA for klasse I) og lekkasjestrøm i anvendt del. EKG-inngangene er anvendte deler av Type CF, så IEC 62353-grensen for lekkasjestrøm i anvendt del er ≤ 50 µA. Merk at paret ≤ 10 µA normaltilstand / ≤ 50 µA enkeltfeil i tabellen over er IEC 60601-1 sin pasientlekkasjegrense for Type CF ved typeprøving — IEC 62353 måler ikke normaltilstand og enkeltfeil hver for seg.
 
 3. **EKG-nøyaktighet** — Med en pasientsimulator (f.eks. Fluke ProSim 8), verifiser: hjertefrekvensnøyaktighet ved 30, 60, 120 og 240 bpm; EKG-bølgeformmorfologi; ST-segmentdeteksjon; pacemakerspikedeteksjon og -avvisning; respirasjonsfrekvens via impedanspneumografi.
 
@@ -74,16 +74,16 @@ Utfør ved intervallet spesifisert av produsenten (vanligvis årlig, med mellomk
 
 7. **Batteritest** — Kjør monitoren på batteri til lavt-batteri-alarm. Verifiser at batteriet gir minst den produsentspesifiserte driftstiden (vanligvis ≥ 2 timer for sengemonitorer, ≥ 4 timer for transport).
 
-8. **Nettverkstilkobling** — Verifiser at monitoren kobler til sentralstasjonen og at bølgeformer, alarmer og data overføres korrekt. Test alarmvarslingsvidresending hvis aktuelt.
+8. **Nettverkstilkobling** — Verifiser at monitoren kobler til sentralstasjonen og at bølgeformer, alarmer og data overføres korrekt. Test videresending av alarmvarsler hvis aktuelt.
 
 ---
 
 ## Relaterte standarder
 
 - **IEC 60601-2-27:2011+AMD1:2018** — Særskilte krav til EKG-overvåkingsutstyr. Regulerer båndbredde, CMRR, elektrodepolarisering, pacemakerpulsavvisning og defibrillasjonsbeskyttelse.
-- **IEC 60601-2-49:2018** — Særskilte krav til multifunksjons pasientovervåking. Dekker integrasjon av flere måleparametere.
-- **IEC 60601-2-30:2018** — Særskilte krav til ikke-invasiv blodtrykksovervåking.
-- **IEC 60601-2-61:2017** — Særskilte krav til pulsoksymetre.
+- **IEC 60601-2-49:2011** — Særskilte krav til multifunksjons pasientovervåkingsutstyr. Dekker integrasjon av flere måleparametere.
+- **IEC 80601-2-30:2018** — Særskilte krav til automatiske ikke-invasive blodtrykksmålere (NIBP). Den erstattet den tilbaketrukne IEC 60601-2-30 da emnet ble flyttet til 80601-serien.
+- **ISO 80601-2-61:2017** — Særskilte krav til pulsoksymeterutstyr. Utgitt av ISO, ikke IEC — det finnes ingen IEC 60601-2-61.
 - **IEC 62353:2014** — Periodisk test og test etter reparasjon av medisinsk elektrisk utstyr.
 - **IEC 60601-1:2005+AMD2:2020** — Generelle krav til grunnleggende sikkerhet og essensiell ytelse.
 

@@ -39,15 +39,15 @@ steps:
         feedback: "Disabling all advisory alarms removes early warning capability. Many yellow alarms are clinically relevant — the issue is which ones, not the category."
   - type: multiple-choice
     id: data-analysis
-    question: "You pull the alarm data. In the past week: 8,400 total alarms across 12 monitors. The top generators are: HR low (35% — threshold 50 bpm), SpO₂ low (28% — threshold 95%), NIBP high (15% — threshold 140/90), and arrhythmia (12% — mostly PVCs). The ward's typical patients are elderly with baseline HR 55–65 and SpO₂ 91–94%. What does this tell you?"
+    question: "You pull the alarm data. In the past week: 8,400 total alarms across 12 monitors. The top generators are: HR low (35% — threshold 60 bpm), SpO₂ low (28% — threshold 95%), NIBP high (15% — threshold 140/90), and arrhythmia (12% — mostly PVCs). The ward's typical patients are elderly with baseline HR 55–65 and SpO₂ 91–94%. What does this tell you?"
     hint: "Compare the alarm thresholds to the ward's actual patient population. Where is the mismatch?"
     choices:
-      - text: "The alarm thresholds are set for ICU/cardiac patients, not for an elderly medical ward population. HR 50 and SpO₂ 95% are too tight for this patient group."
+      - text: "The alarm thresholds are set for ICU/cardiac patients, not for an elderly medical ward population. HR 60 and SpO₂ 95% are too tight for this patient group."
         correct: true
         feedback: "Correct — the default thresholds are appropriate for an ICU where patients need tight monitoring, but not for a general medical ward where elderly patients normally have lower heart rates and marginally lower SpO₂. The thresholds need to be adjusted to match the clinical context — wider limits for parameters that are normally variant in this population."
       - text: "The patients are sicker than the nursing staff realises — these alarms may be clinically significant"
         correct: false
-        feedback: "The head nurse explicitly stated HR 58 and SpO₂ 93% are normal for their population. With 200+ alarms per shift and a 85%+ non-actionable rate, this is clearly an alarm configuration problem."
+        feedback: "The head nurse explicitly stated HR 58 and SpO₂ 93% are normal for their population. With 200+ alarms per shift and more than 85% of them non-actionable, this is clearly an alarm configuration problem."
       - text: "The monitors have been reset to factory defaults after a software update"
         correct: false
         feedback: "This may explain how the ICU-level thresholds ended up on a medical ward, but the cause doesn't change the solution — the thresholds need to be adjusted."
@@ -59,7 +59,7 @@ steps:
     question: "You need to create a customised alarm profile for Ward 4A. Working with the head nurse and the attending physician, what threshold changes are appropriate?"
     hint: "Alarm thresholds should reflect clinical decision points — the values at which the nurse needs to take action — not normal physiological variation."
     choices:
-      - text: "HR low: 50 → 45 bpm, SpO₂ low: 95% → 88%, NIBP high: 140/90 → 160/100, PVC alarm: reduce to > 10/min. Document the rationale and get physician sign-off."
+      - text: "HR low: 60 → 45 bpm, SpO₂ low: 95% → 88%, NIBP high: 140/90 → 160/100, PVC alarm: 10 → 20 PVCs/min. Document the rationale and get physician sign-off."
         correct: true
         feedback: "Correct — these thresholds reflect clinical decision points for an elderly medical ward: HR < 45 needs assessment, SpO₂ < 88% needs intervention, BP > 160/100 needs attention, and isolated PVCs are not actionable. Crucially, the changes are documented with clinical rationale and approved by the responsible physician."
       - text: "Disable all yellow alarms and keep red alarms with current thresholds"
@@ -96,8 +96,8 @@ learning_points:
     source_type: best-practice
   - text: "All alarm threshold changes must be documented with clinical rationale and approved by the responsible physician. Clinical engineering implements and deploys; clinical staff defines the clinical appropriateness."
     source_type: best-practice
-  - text: "ECRI Institute identifies alarm hazards as the number one health technology hazard. Studies show that 72–99% of clinical alarms are non-actionable, with alarm fatigue contributing to missed events and patient deaths."
-    source: "ECRI Institute — Top 10 Health Technology Hazards; Sendelbach & Funk (2013) alarm fatigue literature review"
+  - text: "ECRI ranked alarm hazards as the number one health technology hazard on its Top 10 lists for 2012–2015; later editions are headed by other hazards, so always cite the year with this ranking. Sendelbach and Funk report that 72–99% of clinical alarms are non-actionable, and alarm fatigue has contributed to missed events and patient deaths."
+    source: "ECRI — Top 10 Health Technology Hazards, 2012–2015 editions; Sendelbach S, Funk M. Alarm Fatigue: A Patient Safety Concern. AACN Adv Crit Care 2013;24(4):378–386"
     source_type: incident-data
   - text: "Named alarm profiles (per-unit or per-ward) are more maintainable than per-monitor configuration. They survive monitor replacements, resets, and software updates."
     source_type: best-practice

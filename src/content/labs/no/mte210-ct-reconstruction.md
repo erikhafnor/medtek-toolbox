@@ -28,7 +28,7 @@ Etter denne laboratorieøvelsen skal du kunne:
 ## Sikkerhetsmerknader
 
 - **3D-printer:** dysen og byggeplaten er varme under og etter printing. Bruk printeren kun som anvist, hold hendene unna bevegelige deler, og la utskrifter kjøle seg ned før du tar dem av.
-- Ikke la en utskrift gå uten tilsyn med mindre labbveilederen har godkjent det.
+- Ikke la en utskrift gå uten tilsyn med mindre labveilederen har godkjent det.
 
 ---
 
@@ -38,7 +38,7 @@ Denne labben kjøres på en lab-PC med **3D Slicer** og en FDM-basert **3D-print
 
 1. Kopier den eksporterte snittstabelen over på lab-PC-en, og hold hele stabelen i én tom mappe.
 2. Bekreft at **3D Slicer** starter, og at 3D-printeren har strøm, er nivellert og har filament.
-3. Noter **voxelavstanden** fra avbildningslabben — du trenger den i del 4.2, og utskriften får feil størrelse uten den.
+3. Ha **voxelavstanden** du noterte i avbildningslabben (del 3.3) for hånden — du trenger den i del 4.2, og utskriften får feil størrelse uten den.
 
 ---
 
@@ -46,15 +46,15 @@ Denne labben kjøres på en lab-PC med **3D Slicer** og en FDM-basert **3D-print
 
 ### Del 4 — Eksport og segmentering i 3D Slicer (45 min)
 
-**4.1 Eksporter volumet.** I measureCT, eksporter det rekonstruerte volumet som en stabel av snittbilder (bruk **Volview**-eksporten / lagre-bilde-funksjonen for å generere bmp-snittserien, eller lagre de rekonstruerte snittene til en mappe). Lagre hele stabelen i én tom mappe.
+**4.1 Kontroller snittstabelen.** Du eksporterte det rekonstruerte volumet på slutten av CT-avbildningslabben (del 3.3), så begynn med å bekrefte at hele stabelen ligger i én tom mappe på lab-PC-en, og at snittene lar seg åpne. Har du aldri eksportert den, eller er stabelen ufullstendig, gå tilbake til measureCT-PC-en og eksporter den nå: i measureCT eksporterer du det rekonstruerte volumet som en stabel av snittbilder (bruk **Volview**-eksporten / lagre-bilde-funksjonen for å generere bmp-snittserien, eller lagre de rekonstruerte snittene til en mappe), og lagrer hele stabelen i én tom mappe.
 
-**4.2 Importer i 3D Slicer.** Åpne **3D Slicer** på lab-PC-en. Dra mappen med snittbilder inn i Slicer-vinduet (eller bruk *Add Data*), og last serien **som et volum / en bildestabel**. Siden de eksporterte bildene ikke inneholder skalainformasjon, må du sette **voxelavstanden manuelt**: denne skanningen rekonstruerer med **0,096 mm per voxel** i alle tre retninger. Riktig avstand er det som gjør at den ferdige 3D-utskriften får riktig fysisk størrelse.
+**4.2 Importer i 3D Slicer.** Åpne **3D Slicer** på lab-PC-en. Dra mappen med snittbilder inn i Slicer-vinduet (eller bruk *Add Data*), og last serien **som et volum / en bildestabel**. Siden de eksporterte bildene ikke inneholder skalainformasjon, må du sette **voxelavstanden manuelt** til verdien measureCT oppga og du noterte i avbildningslabben (del 3.3): med geometrien og binningen som ble brukt der er det den binnede detektorpitchen delt på forstørrelsen, 0,096 mm ÷ 1,2 = **0,080 mm per voxel** i alle tre retninger. Bruk tallet measureCT oppga framfor dette hvis de to ikke stemmer. Riktig avstand er det som gjør at den ferdige 3D-utskriften får riktig fysisk størrelse.
 
 **4.3 Segmenter tannen.** Åpne modulen **Segment Editor**.
 
 1. Opprett en ny segmentering og legg til et segment kalt `tann`.
 2. Velg effekten **Threshold**. Dra den nedre terskelen oppover til kun den lyse, tette tannen er markert og den omkringliggende nøtten er utelatt. Klikk Apply.
-3. Bruk effekten **Islands** → *Keep largest island* for å fjerne løse flekker, deretter effekten **Smoothing** (median eller en liten Gaussisk) for å glatte ut overflaten.
+3. Bruk effekten **Islands** → *Keep largest island* for å fjerne løse flekker, deretter effekten **Smoothing** (median eller et lite gaussisk filter) for å glatte ut overflaten.
 4. Slå på 3D-visningen (*Show 3D*-knappen) for å inspisere den segmenterte tannen fra alle vinkler. Juster terskelen hvis deler mangler eller er sammensmeltet.
 
 **4.4 Eksporter en STL.** Eksporter segmentet som en overflatemodell: i modulen **Segmentations** (eller høyreklikk på segmenteringen i *Data*), velg *Export to files* og lagre som **STL**. Bekreft at modellen er **vanntett** (en lukket overflate) slik at den kan printes.
@@ -69,13 +69,13 @@ Denne labben kjøres på en lab-PC med **3D Slicer** og en FDM-basert **3D-print
 
 **5.2** Orienter modellen for printing, legg til støtter om nødvendig, og slice med innstillingene som anbefales for lab-printeren din. En liten laghøyde (f.eks. 0,1–0,15 mm) fanger fine detaljer på et lite objekt som en tann.
 
-**5.3** Print tannen. Du får beholde utskriften din. Mens den printes, fullfør repetisjonsspørsmålene.
+**5.3** Start utskriften. En tann med 0,1–0,15 mm laghøyde tar typisk én til tre timer — altså mye lenger enn resten av økten — så avtal med labveilederen før du starter: hvem som holder øye med printeren, og når du kan hente utskriften. La den aldri gå uten at noen er til stede. Mens de første lagene printes, fullfør repetisjonsspørsmålene. Du får beholde utskriften din.
 
 ---
 
 ### Del 6 — Repetisjonsspørsmål (15 min)
 
-Besvar i labboken; du vil diskutere disse med gruppen.
+Besvar i labboken; du skal diskutere dem med gruppen og med labingeniøren.
 
 1. Forklar forskjellen mellom **rørspenning (kV)** og **rørstrøm (mA)** og hvordan hver påvirker bildekontrast, bildestøy og dose.
 2. Hvorfor er **antall projeksjoner** viktig? Hva ville du forvente å se i rekonstruksjonen hvis du brukte langt færre projeksjoner?
@@ -86,15 +86,13 @@ Besvar i labboken; du vil diskutere disse med gruppen.
 
 ---
 
----
+## Godkjenning
 
-## Krav til labrapport
+Du blir godkjent i laben når du kan vise og forklare følgende for labingeniøren:
 
-Lever en maskinskrevet labrapport innen fristen angitt i emneplanen. Rapporten må inneholde:
+- Voxelavstanden du satte og hvor verdien kom fra (del 4.2), og den segmenterte tannen i 3D Slicer med terskelen du endte på (del 4.3)
+- Den eksporterte STL-filen, der du viser at den er vanntett, og modellen slik du klargjorde den i slicer-programvaren, med dimensjonene kontrollert mot størrelsesanslaget ditt fra CT-avbildningslabben (del 4.4 og 5.1)
+- Utskriften din — ferdig eller fortsatt i gang — og hvordan du valgte orientering, støtter og laghøyde (del 5.2 og 5.3)
+- Svarene dine på repetisjonsspørsmålene i del 6, med egne ord
 
-- En forside med navn, studentnummer, emnekode (MTE210) og dato
-- En beskrivelse av **3D Slicer-segmenteringen** din, inkludert terskelvalget ditt og et skjermbilde av 3D-modellen
-- **Voxelavstanden** du satte og de endelige printede dimensjonene, med en kommentar om de stemte overens
-- Et bilde av den ferdige 3D-utskriften din
-- Skriftlige svar på repetisjonsspørsmålene (del 6)
-- En kort konklusjon (150–200 ord) om etterbehandling: hvordan valg i opptak og segmentering forplanter seg til det printede objektet
+Ingen skriftlig innlevering.
