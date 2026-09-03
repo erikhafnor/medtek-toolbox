@@ -12,7 +12,7 @@ prerequisites:
   - "Forelesningsnotater om IEC 60601-1 og IEC 62353"
   - "Referanse: IEC 60601-1 Essentials (på dette nettstedet)"
   - "Referanse: Leakage Current Measurement Guide (på dette nettstedet)"
-duration: "2 timer 45 minutter"
+duration: "3 timer"
 ---
 
 ## Læringsmål
@@ -21,7 +21,7 @@ Etter denne laboratorieøvelsen skal du være i stand til å:
 
 - Klassifisere medisinsk utstyr etter beskyttelsesklasse (Klasse I vs. Klasse II) og type anvendt del (B, BF, CF)
 - Betjene Fluke ESA615 for å utføre en komplett IEC 62353-testsekvens
-- Måle og tolke beskyttelsesjordresistans, kapslingslekkasjestøm og pasientlekkasjestøm
+- Måle og tolke beskyttelsesjordresistans, kapslingslekkasjestrøm og pasientlekkasjestrøm
 - Anvende korrekte akseptgrenser basert på utstyrsklasse og type anvendt del
 - Avgjøre om et apparat består eller ikke består kravene til elektrisk sikkerhet, og iverksette riktige tiltak
 
@@ -31,7 +31,7 @@ Etter denne laboratorieøvelsen skal du være i stand til å:
 
 > **ELEKTRISK FARE.** Du kommer til å arbeide med nettdrevet medisinsk utstyr. ESA615 påfører spenninger under målingene. Følg alle sikkerhetsinstruksjoner.
 
-- Aldri berør apparatet som testes (DUT) under en aktiv lekkasjestømmåling.
+- Aldri berør apparatet som testes (DUT) under en aktiv lekkasjestrømmåling.
 - Påse at ESA615 er korrekt jordet før bruk.
 - Ikke utfør dielektrisk test (hipot) med mindre du får spesifikk instruks om det — disse påfører høyspenning.
 - Er du usikker på noe steg, spør veileder før du fortsetter.
@@ -45,8 +45,8 @@ Etter denne laboratorieøvelsen skal du være i stand til å:
 3. Gjør deg kjent med ESA615-kontrollene: testvalgknapper, måledisplay, godkjent/ikke-godkjent-indikatorer.
 4. Hent tre apparater for testing (utdelt av labveileder):
    - **Apparat A:** Klasse I-apparat med Type BF anvendte deler (f.eks. pasientmonitor)
-   - **Apparat B:** Klasse I-apparat med Type CF anvendte deler (f.eks. defibrillator eller sprøytepumpe med hjerteratede tilbehør)
-   - **Apparat C:** Klasse II-apparat (f.eks. batteridrevet pulsoksymeter)
+   - **Apparat B:** Klasse I-apparat med Type CF anvendte deler (f.eks. defibrillator eller sprøytepumpe med tilbehør klassifisert for hjertenær bruk)
+   - **Apparat C:** Klasse II-apparat — nettdrevet, med topolet (ujordet) støpsel og symbolet for dobbeltisolasjon (f.eks. et nettdrevet pulsoksymeter, eller et apparat som forsynes fra en dobbeltisolert ekstern nettadapter). Velg **ikke** et rent batteridrevet apparat: internt drevet utstyr er en egen kategori i IEC 60601-1, er verken Klasse I eller Klasse II, og kan ikke kobles til DUT-kontakten på ESA615 for lekkasjemålingene i del 3 og del 4.
 
 ---
 
@@ -68,8 +68,8 @@ For hvert av de tre apparatene, identifiser og noter følgende i labboken din:
 | Sikringsverdi | | | |
 
 **Hint:**
-- Klasse I-apparater har et trepolet støpsel (L, N, PE). Klasse II-apparater har et topolet støpsel eller symbolet ⬜.
-- Typen anvendt del er vanligvis merket på apparatetiketten med riktig symbol (B, BF eller CF i en boks/trekant).
+- Klasse I-apparater har et trepolet støpsel (L, N, PE). Klasse II-apparater har topolet støpsel og er merket med symbolet for dobbeltisolasjon — et lite kvadrat inni et større kvadrat (IEC 60417-5172).
+- Typen anvendt del er merket med et piktogram fra IEC 60417, ikke med bokstaver: en menneskefigur for **Type B** (5840), en menneskefigur i en ramme for **Type BF** (5333) og et hjerte i en ramme for **Type CF** (5335). En defibrilleringssikker anvendt del har i tillegg et symbol for defibrillatorpadler ved siden av piktogrammet.
 - Hvis typen anvendt del ikke er umiddelbart synlig, sjekk apparatets tekniske spesifikasjoner eller servicemanual.
 
 ---
@@ -94,7 +94,7 @@ For hvert Klasse I-apparat:
 
 ---
 
-### Del 3 — Kapslingslekkasjestøm (30 min)
+### Del 3 — Kapslingslekkasjestrøm (30 min)
 
 For alle tre apparatene:
 
@@ -103,9 +103,9 @@ For alle tre apparatene:
 3. Mål under **normaltilstand (NC):**
    - Hold ESA615-måleproben mot hver tilgjengelig ledende del.
    - Registrer den høyeste avlesningen.
-4. Mål under **enkeltfeil-tilstand — åpen PE** (kun Klasse I-apparater):
+4. Mål under **enkeltfeiltilstand — åpen PE** (kun Klasse I-apparater):
    - ESA615 simulerer en åpen PE. Registrer avlesningen.
-5. **Akseptkriterier:**
+5. **Akseptkriterier** — dette er grenseverdiene i **IEC 60601-1** for kapslingslekkasjestrøm under normaltilstand (NC) og enkeltfeiltilstand (SFC):
 
 | Tilstand | Grenseverdi |
 |---|---|
@@ -114,7 +114,7 @@ For alle tre apparatene:
 
 ---
 
-### Del 4 — Pasientlekkasjestøm (45 min)
+### Del 4 — Pasientlekkasjestrøm (45 min)
 
 **Gjelder for:** Apparater med anvendte deler (A og B). Hvis Apparat C har anvendte deler, test også disse.
 
@@ -123,10 +123,10 @@ For hvert apparat med anvendte deler:
 1. Koble de(n) anvendte delen(e) til ESA615 pasientmåleterminalene.
 2. Velg **Patient Leakage**-test.
 3. Mål under normaltilstand.
-4. Mål under enkeltfeil-tilstand (åpen PE for Klasse I).
-5. Registrer resultatene og sammenlign med korrekte grenseverdier for typen anvendt del:
+4. Mål under enkeltfeiltilstand (åpen PE for Klasse I).
+5. Registrer resultatene og sammenlign med korrekte grenseverdier for typen anvendt del. Dette er grenseverdiene i **IEC 60601-1** for pasientlekkasjestrøm under normaltilstand (NC) og enkeltfeiltilstand (SFC):
 
-| Type anvendt del | Normaltilstand | Enkeltfeil-tilstand |
+| Type anvendt del | Normaltilstand (NC) | Enkeltfeiltilstand (SFC) |
 |---|---|---|
 | Type B | ≤ 100 µA | ≤ 500 µA |
 | Type BF | ≤ 100 µA | ≤ 500 µA |
@@ -134,11 +134,13 @@ For hvert apparat med anvendte deler:
 
 **Viktig:** Legg merke til den tidoble forskjellen i grenseverdier mellom BF og CF. Dette gjenspeiler den økte hjerterisikoen når anvendte deler kan gi en direkte elektrisk forbindelse til hjertet.
 
+**Hvilken standard leser du av?** NC/SFC-parene i del 3 og del 4 er grenseverdier fra IEC 60601-1. IEC 62353 måler ikke NC og SFC hver for seg: standarden slår dem sammen til én *utstyrslekkasjestrøm* (≤ 500 µA for Klasse I, ≤ 100 µA for Klasse II, ved direktemetode eller differensialmetode) og én *lekkasjestrøm i anvendt del* (≤ 50 µA for Type CF). Kontroller hvilken standard ESA615 er stilt inn på før du vurderer en avlesning mot denne tabellen.
+
 ---
 
-### Del 5 — Resultatanalyse og rapportering (30 min)
+### Del 5 — Resultatanalyse og muntlig presentasjon (30 min)
 
-Fyll ut følgende sammendragstabell for alle tre apparatene:
+Fyll ut følgende sammendragstabell for alle tre apparatene. Du presenterer den for labingeniøren i laben, så vær forberedt på å begrunne hver godkjent/ikke godkjent-vurdering ut fra dine egne avlesninger:
 
 | Test | Apparat A (Klasse I, BF) | Apparat B (Klasse I, CF) | Apparat C (Klasse II) |
 |---|---|---|---|
@@ -159,20 +161,21 @@ For enhver måling som nærmer seg eller overskrider en grenseverdi, beskriv hvi
 
 2. En Klasse I-pasientmonitor viser PE-resistans på 0,45 Ω. Er dette godkjent eller ikke godkjent? Hva er de sannsynlige fysiske årsakene til en høy PE-resistans, og hvordan ville du undersøkt dette?
 
-3. Hvorfor er grenseverdiene for Type CF-lekkasjestøm ti ganger strengere enn for Type BF? Forklar det fysiologiske grunnlaget.
+3. Hvorfor er grenseverdiene for Type CF-lekkasjestrøm ti ganger strengere enn for Type BF? Forklar det fysiologiske grunnlaget.
 
-4. Du tester en infusjonspumpe og måler pasientlekkasjestøm på 8 µA under normaltilstand. Pumpen har Type BF anvendte deler. Er dette godkjent? Anta nå at den samme pumpen brukes med et sentralt venekateter som gir en direkte forbindelse til hjertet. Endrer dette vurderingen din?
+4. Du tester en infusjonspumpe og måler pasientlekkasjestrøm på 45 µA under normaltilstand. Pumpen har Type BF anvendte deler. Er dette godkjent? Anta nå at den samme pumpen brukes med et sentralt venekateter som gir en direkte forbindelse til hjertet. Endrer dette vurderingen din, og hva ville du gjort med et apparat der klassifiseringen av den anvendte delen ikke stemmer med hvordan avdelingen faktisk bruker det?
 
-5. En klinisk ingeniør utfører elektrisk sikkerhetstesting på en ventilator etter bytte av strømforsyningen. Hvilke IEC 62353-tester er obligatoriske etter denne spesifikke reparasjonen, og hvorfor?
+5. En klinisk ingeniør utfører elektrisk sikkerhetstesting på en respirator etter bytte av strømforsyningen. Hvilke IEC 62353-tester er obligatoriske etter denne spesifikke reparasjonen, og hvorfor?
 
 ---
 
-## Krav til labrapport
+## Godkjenning
 
-Lever en maskinskrevet labrapport innen fristen angitt i emneplanen. Rapporten må inneholde:
+Du blir godkjent i laben når du kan vise og forklare følgende for labingeniøren:
 
-- En forside med navn, studentnummer, emnekode og dato
-- Den utfylte klassifiseringstabellen (del 1) og resultatsammendragstabellen (del 5)
-- Alle individuelle måleavlesninger med godkjent/ikke godkjent-status
-- Skriftlige svar på de fem repetisjonsspørsmålene (del 6)
-- En kort konklusjon (200–300 ord) som drøfter betydningen av elektrisk sikkerhetstesting i klinisk ingeniørarbeid og hva du lærte om forholdet mellom apparatklassifisering og sikkerhetsgrenser
+- Den utfylte klassifiseringstabellen fra del 1 og resultatsammendragstabellen fra del 5, med alle de enkelte avlesningene dine av beskyttelsesjordresistans, kapslingslekkasjestrøm og pasientlekkasjestrøm
+- Hvordan du betjente ESA615 i del 2–4, og hvorfor hvert apparat ble vurdert mot nettopp de grenseverdiene — inkludert hvorfor Apparat B holdes til Type CF-grensene, og hvorfor Apparat C ikke skal ha beskyttelsesjordtest
+- Din godkjent/ikke godkjent-vurdering for hvert apparat, og hvilke tiltak du ville iverksatt som klinisk ingeniør ved en avlesning som nærmer seg eller overskrider en grenseverdi (del 5)
+- Svarene dine på de fem repetisjonsspørsmålene i del 6
+
+Ingen skriftlig innlevering.

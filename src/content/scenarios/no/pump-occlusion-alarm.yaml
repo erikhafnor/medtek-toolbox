@@ -47,7 +47,7 @@ steps:
         feedback: "Riktig — IDA-5 i trykkmodus vil vise deg det faktiske trykket som genereres under infusjon. Hvis de nye settene genererer høyere mottrykk ved samme strømningshastighet, har du funnet årsaken."
       - text: "Mål innvendig slangediameter på begge settene med skyvelære"
         correct: false
-        feedback: "Nyttig som støttende dokumentasjon, men slangeelastisitet betyr like mye som diameter. IDA-5-testen vil vise den funksjonelle effekten."
+        feedback: "Nyttig som støttende dokumentasjon, og det peker rett på lumen — men et mål alene sier ikke om pumpen kommer til å alarmere. IDA-5-testen viser den funksjonelle effekten."
       - text: "Last det nye settet og kjør pumpens selvtest"
         correct: false
         feedback: "Selvtesten sjekker pumpemekanismens funksjon, ikke settkompatibilitet. Du må måle faktisk infusjonstrykk."
@@ -60,32 +60,32 @@ steps:
     simulated_data:
       tool: "IDA-5 Infusion Device Analyzer — Trykk- og strømningstest"
       readings:
-        - setting: "Innstilling: Gammelt parti sett @ 100 mL/t — stabilt trykk"
+        - setting: "Gammelt parti sett @ 100 mL/t — stabilt trykk"
           delivered: "285 mmHg"
           status: pass
           spec: "< 500 mmHg"
-        - setting: "Innstilling: Gammelt parti sett @ 100 mL/t — okklusjonsalarm"
+        - setting: "Gammelt parti sett @ 100 mL/t — okklusjonsalarm"
           delivered: "Ingen alarm i løpet av 60 min"
           status: pass
-        - setting: "Innstilling: Nytt parti sett @ 100 mL/t — stabilt trykk"
+        - setting: "Nytt parti sett @ 100 mL/t — stabilt trykk"
           delivered: "465 mmHg"
           status: warning
           error: "63 % høyere enn gammelt sett"
-        - setting: "Innstilling: Nytt parti sett @ 100 mL/t — okklusjonsalarm"
+        - setting: "Nytt parti sett @ 100 mL/t — okklusjonsalarm"
           delivered: "Alarm ved 502 mmHg etter 12 min"
           status: fail
           spec: "Alarmterskel satt til 500 mmHg"
-        - setting: "Innstilling: Nytt parti sett — slangeveggtykkelse"
+        - setting: "Nytt parti sett — slangeveggtykkelse"
           delivered: "0,9 mm (gammelt parti: 0,7 mm)"
           status: warning
-          error: "Tykkere vegger reduserer elastisitet"
+          error: "Samme ytterdiameter — den tykkere veggen gjør lumen 0,4 mm smalere"
   - type: multiple-choice
     id: diagnosis
     question: "De nye settene genererer 63 % høyere mottrykk (465 mot 285 mmHg), som utløser okklusjonsalarmen ved 500 mmHg. Slangeveggen er 0,9 mm mot 0,7 mm. Hva er rotårsaken og korrigerende tiltak?"
     choices:
-      - text: "De nye settene har stivere (mindre elastisk) slange som genererer høyere trykk i pumpemekanismen — sett partiet i karantene og gå tilbake til forrige leverandør/parti"
+      - text: "De nye settene er utenfor spesifikasjon og tvinger pumpen til å kjøre med langt høyere linjetrykk — sett partiet i karantene og gå tilbake til forrige leverandør/parti"
         correct: true
-        feedback: "Riktig — de tykkere slangeveggene er mindre elastiske, så den peristaltiske mekanismen genererer høyere trykk for å oppnå samme strømning. Når dette trykket nærmer seg okklusjonsalarmterskelen, utløser normale trykksvingninger falske alarmer. Sett partiet i karantene, bytt tilbake, og send en kvalitetsrapport til leverandøren."
+        feedback: "Riktig — administrasjonssett bygges med fast ytterdiameter for å passe i pumpemekanismen, så en 0,2 mm tykkere vegg gjør lumen 0,4 mm smalere. Strømningsmotstanden er omvendt proporsjonal med lumenradien i fjerde potens (Hagen–Poiseuille), så pumpen må bygge opp langt høyere linjetrykk for å holde 100 mL/t — og den stivere veggen gjør i tillegg at pumpens kraftbaserte trykksensor leser for høyt. Når driftstrykket allerede ligger på 465 mmHg, krysser normale trykksvingninger terskelen på 500 mmHg og utløser falske alarmer. Sett partiet i karantene, bytt tilbake, og send en kvalitetsrapport til leverandøren."
       - text: "Hev okklusjonsalarmterskelen til 700 mmHg for å tilpasse de nye settene"
         correct: false
         feedback: "Å heve terskelen maskerer problemet og forsinker deteksjon av reelle okklusjoner. Høye terskeler øker også bolus ved utløsning, noe som er en pasientsikkerhetsrisiko (IEC 60601-2-24)."
@@ -97,7 +97,7 @@ steps:
         feedback: "Alarmterskelen er korrekt. De nye settene opererer for nært terskelen, noe som er et settkvalitetsproblem, ikke et pumpekalibreringsproblem."
 learning_points:
   - text: "Når flere pumper viser det samme problemet, se på forbruksmateriellet først. Endringer i administrasjonssett (ny leverandør, nytt parti, annet slangemateriale) er en vanlig årsak til flåteomfattende infusjonspumpeproblemer."
-  - text: "Slangeelastisitet påvirker pumpens mottrykk betydelig. En tilsynelatende liten endring i veggtykkelse (0,2 mm) forårsaket en trykkøkning på 63 % — nok til å utløse falske okklusjonsalarmer."
+  - text: "Det er lumengeometrien, ikke elastisiteten, som bestemmer hvilket trykk en pumpe må bygge opp ved en gitt strømningshastighet. På et sett med samme ytterdiameter gjør 0,2 mm tykkere vegg lumen 0,4 mm smalere, og motstanden øker med fjerde potens av 1/radius — her en trykkøkning på 63 %, nok til å utløse falske okklusjonsalarmer. Veggstivheten spiller også inn, men først og fremst gjennom hva pumpens kraftbaserte trykksensor leser."
     source: "IEC 60601-2-24 §201.12.1 — nøyaktighetskrav testes med produsentspesifiserte administrasjonssett"
     source_type: standard
   - text: "Hev aldri okklusjonsalarmterskeler for å kompensere for settinkompatibilitet. Høyere terskeler forsinker deteksjon av reelle okklusjoner og øker bolus ved utløsning — begge deler er pasientsikkerhetsrisikoer."

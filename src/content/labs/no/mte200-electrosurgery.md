@@ -31,7 +31,7 @@ Etter denne laboratorieøvelsen skal du være i stand til å:
 
 ## Sikkerhetsmerknader
 
-> **FORBRENNINGSFARE.** Det elektrokirurgiske apparatet er konstruert for å skjære i vev. Uforsiktig bruk kan forårsake forbrenninger. Påse at du ikke kommer i direkte eller indirekte kontakt med den aktive elektroden mens apparatet er aktivert.
+> **FARE FOR BRANNSKADE.** Det elektrokirurgiske apparatet er konstruert for å skjære i vev. Uforsiktig bruk kan gi brannskader. Påse at du ikke kommer i direkte eller indirekte kontakt med den aktive elektroden mens apparatet er aktivert.
 
 - For å unngå overbelastning, aktiver apparatet i mindre enn 10 sekunder om gangen.
 - Innstillinger på Electrosurgery Analyzer må ikke endres mens apparatet er aktivert.
@@ -46,7 +46,7 @@ Etter denne laboratorieøvelsen skal du være i stand til å:
 
 1. Plasser Olympus UES-40 på arbeidsbenken. Inspiser kapsling, kabler og koblinger for fysisk skade.
 2. Koble Fluke QA-ES III Electrosurgery Analyzer til den monopolære utgangen på Olympus UES-40 i henhold til analysatormanualen.
-3. Sett isolasjonsimpedansen på Fluke QA-ES III til **400 ohm**.
+3. Sett testlastmotstanden på Fluke QA-ES III til **400 Ω** — dette er den resistive lasten generatoren driver, valgt for å representere typisk vevsimpedans; det er ikke en isolasjonsimpedans. Slå opp i dokumentasjonen for Olympus UES-40 hvilken last den nominelle utgangseffekten er spesifisert ved, og noter et eventuelt avvik fra 400 Ω.
 4. Koble Keysight InfiniiVision oscilloskopet til bølgeformutgangen på Fluke QA-ES III. Sett oscilloskopet til en passende tidsskala og vertikal skala som utgangspunkt (juster under målingene).
 5. Slå på alt utstyr og verifiser at hvert apparat fullfører selvtesten uten feil.
 6. Plasser RapidVac røykavsug nær testområdet, men slå det ikke på før del 4.
@@ -74,7 +74,7 @@ Etter denne laboratorieøvelsen skal du være i stand til å:
 
 ### Del 2 — Effektmålinger (60 min)
 
-Bruk Fluke QA-ES III Electrosurgery Analyzer med isolasjonsimpedans satt til **400 ohm**. Mål effektutgangen og crestfaktoren for hver av følgende modi og innstillinger. Registrer alle resultater i en tabell.
+Bruk Fluke QA-ES III Electrosurgery Analyzer med testlasten satt til **400 Ω**. Mål effektutgangen og crestfaktoren for hver av følgende modi og innstillinger. Registrer alle resultater i en tabell.
 
 #### 2.1 CUT-modi
 
@@ -87,6 +87,7 @@ Bruk Fluke QA-ES III Electrosurgery Analyzer med isolasjonsimpedans satt til **4
 1. Velg hver modus på Olympus UES-40 og still inn angitt effekt.
 2. Aktiver apparatet (i mindre enn 10 sekunder) og les av målt effekt og crestfaktor fra Fluke QA-ES III-displayet.
 3. Registrer resultatene.
+4. **Akseptkriterium:** målt effekt innenfor ±20 % av innstilt verdi (IEC 60601-2-2). For 150 W er akseptabelt område **120–180 W**, og for 125 W **100–150 W**. Kontroller toleransen, og hvilken last den nominelle utgangseffekten gjelder for, i dokumentasjonen for Olympus UES-40 før du vurderer en avlesning.
 
 #### 2.2 COAG-modi
 
@@ -99,6 +100,7 @@ Bruk Fluke QA-ES III Electrosurgery Analyzer med isolasjonsimpedans satt til **4
 1. Velg hver koagulasjonsmodus og still inn angitt effekt.
 2. Aktiver apparatet (i mindre enn 10 sekunder) og les av målt effekt og crestfaktor.
 3. Registrer resultatene.
+4. **Akseptkriterium:** målt effekt innenfor ±20 % av innstilt verdi (IEC 60601-2-2). For 60 W er akseptabelt område **48–72 W**.
 
 ---
 
@@ -119,7 +121,7 @@ For hver CUT- og COAG-modus testet i del 2, fang opp utgangsbølgeformen på osc
 
 1. Med apparatet i standby, koble til returelektroden normalt. Verifiser at REM/CQM-indikatoren viser normal tilstand.
 2. Simuler en delvis løsning av returelektroden (følg analysatormanualen for korrekt fremgangsmåte).
-3. Registrer impedansen eller tilstanden der alarmen utløses.
+3. Registrer impedansen der alarmen utløses, og sammenlign med terskelverdien som er oppgitt i dokumentasjonen for Olympus UES-40. **Akseptkriterium:** apparatet skal både gi alarm *og* deaktivere utgangen når kontaktimpedansen mot returelektroden overskrider terskelverdien (IEC 60601-2-2 §201.12.4.4). Med alarmen aktiv, trykk kort på CUT-pedalen og bekreft på Fluke QA-ES III at det ikke leveres effekt — alarmen alene er ikke sikkerhetsfunksjonen.
 4. Diskuter i labboken: hva skjer hvis returelektroden delvis løsner under kirurgi? Hvilken skade kan oppstå, og hvordan forhindrer REM/CQM-systemet dette?
 
 ---
@@ -128,7 +130,7 @@ For hver CUT- og COAG-modus testet i del 2, fang opp utgangsbølgeformen på osc
 
 > **Slå på RapidVac røykavsug før du begynner denne delen.**
 
-**4.1** Bruk de monopolære funksjonene på Olympus UES-40 til å teste de ulike CUT- og COAG-modiene på et svinepreparat. Observer og registrer vevseffektene på ulike vevstyper:
+**4.1** Rigg om benken før du aktiverer apparatet i vev. Med apparatet i standby, koble Fluke QA-ES III fra den monopolære utgangen og monter et monopolært håndstykke med ren knivelektrode. Legg svinepreparatet på returelektroden (nøytralelektroden) som brukes på denne benken, koble den til returelektrodetilkoblingen på UES-40, og bekreft at REM/CQM-indikatoren viser normal tilstand — uten en intakt returvei finner strømmen en ukontrollert vei tilbake og kan gi lysbue. Bruk hansker når du håndterer preparatet, og start på lav effekt (30 W CUT, 30 W COAG), ikke på innstillingene fra del 2. Bruk deretter de monopolære funksjonene på Olympus UES-40 til å teste de ulike CUT- og COAG-modiene på preparatet. Observer og registrer vevseffektene på ulike vevstyper:
 
 - Fettvev
 - Vaskulært vev
@@ -136,7 +138,7 @@ For hver CUT- og COAG-modus testet i del 2, fang opp utgangsbølgeformen på osc
 
 **4.2** For hver modus, noter:
 - De visuelle og hørbare kjennetegnene under aktivering
-- Vevseffekten (rent snitt, forkulling, uttorking, fulgurering)
+- Vevseffekten (rent snitt, forkulling, uttørking, fulgurering)
 - Hvordan vevsresponsen endres når du justerer effektinnstillingen
 
 ---
@@ -147,24 +149,23 @@ Besvar følgende spørsmål i labboken din. Du vil diskutere svarene med gruppen
 
 1. Forklar forskjellen mellom CUT- og COAG-bølgeformer. Hvordan forholder crestfaktoren seg til vevseffekten (kutting versus koagulasjon)?
 
-2. Hvorfor settes isolasjonsimpedansen til 400 ohm for testing? Hva representerer denne verdien i en klinisk sammenheng?
+2. Hvorfor settes testlasten til 400 Ω ved testing? Hva representerer denne verdien i en klinisk sammenheng?
 
 3. Hva er formålet med røykavsug, og hva er helsefaren ved kirurgisk røyk? Referer til minst to spesifikke helseskadelige komponenter.
 
-4. En klinisk ingeniør som utfører årlig vedlikehold på et elektrokirurgisk apparat måler 180 W utgangseffekt når apparatet er stilt inn på 150 W CUT PURE ved 400 ohm. Er dette akseptabelt? Hvilke tiltak bør iverksettes?
+4. En klinisk ingeniør som utfører årlig vedlikehold på et elektrokirurgisk apparat måler 180 W utgangseffekt når apparatet er stilt inn på 150 W CUT PURE ved 400 Ω. Er dette akseptabelt? Hvilke tiltak bør iverksettes?
 
 5. Forklar hvorfor monopolær elektrokirurgi krever en returelektrode, mens bipolar elektrokirurgi ikke gjør det. Hva er risikoen dersom returelektrodens kontaktareal er for lite?
 
 ---
 
-## Krav til labrapport
+## Godkjenning
 
-Lever en maskinskrevet labrapport innen fristen angitt i emneplanen. Rapporten må inneholde:
+Du blir godkjent i laben når du kan vise og forklare følgende for labingeniøren:
 
-- En forside med navn, studentnummer, emnekode og dato
-- En fullstendig effektmåletabell for alle modi testet i del 2, inkludert crestfaktorer
-- Bølgeformskisser eller skjermbilder for hver modus (del 3) med merknader som beskriver bølgeformens kjennetegn
-- REM/CQM-testresultater og diskusjon (del 3.2)
-- Observasjoner av vevseffekt fra del 4
-- Skriftlige svar på repetisjonsspørsmålene (del 5)
-- En kort konklusjon (200–300 ord) som drøfter om det elektrokirurgiske apparatet oppfyller spesifikasjonene og de klinisk ingeniørfaglige implikasjonene av funnene dine
+- Den utfylte tabellen med effekt og crestfaktor fra del 2, og om hver målte verdi oppfyller akseptkriteriet på ±20 %
+- Bølgeformene du fanget opp i del 3.1, og REM/CQM-resultatet fra del 3.2 — impedansen der alarmen ble utløst, og kontrollen din av at utgangen ble deaktivert
+- Vevseffektene du observerte i del 4, og hvordan de endret seg med modus og effektinnstilling
+- Svarene dine på repetisjonsspørsmålene i del 5
+
+Ingen skriftlig innlevering.

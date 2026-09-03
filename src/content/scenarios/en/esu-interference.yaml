@@ -26,7 +26,7 @@ steps:
     choices:
       - text: "The ESU's high-frequency current couples into the ECG leads via capacitive and radiative coupling, overwhelming the monitor's input amplifiers with artifact"
         correct: true
-        feedback: "Correct — the ESU radiates a strong electromagnetic field and also injects high-frequency current through the patient's body. ECG leads act as antennas, picking up this energy. The monitor's input filters are designed to reject some HF interference, but high-power ESU activation can overwhelm them. SpO₂ is affected because the HF current modulates the optical path."
+        feedback: "Correct — the ESU radiates a strong electromagnetic field and also injects high-frequency current through the patient's body. ECG leads act as antennas, picking up this energy. The monitor's input filters are designed to reject some HF interference, but high-power ESU activation can overwhelm them. SpO₂ is affected because HF energy couples into the sensor cable and the detector amplifier, swamping the small pulsatile signal so the monitor rejects it and the reading drops out."
       - text: "The ESU is defective and generating excessive electromagnetic radiation"
         correct: false
         feedback: "Some interference is normal and expected with all ESUs. The question is whether the level of interference is excessive or whether mitigation measures can reduce it."
@@ -41,9 +41,9 @@ steps:
     question: "You inspect the OR setup. The ECG leads are bundled together with the ESU active electrode cable along the patient's right side. The return electrode pad is on the left thigh, and the SpO₂ sensor is on the left index finger. What changes can reduce the interference?"
     hint: "Think about the current path through the patient and how to minimise coupling between the ESU circuit and the monitoring circuit."
     choices:
-      - text: "Separate the ECG leads from the ESU cable (different sides of the patient), position the return electrode so the HF current path avoids the monitoring electrodes, and move SpO₂ to the same side as the return electrode"
+      - text: "Separate the ECG leads from the ESU cable (different sides of the patient), position the return electrode so the HF current path avoids the monitoring electrodes, and keep the SpO₂ sensor and its cable out of the active-to-return current path and away from the ESU cable"
         correct: true
-        feedback: "Correct — three key principles: (1) Physical separation of ESU and monitoring cables reduces radiative coupling. (2) The HF current flows from active electrode to return electrode — positioning the return electrode so this path doesn't cross the ECG electrodes reduces conducted interference. (3) SpO₂ on the same side as the return electrode is in a lower-impedance path and less affected."
+        feedback: "Correct — three key principles: (1) Physical separation of ESU and monitoring cables reduces radiative coupling. (2) The HF current flows from active electrode to return electrode — positioning the return electrode so this path doesn't cross the ECG electrodes reduces conducted interference. (3) The SpO₂ sensor and its cable belong outside the active-to-return current path and away from the ESU cable; proximity to the return electrode is not itself protective — the dropout comes from HF energy picked up by the sensor and its cable."
       - text: "Replace the ECG leads with shielded cables"
         correct: false
         feedback: "Shielded ECG cables help but are rarely available in the OR. Cable routing and electrode placement are more practical and often more effective."

@@ -26,13 +26,13 @@ steps:
     choices:
       - text: "EKG-ledningsfrakobling — en løs eller intermitterende elektrodetilkobling forårsaker kortvarig signaltap som monitoren tolker som asystoli"
         correct: true
-        feedback: "Riktig — intermitterende ledningsfrakobling er den klart vanligste årsaken til falske asystolialarmer. Når en elektrode mister kontakt kort (pasientbevegelse, inntørket gel, dårlig feste), faller EKG-signalet til nulllinje. Hvis dette varer lenger enn asystolideteksjonsvinduet (typisk 4–8 sekunder), alarmerer monitoren."
+        feedback: "Riktig — intermitterende ledningsfrakobling er den klart vanligste årsaken til falske asystolialarmer. Når en elektrode mister kontakt kort (pasientbevegelse, inntørket gel, dårlig feste), faller EKG-signalet til nullinje. Hvis dette varer lenger enn asystolideteksjonsvinduet (typisk 4–8 sekunder), alarmerer monitoren."
       - text: "Monitorens arytmialgoritme er feiljustert"
         correct: false
-        feedback: "Algoritmefeiljustering er sjeldent. Algoritmen oppdaget korrekt 'ingen QRS' — problemet er at signalet gikk tapt, ikke at algoritmen feilidentifiserte det."
-      - text: "Elektromagnetisk interferens får EKG til å gå i nulllinje"
+        feedback: "Algoritmefeiljustering er sjelden. Algoritmen oppdaget korrekt 'ingen QRS' — problemet er at signalet gikk tapt, ikke at algoritmen feilidentifiserte det."
+      - text: "Elektromagnetisk interferens får EKG til å gå i nullinje"
         correct: false
-        feedback: "EMI legger typisk støy til sporet i stedet for å forårsake nulllinje. En nulllinje under en falsk asystolialarm peker mot signaltap."
+        feedback: "EMI legger typisk støy til sporet i stedet for å forårsake nullinje. En nullinje under en falsk asystolialarm peker mot signaltap."
       - text: "Monitorens CPU er overbelastet og mangler QRS-deteksjoner"
         correct: false
         feedback: "Moderne monitorer har dedikert DSP-maskinvare for EKG-prosessering. CPU-belastning påvirker ikke QRS-deteksjon."
@@ -66,7 +66,7 @@ steps:
           delivered: "Ledningsfeilalarm etter 2,1 s"
           status: pass
           spec: "< 5 s"
-        - setting: "Asystolideteksjon — ProSim 8 nulllinje i 8 s"
+        - setting: "Asystolideteksjon — ProSim 8 nullinje i 8 s"
           delivered: "Asystolialarm ved 6,0 s"
           status: pass
           spec: "4–8 s (konfigurerbar)"
@@ -95,13 +95,13 @@ steps:
         feedback: "Deaktiver aldri kritiske alarmer. Pasientens tilstand kan endre seg når som helst. Fiks signalkvaliteten i stedet."
 learning_points:
   - text: "Falske asystolialarmer forårsakes oftest av intermitterende EKG-elektrodefrakobling — ikke monitorfeil. Monitoren oppdager korrekt 'ingen QRS' når signalet går tapt."
-  - text: "Alarmtretthet fra falske alarmer er en anerkjent pasientsikkerhetsrisiko. ECRI Institute rangerer konsekvent alarmhåndtering blant de øverste helseteknoligiske farene. Falske alarmer undergraver tillit og forsinker respons på ekte hendelser."
+  - text: "Alarmtretthet fra falske alarmer er en anerkjent pasientsikkerhetsrisiko. ECRI Institute rangerer konsekvent alarmhåndtering blant de øverste helseteknologiske farene. Falske alarmer undergraver tillit og forsinker respons på ekte hendelser."
     source: "ECRI Institute — Top 10 Health Technology Hazards (alarmhåndtering)"
     source_type: incident-data
   - text: "EKG-elektroder bør byttes daglig og hudforberedelse bør verifiseres ved hvert vaktskifte. Inntørket gel, dårlig feste og fet hud er de primære årsakene til elektrode-relatert signaltap."
     source_type: best-practice
-  - text: "IEC 60601-2-27 §201.12.1.101.11 krever at monitorer detekterer og indikerer elektrodefrakobling. Lead-off-deteksjonen skal utløse en 'teknisk alarm' (ledningsfeil) før den 'kliniske alarmen' (asystoli) kan aktiveres."
-    source: "IEC 60601-2-27 §201.12.1.101.11"
+  - text: "IEC 60601-2-27 krever at monitoren innen 10 s indikerer at den er ute av funksjon fordi en EKG-avledningsledning er frakoblet eller EKG-forsterkeren er mettet, og standarden begrenser alarmgenereringsforsinkelsen for hjertestans (asystoli) til 10 s. Standarden krever IKKE at den tekniske ledningsfeilalarmen kommer før eller undertrykker asystolialarmen — og nettopp derfor gir en elektrode som mister kontakten lenger enn asystolivinduet fortsatt en falsk asystolialarm, slik benketesten på 7 s over viser."
+    source: "IEC 60601-2-27:2011 §208.6.6.2.104 (teknisk alarmtilstand som indikerer at utstyret er ute av funksjon) og §208.6.6.2.103 (tid til alarm for hjertefrekvensalarmer)"
     source_type: standard
   - text: "Når du etterforsker klager på falske alarmer, sjekk alltid alarmloggen — den inneholder tidsstempler, alarmtyper, og ofte ledningsfeilhendelser som avslører rotårsaken."
     source_type: best-practice

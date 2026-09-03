@@ -100,8 +100,8 @@ learning_points:
     source_type: incident-data
   - text: "ECG electrodes should be replaced daily and skin prep should be verified at each shift change. Dried gel, poor adhesion, and oily skin are the primary causes of electrode-related signal loss."
     source_type: best-practice
-  - text: "IEC 60601-2-27 §201.12.1.101.11 requires monitors to detect and indicate electrode disconnection. The lead-off detection should trigger a 'technical alarm' (lead fault) before the 'clinical alarm' (asystole) can activate."
-    source: "IEC 60601-2-27 §201.12.1.101.11"
+  - text: "IEC 60601-2-27 requires the monitor to indicate within 10 s that it is inoperable because an ECG lead wire is disconnected or the ECG amplifier is saturated, and it limits the alarm signal generation delay for cardiac standstill (asystole) to 10 s. The standard does NOT require the lead-fault technical alarm to precede or suppress the asystole alarm — which is exactly why an electrode that loses contact for longer than the asystole window still produces a false asystole alarm, as the 7 s bench test above shows."
+    source: "IEC 60601-2-27:2011 §208.6.6.2.104 (technical alarm condition indicating inoperable equipment) and §208.6.6.2.103 (time to alarm for heart rate alarm conditions)"
     source_type: standard
   - text: "When investigating false alarm complaints, always check the alarm log — it contains timestamps, alarm types, and often lead-fault events that reveal the root cause."
     source_type: best-practice

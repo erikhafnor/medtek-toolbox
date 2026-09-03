@@ -41,12 +41,12 @@ steps:
     question: "Du ser på skjermen: EKG-en viser atrieflutter med en frekvens på ~150 slag/min. Det er INGEN synkroniseringsmarkører synlige på kurven. Avledningsvelgeren er satt til avledning III, og R-takk-amplituden er veldig lav (< 0,3 mV). Hva er problemet og den umiddelbare løsningen?"
     hint: "SYNC-algoritmen trenger en tilstrekkelig høy R-takk å låse seg på. Atrieflutter har ofte sagtannbølger som kan forvirre R-takk-deteksjonen."
     choices:
-      - text: "Bytt til en avledning med høyere R-takk — prøv avledning II eller juster forsterkningen, og sjekk på nytt for synkroniseringsmarkører"
+      - text: "Bytt til en avledning med høyere R-takk — velg avledning II og bekreft at synkroniseringsmarkører vises på hver R-takk"
         correct: true
         feedback: "Riktig — avledning II har typisk den høyeste R-takken. Ved atrieflutter kan sagtann-F-bølgene være større enn R-takkene i noen avledninger, noe som forvirrer synkroniseringsalgoritmen. Å bytte avledning løser ofte problemet umiddelbart."
       - text: "Øk EKG-forsterkningsinnstillingen for å forsterke signalet"
         correct: false
-        feedback: "Å øke forsterkningen forsterker alt — inkludert flutterbølger og støy. Enhetens synkroniseringsalgoritme jobber med det faktiske signalet, ikke skalering av visningen. Avledningsvalg er den primære løsningen."
+        feedback: "Å øke forsterkningen forsterker alt — også flutterbølgene og støyen — og kan derfor ikke redde en avledning der F-bølgene er høyere enn R-takkene. ECG SIZE er verdt å justere når du først står på en avledning med brukbar R-takk: LIFEPAK-bruksanvisningen ber deg justere ECG SIZE dersom synkroniseringsmarkørene uteblir. Men avledningsvalg er den primære løsningen her."
       - text: "Sett på nye elektroder for bedre signalkvalitet"
         correct: false
         feedback: "Elektrodekvalitet påvirker signalstøy, ikke hvilken avledning som har høyest R-takk. Problemet er avledningsvalg, ikke elektrodekontakt."

@@ -76,13 +76,16 @@
         {#if reading.charge_time}
           <div class="mt-1.5 flex items-center gap-2 text-xs">
             <span class="text-gray-500">Charge time:</span>
-            <span class="{reading.spec && reading.charge_time ? 'text-yellow-400' : 'text-gray-300'} font-medium">
+            <span class="{reading.spec ? 'text-yellow-400' : 'text-gray-300'} font-medium">
               {reading.charge_time}
             </span>
             {#if reading.spec}
               <span class="text-gray-600">(spec: {reading.spec})</span>
             {/if}
           </div>
+        {:else if reading.spec}
+          <!-- A reading can carry a spec without a charge time; show it anyway. -->
+          <div class="mt-1.5 text-xs text-gray-600">spec: {reading.spec}</div>
         {/if}
       </div>
     {/each}

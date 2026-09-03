@@ -10,13 +10,13 @@ briefing:
   location: Kirurgisk intensiv
   facility: Stavanger universitetssjukehus
   time: "Torsdag 09:30"
-  message: "Vi har problemer med å avvenne en postoperativ pasient fra respiratoren. Evita V500 viser et tidalvolum på 450 mL i trykkstøttemodus, men pasientens endtidal CO₂ fortsetter å stige — den er på 52 mmHg og stiger. Jeg mistenker at respiratoren rapporterer for høyt levert volum. Kan du ta med en flowanalysator og verifisere?"
+  message: "Vi har problemer med å avvenne en postoperativ pasient fra respiratoren. Evita V500 viser et tidalvolum på 450 mL i trykkstøttemodus, men pasientens endetidale CO₂ fortsetter å stige — den ligger på 6,9 kPa (52 mmHg) og stiger fortsatt. Jeg mistenker at respiratoren rapporterer for høyt levert volum. Kan du ta med en flowanalysator og verifisere?"
   urgency: medium
   context:
     - "Postoperativ pasient, vanskeligheter med avvenning fra respirator"
     - "Respirator innstilt på trykkstøtte 12 cmH₂O, PEEP 5, FiO₂ 0,35"
     - "Vist Vt ekspirert: 450 mL"
-    - "Endtidal CO₂: 52 mmHg (normalt 35–45 mmHg) — tyder på hypoventilasjon"
+    - "Endetidal CO₂: 6,9 kPa (52 mmHg), normalt 4,7–6,0 kPa (35–45 mmHg) — tyder på hypoventilasjon"
     - "Stigende CO₂ til tross for tilsynelatende adekvate tidalvolum"
     - "Serienummer: EV-59023"
 steps:
@@ -39,15 +39,15 @@ steps:
         feedback: "Selvtesten sjekker grunnleggende funksjon, men verifiserer ikke målenøyaktighet under faktiske ventilasjonsforhold. En ekstern måling er gullstandarden."
   - type: lab-handoff
     id: measurement
-    instruction: "Koble Fluke VT900A in-line ved pasient-Y-stykket. Registrer VT900A-avlesninger sammen med respiratorens display for tidalvolum, topptrykk og PEEP over 10 innåndinger i trykkstøttemodus."
+    instruction: "Koble Fluke VT900A in-line ved pasient-Y-stykket. Registrer VT900A-avlesninger sammen med respiratorens display for tidalvolum, topptrykk og PEEP over 10 pust i trykkstøttemodus."
     simulated_data:
       tool: "Fluke VT900A Gas Flow Analyzer — in-line ved pasient-Y-stykke"
       readings:
-        - setting: "Innstilling: Respirator display Vt ekspirert (gjennomsnitt av 10 innåndinger)"
+        - setting: "Innstilling: Respirator display Vt ekspirert (gjennomsnitt av 10 pust)"
           delivered: "448 mL"
           status: warning
           spec: "Bør samsvare med VT900A innenfor ±10 %"
-        - setting: "Innstilling: VT900A målt Vt ved pasient-Y-stykke (gjennomsnitt av 10 innåndinger)"
+        - setting: "Innstilling: VT900A målt Vt ved pasient-Y-stykke (gjennomsnitt av 10 pust)"
           delivered: "312 mL"
           status: fail
           error: "30 % lavere enn respiratorens display"
@@ -98,8 +98,8 @@ learning_points:
   - text: "Ekspiratoriske flowsensorer (varmetrådsanemometre) er den mest vedlikeholdssensitive komponenten i moderne respiratorer. Fuktighet, sekresjonståke og biofilm gjør at de leser for høyt, noe som gir falskt betryggende volumvisninger."
     source: "Dräger Evita V500 servicehåndbok — vedlikehold av ekspiratorisk flowsensor"
     source_type: best-practice
-  - text: "IEC 60601-2-12 krever tidalvolumnøyaktighet på ±10 % eller ±10 mL (det som er størst). En feil på 30 % er et betydelig sikkerhetsavvik som kan skade pasienten."
-    source: "IEC 60601-2-12 §201.12.1"
+  - text: "IEC 60601-2-12 er trukket tilbake og erstattet av ISO 80601-2-12:2020 for intensivrespiratorer. Standarden tillater at levert tidalvolum avviker fra innstilt volum med ±(4 mL + 15 % av innstilt volum), og for målt (vist) volum krever den at produsenten oppgir nøyaktigheten. Den strengere grensen på ±10 % eller ±10 mL som vi bruker i verkstedet, er vårt lokale akseptkriterium, ikke et krav i standarden. Et avvik på 30 % mellom vist og målt volum ligger langt utenfor alle disse grensene og er et betydelig sikkerhetsavvik som kan skade pasienten."
+    source: "ISO 80601-2-12:2020 (erstatter IEC 60601-2-12) — særskilte krav til intensivrespiratorer"
     source_type: standard
   - text: "Verifiser alltid respiratornøyaktighet med en uavhengig ekstern analysator (VT900A eller tilsvarende) ved pasient-Y-stykket. Respiratorens innebygde sensorer kan ikke verifisere seg selv."
     source_type: best-practice

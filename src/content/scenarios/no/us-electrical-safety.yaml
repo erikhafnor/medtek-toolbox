@@ -29,7 +29,7 @@ steps:
         feedback: "Å vente på fordamping er ikke tilstrekkelig — vann kan samle seg inne i chassiset på steder som ikke tørker lett, og mineralrester fra springvann kan skape ledende baner selv etter tørking."
       - text: "Inspiser chassiset for vanninntrenging, tørk tilgjengelige områder, utfør deretter en komplett elektrisk sikkerhetstest (IEC 62353) før du kobler til strømnettet"
         correct: true
-        feedback: "Riktig — du kan ikke trygt slå på et væskeeksponert apparat uten å først verifisere elektrisk sikkerhet. Inspiser for synlig vann inne i ventiler/porter, tørk tilgjengelige områder, test deretter jordtilkobling, kapslingslekkasje og pasientlekkasje før du kobler til igjen. Sikkerhetstesten er portvokteren."
+        feedback: "Riktig — du kan ikke trygt slå på et væskeeksponert apparat uten å først verifisere elektrisk sikkerhet. Inspiser for synlig vann i ventilasjonsåpninger og tilkoblingsporter, tørk tilgjengelige områder, test deretter beskyttelsesjording, utstyrslekkasje og lekkasje i anvendt del før du kobler til igjen. Sikkerhetstesten er portvokteren."
       - text: "Slå den på og sjekk om den fungerer — moderne utstyr har sølebeskyttelse"
         correct: false
         feedback: "Ekstremt farlig. Selv IPX1-klassifisert utstyr (beskyttelse mot dryppende vann) er ikke konstruert for et søl på 300 mL. Vann kan ha nådd interne komponenter og kan forårsake kortslutning eller elektrisk støt ved oppstart."
@@ -38,12 +38,12 @@ steps:
         feedback: "GE-vurdering tar uker. Du kan utføre sikkerhetsevalueringen internt. Hvis apparatet består sikkerhetstesting og fungerer normalt, er det ikke behov for produsentinvolvering."
   - type: multiple-choice
     id: investigation
-    question: "Du inspiserer LOGIQ E10. Tastaturområdet har overflatefuktighet (du tørker det). Du sjekker ventilasjonsspalterne på høyre side — du kan se vanndråper på interne komponenter gjennom ventilen. Hva betyr dette for sikkerhetsvurderingen din?"
+    question: "Du inspiserer LOGIQ E10. Tastaturområdet har overflatefuktighet (du tørker det). Du sjekker ventilasjonsspaltene på høyre side — du kan se vanndråper på interne komponenter gjennom spalten. Hva betyr dette for sikkerhetsvurderingen din?"
     hint: "Synlig vann på interne komponenter betyr at isolasjonen mellom nettilkoblede kretser og tilgjengelige deler kan være kompromittert."
     choices:
-      - text: "IKKE slå på. Åpne dekslene (per servicemanualtilgangsprosedyrer), tørk forsiktig interne komponenter med lofrie kluter og trykkluft, la det deretter lufttørke 2–4 timer før sikkerhetstest"
+      - text: "IKKE slå på. Kontroller først at systemet er spenningsløst — nettkabelen ute, det interne batteriet frakoblet og nok tid til at kondensatorene i strømforsyningen er utladet — åpne så dekslene etter tilgangsprosedyren i servicemanualen, tørk interne komponenter med lofrie kluter og tørr trykkluft med lavt trykk, og la det lufttørke 2–4 timer før sikkerhetstest"
         correct: true
-        feedback: "Riktig — med synlig intern fuktighet må du fysisk tørke komponentene før sikkerhetstest. Trykkluft (lavt trykk, uten fuktighet) fjerner oppsamlet vann; lofrie kluter absorberer rester. Gi ekstra lufttørketid. Først deretter kan du gå videre med elektrisk sikkerhetstest."
+        feedback: "Riktig — med synlig intern fuktighet må du fysisk tørke komponentene før sikkerhetstest. Slått av og med støpselet ute er ikke det samme som spenningsløst: LOGIQ E10 har et internt batteri som fortsatt er tilkoblet, og strømforsyningen har ladede kondensatorer — koble fra batteriet og gi forsyningen tid til å lades ut før du går inn i apparatet. Trykkluft (lavt trykk, uten fuktighet) fjerner oppsamlet vann; lofrie kluter absorberer rester. Gi ekstra lufttørketid. Først deretter kan du gå videre med elektrisk sikkerhetstest."
       - text: "Vannet på interne komponenter er minimalt — gå videre med sikkerhetstesten"
         correct: false
         feedback: "Testing med vann fortsatt til stede på interne komponenter kan gi falskt forhøyede lekkasjeverdier OG risikerer å skade testutstyret eller skape ytterligere kortslutninger."
@@ -63,22 +63,22 @@ steps:
           delivered: "0,08 Ω"
           status: pass
           spec: "< 0,3 Ω"
-        - setting: "Kapslingslekkasjestrøm (normalforhold)"
+        - setting: "Kapslingslekkasjestrøm (berøringsstrøm) — kontroll mot IEC 60601-1"
           delivered: "78 µA"
           status: pass
-          spec: "< 100 µA"
-        - setting: "Kapslingslekkasjestrøm (åpen jord SFC)"
+          spec: "≤ 100 µA (IEC 60601-1, normalforhold)"
+        - setting: "Utstyrslekkasjestrøm (differansemetoden)"
           delivered: "320 µA"
           status: pass
-          spec: "< 500 µA"
-        - setting: "Pasientlekkasje — C5-1-probe (BF tilkoblingsdel)"
+          spec: "≤ 500 µA (IEC 62353, klasse I)"
+        - setting: "Lekkasjestrøm i anvendt del — C1-6-probe (type BF)"
           delivered: "45 µA"
           status: pass
-          spec: "< 100 µA normal"
+          spec: "≤ 5000 µA (IEC 62353, type BF); ≤ 100 µA (IEC 60601-1, normalforhold)"
         - setting: "Funksjonstest — B-modus-bilde på CIRS-fantom"
           delivered: "Normal bildekvalitet, ingen artifakter"
           status: pass
-        - setting: "Tastatur- og styrkulefunksjon"
+        - setting: "Tastatur- og styrekulefunksjon"
           delivered: "Alle taster og styrekule responderer"
           status: pass
   - type: multiple-choice

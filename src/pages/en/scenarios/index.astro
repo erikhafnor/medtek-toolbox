@@ -23,7 +23,7 @@ const scenarios = allScenarios
             class="block bg-white rounded-xl border border-gray-200 p-5 hover:border-blue-400 hover:shadow-md transition-all"
           >
             <div class="flex items-start justify-between gap-2 mb-2">
-              <DifficultyBadge level={entry.data.level} client:load />
+              <DifficultyBadge level={entry.data.level} locale="en" client:load />
               <span class="text-xs text-gray-400 font-medium">{entry.data.estimated_time}</span>
             </div>
             <p class="text-xs text-blue-600 font-medium mb-1">{entry.data.device}</p>

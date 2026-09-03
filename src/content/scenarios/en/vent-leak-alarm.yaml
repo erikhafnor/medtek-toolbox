@@ -10,11 +10,11 @@ briefing:
   location: ICU Bed 8
   facility: Stavanger University Hospital
   time: "Sunday 03:20"
-  message: "The Evita V500 on bed 8 keeps alarming for a circuit leak — it says leak volume is 400 mL and the alarm goes off every 30 seconds. The patient is on volume control at 500 mL tidal volume and seems okay, but the expired volume shows only 320 mL. I've checked the circuit and can't find anything obviously disconnected. Can you come check?"
+  message: "The Evita V500 on bed 8 keeps alarming for a circuit leak — it says the leak is 190 mL per breath, about 37%, and the alarm goes off every 30 seconds. The patient is on volume control at 500 mL tidal volume and seems okay, but the expired volume shows only 320 mL. I've checked the circuit and can't find anything obviously disconnected. Can you come check?"
   urgency: high
   context:
     - "Patient on volume-controlled ventilation, Vt 500 mL, PEEP 8, FiO₂ 0.4"
-    - "Leak alarm: 400 mL leak volume (inspired minus expired)"
+    - "Leak alarm: 190 mL leak volume per breath (inspired 510 mL − expired 320 mL ≈ 37%)"
     - "Expired Vt on display: 320 mL (should be ~500 mL)"
     - "No visible disconnection in the circuit"
     - "Active heated humidifier (Fisher & Paykel MR850)"
@@ -94,7 +94,7 @@ steps:
 learning_points:
   - text: "Humidifier chamber cracks are one of the most common causes of 'invisible' ventilator circuit leaks. The crack is often hidden under the heater plate and not visible without removing the chamber."
   - text: "A large circuit leak reduces delivered tidal volume, which can cause hypoxia and hypercapnia. The ventilator alarm is a critical safety feature — never silence it without investigating."
-    source: "IEC 60601-2-12 §201.13 — alarm conditions for ventilators"
+    source: "ISO 80601-2-12:2020, clause 208 (alarm systems, applying IEC 60601-1-8) — ventilator alarm conditions"
     source_type: standard
   - text: "When troubleshooting circuit leaks, work systematically from the ventilator outward: ventilator port → humidifier inlet → humidifier chamber → humidifier outlet → inspiratory limb → wye → expiratory limb → expiratory valve → ET tube cuff."
     source_type: best-practice

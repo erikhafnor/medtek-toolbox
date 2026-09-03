@@ -39,15 +39,15 @@ steps:
         feedback: "Å deaktivere alle rådgivende alarmer fjerner tidlig varslingskapasitet. Mange gule alarmer er klinisk relevante — spørsmålet er hvilke, ikke kategorien."
   - type: multiple-choice
     id: data-analysis
-    question: "Du henter alarmdataene. Den siste uka: 8 400 totale alarmer på tvers av 12 monitorer. De største alarmkildene er: HR lav (35 % — terskel 50 bpm), SpO₂ lav (28 % — terskel 95 %), NIBP høy (15 % — terskel 140/90), og arytmi (12 % — hovedsakelig PVC-er). Avdelingens typiske pasienter er eldre med baseline HR 55–65 og SpO₂ 91–94 %. Hva forteller dette deg?"
+    question: "Du henter alarmdataene. Den siste uka: 8 400 totale alarmer på tvers av 12 monitorer. De største alarmkildene er: HR lav (35 % — terskel 60 bpm), SpO₂ lav (28 % — terskel 95 %), NIBP høy (15 % — terskel 140/90), og arytmi (12 % — hovedsakelig PVC-er). Avdelingens typiske pasienter er eldre med baseline HR 55–65 og SpO₂ 91–94 %. Hva forteller dette deg?"
     hint: "Sammenlign alarmtersklene med avdelingens faktiske pasientgruppe. Hvor er misforholdet?"
     choices:
-      - text: "Alarmtersklene er satt for intensiv-/hjertepasienter, ikke for en eldre medisinsk avdeling. HR 50 og SpO₂ 95 % er for stramme for denne pasientgruppen."
+      - text: "Alarmtersklene er satt for intensiv-/hjertepasienter, ikke for en eldre medisinsk avdeling. HR 60 og SpO₂ 95 % er for stramme for denne pasientgruppen."
         correct: true
         feedback: "Riktig — standardtersklene er passende for en intensivavdeling der pasienter trenger tett overvåking, men ikke for en generell medisinsk avdeling der eldre pasienter normalt har lavere hjertefrekvens og marginalt lavere SpO₂. Tersklene må justeres for å matche den kliniske konteksten — videre grenser for parametere som normalt varierer i denne populasjonen."
       - text: "Pasientene er sykere enn sykepleierne innser — disse alarmene kan være klinisk signifikante"
         correct: false
-        feedback: "Avdelingssykepleieren har eksplisitt uttalt at HR 58 og SpO₂ 93 % er normalt for deres populasjon. Med 200+ alarmer per vakt og en 85 %+ ikke-handlingsbar rate er dette tydelig et alarmkonfigurasjonsproblem."
+        feedback: "Avdelingssykepleieren har eksplisitt uttalt at HR 58 og SpO₂ 93 % er normalt for pasientgruppen deres. Med 200+ alarmer per vakt, og mer enn 85 % av dem ikke-handlingsbare, er dette tydelig et alarmkonfigurasjonsproblem."
       - text: "Monitorene har blitt tilbakestilt til fabrikkinnstillinger etter en programvareoppdatering"
         correct: false
         feedback: "Dette kan forklare hvordan intensivnivå-terskler havnet på en medisinsk avdeling, men årsaken endrer ikke løsningen — tersklene må justeres."
@@ -59,7 +59,7 @@ steps:
     question: "Du må opprette en tilpasset alarmprofil for avdeling 4A. I samarbeid med avdelingssykepleier og ansvarlig lege, hvilke terskelendringer er passende?"
     hint: "Alarmterskler bør reflektere kliniske beslutningspunkter — verdiene der sykepleieren må iverksette tiltak — ikke normal fysiologisk variasjon."
     choices:
-      - text: "HR lav: 50 → 45 bpm, SpO₂ lav: 95 % → 88 %, NIBP høy: 140/90 → 160/100, PVC-alarm: reduser til > 10/min. Dokumenter begrunnelsen og få legesignatur."
+      - text: "HR lav: 60 → 45 bpm, SpO₂ lav: 95 % → 88 %, NIBP høy: 140/90 → 160/100, PVC-alarm: 10 → 20 PVC/min. Dokumenter begrunnelsen og få legesignatur."
         correct: true
         feedback: "Riktig — disse tersklene reflekterer kliniske beslutningspunkter for en eldre medisinsk avdeling: HR < 45 krever vurdering, SpO₂ < 88 % krever intervensjon, BT > 160/100 krever oppmerksomhet, og isolerte PVC-er er ikke handlingsbare. Avgjørende er at endringene dokumenteres med klinisk begrunnelse og godkjennes av ansvarlig lege."
       - text: "Deaktiver alle gule alarmer og behold røde alarmer med nåværende terskler"
@@ -96,8 +96,8 @@ learning_points:
     source_type: best-practice
   - text: "Alle endringer i alarmterskler må dokumenteres med klinisk begrunnelse og godkjennes av ansvarlig lege. Medisinsk-teknisk avdeling implementerer og distribuerer; klinisk personale definerer den kliniske hensiktsmessigheten."
     source_type: best-practice
-  - text: "ECRI Institute identifiserer alarmfarer som den fremste helseteknologiske faren. Studier viser at 72–99 % av kliniske alarmer er ikke-handlingsbare, og alarmtretthet bidrar til overseelser og pasientdødsfall."
-    source: "ECRI Institute — Top 10 Health Technology Hazards; Sendelbach & Funk (2013) alarmtretthet litteraturgjennomgang"
+  - text: "ECRI rangerte alarmfarer som den fremste helseteknologiske faren på Top 10-listene for 2012–2015; senere utgaver toppes av andre farer, så oppgi alltid årstall når du viser til denne rangeringen. Sendelbach og Funk rapporterer at 72–99 % av kliniske alarmer er ikke-handlingsbare, og alarmtretthet har bidratt til at reelle hendelser er blitt oversett, og til pasientdødsfall."
+    source: "ECRI — Top 10 Health Technology Hazards, utgavene 2012–2015; Sendelbach S, Funk M. «Alarm Fatigue: A Patient Safety Concern». AACN Adv Crit Care 2013;24(4):378–386"
     source_type: incident-data
   - text: "Navngitte alarmprofiler (per avdeling) er mer vedlikeholdbare enn per-monitor-konfigurasjon. De overlever monitorbytter, tilbakestillinger og programvareoppdateringer."
     source_type: best-practice

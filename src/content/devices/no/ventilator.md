@@ -8,8 +8,8 @@ equipment:
   - "Fluke VT900A Gas Flow Analyzer"
   - "Dräger testlunge"
 standards:
-  - "IEC 60601-2-12 (Respiratorer for intensivbehandling)"
-  - "ISO 80601-2-12 (Respiratorer for hjemmebehandling)"
+  - "ISO 80601-2-12 (Respiratorer for intensivbehandling)"
+  - "ISO 80601-2-72 (Hjemmerespiratorer)"
   - "IEC 62353 (Periodisk testing)"
 order: 3
 ---
@@ -34,7 +34,7 @@ En intensivrespirator bruker enten en turbindrevet vifte (stadig vanligere) elle
 | Topptrykksalarm | Settes av kliniker (typisk 35–40 cmH₂O) | Høyt trykk indikerer obstruksjon, bronkospasme eller pneumothorax |
 | Frakoblingsalarm / lavtrykksalarm | ≤ 15 s deteksjonstid | Forsinket deteksjon av frakobling kan forårsake hypoksi og død |
 | Inspiratorisk flow-nøyaktighet | ±10 % av innstilt flow | Påvirker levert volum og pasient-respirator-synkroni |
-| Batteribackup | ≥ 30 min (IEC 60601-2-12) | Overlevelse ved transport og strømbrudd |
+| Batteribackup | ≥ 30 min (intern verdi; produsenten oppgir driftstiden) | Overlevelse ved transport og strømbrudd |
 
 ---
 
@@ -60,15 +60,15 @@ Utfør ved intervallet spesifisert av produsenten (vanligvis årlig for intensiv
 
 3. **Gassleveransenøyaktighet** — Med en kalibrert gassflowanalysator (f.eks. Fluke VT900A), verifiser tidalvolumleveranse ved 200 mL, 500 mL og 800 mL i volumstyrt modus ved en komplians på 50 mL/cmH₂O. Hvert resultat må være innenfor ±10 % eller ±10 mL.
 
-4. **FiO₂-nøyaktighet** — Med VT900A sin oksygenanalysator, verifiser FiO₂ ved 21 %, 50 % og 100 %. Hvert resultat må være innenfor ±3–5 % av innstilt verdi.
+4. **FiO₂-nøyaktighet** — Med oksygenanalysatoren i VT900A, verifiser FiO₂ ved 21 %, 50 % og 100 %. Hvert resultat må være innenfor ±3–5 % av innstilt verdi.
 
-5. **Trykknøyaktighet** — Verifiser PEEP ved 5, 10 og 15 cmH₂O mot VT900A sin trykkmåling. Verifiser begrensning av toppinspiratorisk trykk. Hvert resultat må være innenfor ±2 cmH₂O.
+5. **Trykknøyaktighet** — Verifiser PEEP ved 5, 10 og 15 cmH₂O mot trykkmålingen i VT900A. Verifiser begrensning av toppinspiratorisk trykk. Hvert resultat må være innenfor ±2 cmH₂O.
 
 6. **Alarmtesting** — Test frakoblingsalarm (responstid ≤ 15 s), høytrykksalarm, lavtrykksalarm, apné-alarm og strømbruddsalarm. Hver alarm må aktiveres innenfor spesifiserte grenser.
 
 7. **Lekkasjetest** — Okkluder pasient-Y-stykket og kjør en kretslekkasjetest per produsentens prosedyre. Maksimalt tillatt lekkasje varierer etter produsent (typisk < 200 mL/min ved 60 cmH₂O).
 
-8. **Batteritest** — Kjør respiratoren på batteri med testlunge ved typiske innstillinger til lavbatterialarm. Må gi ≥ 30 minutter per IEC 60601-2-12.
+8. **Batteritest** — Kjør respiratoren på batteri med testlunge ved typiske innstillinger til lavbatterialarm. Må gi ≥ 30 minutter — dette er vårt interne akseptkriterium; sammenlign med den batteridriftstiden produsenten oppgir for respiratoren som testes.
 
 9. **Oksygencellesjekk** — Registrer O₂-cellens avlesning ved romluft (20,9 %) og 100 % O₂. Hvis cellen ikke kan kalibreres, bytt den.
 
@@ -76,9 +76,9 @@ Utfør ved intervallet spesifisert av produsenten (vanligvis årlig for intensiv
 
 ## Relaterte standarder
 
-- **IEC 60601-2-12:2014** — Særskilte krav til respiratorer for intensivbehandling. Spesifiserer krav til ytelse, alarmer og sikkerhet.
-- **ISO 80601-2-12:2020** — Særskilte krav til respiratorer for hjemmebehandling. Dekker respiratoravhengige pasienter utenfor intensivavdelingen.
-- **ISO 80601-2-80:2018** — Særskilte krav til utstyr for ventilasjonsstøtte (CPAP/BiPAP for obstruktiv søvnapné).
+- **ISO 80601-2-12:2020** — Særskilte krav til grunnleggende sikkerhet og essensiell ytelse for respiratorer for intensivbehandling. Spesifiserer krav til ytelse, alarmer og sikkerhet. Den avløste IEC 60601-2-12:2001, som er trukket tilbake.
+- **ISO 80601-2-72** — Særskilte krav til hjemmerespiratorer for respiratoravhengige pasienter, det vil si langtidsventilasjon utenfor intensivavdelingen.
+- **ISO 80601-2-80:2018** — Særskilte krav til utstyr for ventilasjonsstøtte ved ventilasjonssvikt (bilevel non-invasiv støtte). CPAP/APAP-behandling ved obstruktiv søvnapné dekkes i stedet av ISO 80601-2-70.
 - **IEC 62353:2014** — Periodisk test og test etter reparasjon av medisinsk elektrisk utstyr.
 - **IEC 60601-1:2005+AMD2:2020** — Generelle krav til grunnleggende sikkerhet og essensiell ytelse.
 

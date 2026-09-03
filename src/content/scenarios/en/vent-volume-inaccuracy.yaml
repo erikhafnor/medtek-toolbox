@@ -10,13 +10,13 @@ briefing:
   location: Surgical ICU
   facility: Stavanger University Hospital
   time: "Thursday 09:30"
-  message: "We're having trouble weaning a post-operative patient from the ventilator. The Evita V500 displays a tidal volume of 450 mL in pressure support mode, but the patient's end-tidal CO₂ keeps rising — it's at 52 mmHg and climbing. I think the ventilator is over-reporting the delivered volume. Can you bring a flow analyser and verify?"
+  message: "We're having trouble weaning a post-operative patient from the ventilator. The Evita V500 displays a tidal volume of 450 mL in pressure support mode, but the patient's end-tidal CO₂ keeps rising — it's at 6.9 kPa (52 mmHg) and climbing. I think the ventilator is over-reporting the delivered volume. Can you bring a flow analyser and verify?"
   urgency: medium
   context:
     - "Post-operative patient, difficulty weaning from ventilator"
     - "Ventilator set to pressure support 12 cmH₂O, PEEP 5, FiO₂ 0.35"
     - "Displayed Vt expired: 450 mL"
-    - "End-tidal CO₂: 52 mmHg (normal 35–45 mmHg) — suggesting hypoventilation"
+    - "End-tidal CO₂: 6.9 kPa (52 mmHg), normal 4.7–6.0 kPa (35–45 mmHg) — suggesting hypoventilation"
     - "Rising CO₂ despite apparently adequate tidal volumes"
     - "Device serial: EV-59023"
 steps:
@@ -98,8 +98,8 @@ learning_points:
   - text: "Expiratory flow sensors (hot-wire anemometers) are the most maintenance-sensitive component in modern ventilators. Moisture, secretion mist, and biofilm cause them to over-read, leading to falsely reassuring volume displays."
     source: "Dräger Evita V500 service manual — expiratory flow sensor maintenance"
     source_type: best-practice
-  - text: "IEC 60601-2-12 requires tidal volume accuracy of ±10% or ±10 mL (whichever is greater). A 30% error is a significant safety deviation that could cause patient harm."
-    source: "IEC 60601-2-12 §201.12.1"
+  - text: "IEC 60601-2-12 was withdrawn and replaced by ISO 80601-2-12:2020 for critical care ventilators, which allows the delivered tidal volume to differ from the set volume by ±(4 mL + 15% of the set volume); for the monitored (displayed) volume it requires the manufacturer to declare the accuracy. The tighter ±10% or ±10 mL we use in the workshop is our local acceptance criterion, not a requirement of the standard. A 30% discrepancy between displayed and measured volume is far outside all of these and is a significant safety deviation that could cause patient harm."
+    source: "ISO 80601-2-12:2020 (replaces IEC 60601-2-12) — particular requirements for critical care ventilators"
     source_type: standard
   - text: "Always verify ventilator accuracy with an independent external analyser (VT900A or equivalent) at the patient wye. The ventilator's built-in sensors cannot verify themselves."
     source_type: best-practice

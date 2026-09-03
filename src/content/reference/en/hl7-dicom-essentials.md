@@ -46,14 +46,14 @@ MSH|^~\&|SENDING_APP|SENDING_FAC|RECEIVING_APP|RECEIVING_FAC|TIMESTAMP||MSG_TYPE
 The OBX segment carries individual observations. For patient monitors, each vital sign is a separate OBX:
 
 ```
-OBX|1|NM|HR^Heart Rate^LN||78|bpm|60-100||||F
+OBX|1|NM|8867-4^Heart rate^LN||78|bpm|60-100||||F
 ```
 
 | Position | Content | Example |
 |---|---|---|
 | OBX-1 | Set ID | 1 |
 | OBX-2 | Value type | NM (numeric) |
-| OBX-3 | Observation identifier | HR^Heart Rate^LN |
+| OBX-3 | Observation identifier | 8867-4^Heart rate^LN |
 | OBX-5 | Value | 78 |
 | OBX-6 | Units | bpm |
 | OBX-7 | Reference range | 60-100 |
@@ -120,7 +120,7 @@ IHE (Integrating the Healthcare Enterprise) is not a standard itself — it's a 
 | Profile | Domain | What It Solves |
 |---|---|---|
 | **SWF** (Scheduled Workflow) | Radiology | Order-to-image workflow: order in RIS → worklist on modality → images to PACS → report in RIS |
-| **PIR** (Patient Information Reconciliation) | IT Infrastructure | Correcting patient ID mismatches across systems |
+| **PIR** (Patient Information Reconciliation) | Radiology | Reconciling images, orders and reports acquired under a temporary or unknown identity (e.g., a trauma case) with the correct patient record once the identity is established |
 | **DEC** (Device Enterprise Communication) | Patient Care Devices | How bedside devices (monitors, ventilators) communicate vitals to the EHR |
 | **ACM** (Alarm Communication Management) | Patient Care Devices | How device alarms are forwarded to nurse call systems and mobile devices |
 | **ATNA** (Audit Trail and Node Authentication) | IT Infrastructure | Security audit logging for medical device network access |

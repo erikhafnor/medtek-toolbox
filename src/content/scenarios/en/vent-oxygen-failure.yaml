@@ -6,8 +6,8 @@ level: 2
 estimated_time: 18min
 has_lab_handoff: true
 briefing:
-  caller: Respiratory Therapist Lena
-  location: Neuro ICU, Bed 3
+  caller: ICU Nurse Lena
+  location: ICU Bed 3
   facility: Stavanger University Hospital
   time: "Friday 07:15"
   message: "I set the FiO₂ to 0.60 on the Evita V500 for a patient with ARDS, but the patient's SpO₂ is only 85%. I've increased to 0.80, then 1.0 — barely any improvement in SpO₂. The ventilator display shows FiO₂ 1.0 but I'm suspicious it's not actually delivering that. I checked the wall oxygen — the gauge shows normal pressure. Something is wrong with this ventilator's oxygen delivery."
@@ -49,7 +49,7 @@ steps:
         - setting: "VT900A measured FiO₂ at patient wye"
           delivered: "0.38 (38%)"
           status: fail
-          error: "62% lower than displayed — ventilator O₂ monitoring is inaccurate"
+          error: "Delivered FiO₂ is 62% below the displayed value"
         - setting: "Wall O₂ supply pressure at ventilator inlet"
           delivered: "4.2 bar"
           status: pass
@@ -60,46 +60,46 @@ steps:
           spec: "3.5–5.5 bar"
   - type: multiple-choice
     id: investigation
-    question: "The VT900A confirms only 38% FiO₂ at the patient wye despite the ventilator displaying 100%. The gas supply pressures are normal. The ventilator's O₂ cell shows 100% — but it's wrong. What's the most likely cause?"
-    hint: "The O₂ cell is a galvanic sensor that degrades over time. What happens when it can no longer measure oxygen accurately?"
+    question: "The VT900A confirms only 38% FiO₂ at the patient wye despite the ventilator displaying 100%. The gas supply pressures are normal. The ventilator's O₂ cell shows 100% — but it's wrong. What explains these findings?"
+    hint: "The VT900A is your ground truth: the ventilator really is delivering 38%. So you have two things to explain — why the delivery is low, and why the ventilator's own O₂ monitor did not see it."
     choices:
-      - text: "The O₂ cell is depleted — it reads 100% because it can no longer generate a proper signal, and the ventilator's mixing algorithm uses this false reading to control the blender"
+      - text: "Two independent faults: the ventilator really is under-delivering oxygen, and the O₂ cell has failed as well — a working cell would have measured 38% and raised a low-FiO₂ alarm"
         correct: true
-        feedback: "Correct — galvanic O₂ cells degrade with age (typical lifespan 12–18 months). A fully depleted cell may output a fixed high signal that the ventilator interprets as high FiO₂. The mixing algorithm then reduces the actual O₂ proportion because it 'thinks' the mixture is already at target. The result: the display shows 100% FiO₂ while actually delivering much less."
+        feedback: "Correct — the VT900A shows the ventilator delivering 38% against a set 1.0 with normal supply pressures, so the delivery fault sits in the oxygen path: the mixer's O₂ proportional valve or its drive electronics. The O₂ cell is a second, separate fault. On the Evita V500 the galvanic cell only monitors the delivered gas — it does not control the mixer, and that independence is the whole point of an oxygen monitor: it has to be able to catch a delivery fault. Watch the direction of failure too — a galvanic cell that is simply worn out reads LOW as its anode is consumed, so a cell stuck at a high value is a sensor or sensor-interface fault, not ordinary depletion. Both faults must be corrected before this ventilator goes back on a patient."
       - text: "The oxygen blender valve is mechanically stuck"
         correct: false
-        feedback: "A stuck blender valve would typically deliver a fixed FiO₂ regardless of the set value, but the ventilator would still measure the actual FiO₂ correctly if the O₂ cell were functional. The false display reading points to a sensor problem."
+        feedback: "Half the answer — a fault in the gas mixer is exactly what the 38% measurement points to, but on its own it does not explain the display. If only the blender were at fault, a working O₂ cell would still have measured 38% and alarmed. You have to account for both the low delivery and the false 100% reading."
       - text: "The wall oxygen connection is delivering air instead of oxygen"
         correct: false
         feedback: "The wall O₂ pressure is normal (4.2 bar), and medical gas outlets use pin-indexed or NIST connectors to prevent cross-connection. A cross-connection is extremely unlikely."
       - text: "The ventilator's software has a bug in the FiO₂ display"
         correct: false
-        feedback: "Software displays the O₂ cell reading — if the cell reads 100%, the display shows 100%. The issue is the sensor, not the software."
+        feedback: "The display simply shows the O₂ cell reading — if the cell reads 100%, the display shows 100%. That is a sensor fault rather than a software fault, and it still leaves the low delivery unexplained."
   - type: multiple-choice
     id: corrective-action
-    question: "The O₂ cell is depleted (14 months old, typical lifespan 12–18 months). What's the corrective action?"
+    question: "The O₂ cell reading cannot be trusted, and the ventilator is delivering 38% against a set 1.0. What's the corrective action?"
     choices:
-      - text: "Replace the O₂ cell immediately, calibrate at room air (20.9%), then verify FiO₂ delivery at 0.60 and 1.0 with the VT900A"
+      - text: "Secure the patient first — move them to the backup ventilator or ventilate manually with 100% O₂ — then take this ventilator out of clinical use, replace the O₂ cell, let the new cell stabilise for the time the manufacturer specifies before calibrating at room air (20.9%), and verify measured FiO₂ against 0.21, 0.60 and 1.0 with the VT900A"
         correct: true
-        feedback: "Correct — replace the cell, calibrate at 20.9% (room air), then verify the full range. While the cell is being replaced, ensure the patient is receiving adequate oxygenation via the backup ventilator or manual ventilation. After verification, document the incident and recommend adding O₂ cell age tracking to the PM schedule."
+        feedback: "Correct — oxygenation comes first. A hypoxic ARDS patient cannot stay on a ventilator that is delivering 38% while you work on it. Once the patient is supported, this unit is out of service and can be repaired properly: replace the cell, allow the specified stabilisation time before calibration, then verify the full FiO₂ range with the VT900A. If the delivery is still low with a known-good cell, the fault is in the gas mixer, and the ventilator stays out of service until that is repaired. Document the incident and add O₂ cell age tracking to the PM schedule."
       - text: "Clean the O₂ cell contacts and recalibrate — the cell may still be usable"
         correct: false
-        feedback: "A depleted galvanic cell cannot be restored by cleaning. The electrochemical reaction that generates the signal is exhausted. Replacement is the only fix."
+        feedback: "Reseating the sensor and checking its contacts is reasonable while you are diagnosing, but it does not make a cell you have proved wrong trustworthy again — and it does nothing about the real problem, that the ventilator is delivering 38% against a set 1.0. Replace the cell and trace the delivery fault."
       - text: "Bypass the O₂ cell and run the ventilator with manual FiO₂ monitoring using the VT900A"
         correct: false
-        feedback: "Running a ventilator without functional O₂ monitoring is unsafe — there's no continuous alarm protection if FiO₂ drifts. Replace the cell."
+        feedback: "Running a ventilator without functional O₂ monitoring is unsafe — there's no continuous alarm protection if FiO₂ drifts. This ventilator also has a confirmed delivery fault, so it should not be on a patient at all until both are fixed."
       - text: "Switch the patient to the backup ventilator and schedule the O₂ cell replacement for the next PM visit"
         correct: false
-        feedback: "Don't leave a ventilator with a known safety defect in the ICU. Replace the cell now — it takes 5 minutes. Deferring to PM means the ventilator is unavailable or unsafe until then."
+        feedback: "Half right — moving the patient to the backup ventilator is exactly what you should do first. What is wrong is deferring the repair: a ventilator with a confirmed FiO₂ delivery fault must be tagged out of service and repaired and verified before it goes back on a patient, not left in circulation until the next PM."
 learning_points:
-  - text: "A depleted O₂ cell can cause the ventilator to display a falsely high FiO₂ while delivering much less oxygen. This is a dangerous failure mode because the clinician sees reassuring numbers while the patient is hypoxic."
-  - text: "Galvanic O₂ cells have a finite lifespan (typically 12–18 months). They degrade gradually, and a depleted cell may read high rather than low, which is counter-intuitive and dangerous."
+  - text: "A failed O₂ cell can leave the ventilator displaying a reassuring FiO₂ that has nothing to do with the gas the patient is receiving. The display is only a sensor reading — confirm FiO₂ with an independent analyser at the wye before you trust it."
+  - text: "Galvanic O₂ cells have a finite lifespan (typically 12–18 months). They degrade gradually and read progressively LOW as the anode is consumed, so the normal end-of-life signature is a falling reading and a low-FiO₂ alarm. A cell reading implausibly high is not ordinary depletion — it points to a sensor or interface fault and must be checked against an external analyser."
     source: "Dräger safety notice — oxygen sensor monitoring and replacement"
     source_type: best-practice
-  - text: "IEC 60601-2-12 requires continuous FiO₂ monitoring with alarms for high and low oxygen concentration. A depleted sensor that reads falsely high defeats this safety requirement."
-    source: "IEC 60601-2-12 §201.12.4"
+  - text: "ISO 80601-2-12:2020, which replaced the withdrawn IEC 60601-2-12 for critical care ventilators, requires the ventilator to monitor the delivered oxygen concentration continuously and to alarm on high and low FiO₂. That monitor is independent of the gas mixer precisely so it can catch a delivery fault — which is why a sensor reading falsely high is so dangerous: it removes the one safeguard that would have caught this."
+    source: "ISO 80601-2-12:2020 — oxygen monitoring and FiO₂ alarm conditions for critical care ventilators"
     source_type: standard
-  - text: "Track O₂ cell installation dates in your equipment management system and set proactive replacement alerts at 12 months. Don't wait for failure — a depleted cell in an emergency is a patient safety crisis."
+  - text: "Track O₂ cell installation dates in your equipment management system and set proactive replacement alerts at 12 months. Don't wait for failure — an O₂ cell that fails in an emergency is a patient safety crisis."
     source_type: best-practice
   - text: "Oxygen delivery failures are among the most critical ventilator incidents. FDA MAUDE data shows O₂-related ventilator complaints include both over-oxygenation (toxicity) and under-oxygenation (hypoxia), with sensor failures as a leading cause."
     source: "FDA MAUDE database — ventilator oxygen delivery adverse events"

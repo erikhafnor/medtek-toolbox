@@ -1,7 +1,7 @@
 ---
 title: "Veiledning for måling av lekkasjestrøm"
 description: "Praktisk veiledning for måling av lekkasjestrømmer på medisinsk utstyr i henhold til IEC 62353"
-tags: ["electrical safety", "leakage current", "IEC 62353", "measurement"]
+tags: ["elektrisk sikkerhet", "lekkasjestrøm", "IEC 62353", "måling"]
 order: 3
 ---
 
@@ -36,12 +36,16 @@ Dette er grunnen til at grensene for lekkasjestrøm for CF-applikasjonsdeler (ka
 **Hvordan måle:**
 1. Koble DUT til sikkerhetsanalysatoren
 2. Mål strømmen i PE-lederen
-3. Test under normal betingelse (NC) og med PE åpen (SFC)
+3. Test under normal betingelse (NC), deretter under enkeltfeilbetingelse (SFC: brudd i én nettleder om gangen)
 
 | Betingelse | Grense |
 |---|---|
-| Normal | ≤ 500 µA |
-| Enkeltfeil (PE åpen) | ≤ 1000 µA |
+| Normal betingelse (NC) | ≤ 5 mA |
+| Enkeltfeil (brudd i én nettleder) | ≤ 10 mA |
+
+> Dette er grensene i IEC 60601-1 3. utgave. De langt strengere verdiene 500 µA / 1000 µA som
+> fortsatt siteres mye, kommer fra den **tilbaketrukne 2. utgaven**. Merk også at jordlekkasjestrøm
+> måles *i* vernelederen, så åpen PE kan ikke være enkeltfeilbetingelsen for den.
 
 **Gjelder for:** Kun Klasse I-utstyr (utstyr med PE-tilkobling).
 
@@ -93,8 +97,8 @@ Dette er grunnen til at grensene for lekkasjestrøm for CF-applikasjonsdeler (ka
 | Type | Symbolhint | Isolasjon | Eksempler på utstyr |
 |---|---|---|---|
 | **B** (Body) | Ingen F-suffiks | Koblet til jord | Ultralydtransdusere (kroppsoverflate), fysioterapiutstyr |
-| **BF** (Body Floating) | F = flytende | Isolert fra jord | EKG-monitorer (overflateelektroder), pulsoksymetre, NIBP-manchetter |
-| **CF** (Cardiac Floating) | C = kardial | Høyeste isolasjon | Defibrillatorer, intrakardialt EKG, pacemakerprogrammerere, hjertekateterutstyr |
+| **BF** (Body Floating) | F = flytende | Isolert fra jord | Pulsoksymeterprober, NIBP-mansjetter, hudtemperaturprober — men **ikke** EKG-inngangene på en pasientmonitor, som er CF. Les symbolet på merkeskiltet i stedet for å anta BF |
+| **CF** (Cardiac Floating) | C = kardial | Høyeste isolasjon | Defibrillatorer, innganger for EKG og invasivt trykk på pasientmonitorer, intrakardialt EKG, pacemakerprogrammerere, hjertekateterutstyr |
 
 > **Tommelfingerregel:** Hvis applikasjonsdelen kan gi en direkte elektrisk strømvei til hjertet (selv teoretisk), er den CF.
 
@@ -106,8 +110,8 @@ Dette er grunnen til at grensene for lekkasjestrøm for CF-applikasjonsdeler (ka
 |---|---|---|
 | **Formål** | Designkvalifisering (fabrikk) | Testing i drift (felt) |
 | **Utført av** | Produsent / testlaboratorium | Klinisk ingeniøravdeling |
-| **Dielektrisk test** | 1500 V AC i 60 s | 500 V DC i 1 s (valgfritt, kun etter reparasjon) |
-| **Teststrøm for jordbinding** | Opp til 25 A | ≤ 200 mA |
+| **Isolasjons-/dielektrisk prøving** | Dielektrisk spenningsfasthetsprøve (hipot), f.eks. 1500 V AC i 60 s | Ingen spenningsfasthetsprøve; valgfri isolasjonsresistansmåling ved 500 V DC, avlest i MΩ |
+| **Teststrøm for jordbinding** | Det største av 25 A og 1,5 × høyeste merkestrøm, i 5–10 s | **Minst** 200 mA, fra en kilde på høyst 24 V |
 | **Risikonivå** | Destruktiv for sensitive kretser | Trygg for montert utstyr |
 
 **Hovedpoeng:** IEC 62353 gir tilsvarende sikkerhetsverifisering som IEC 60601-1, men ved testnivåer som er trygge for utstyr i drift med sensitiv elektronikk installert.
@@ -155,8 +159,8 @@ Alle tre metodene er akseptert av IEC 62353. De fleste moderne analysatorer (Flu
 
 2. **Jordlekkasjestrøm** (kun Klasse I)
    - Mål under normal betingelse (NC)
-   - Mål under enkeltfeilbetingelse (SFC: PE åpen)
-   - Grenser: 500 µA (NC), 1000 µA (SFC)
+   - Mål under enkeltfeilbetingelse (SFC: brudd i én nettleder)
+   - Grenser: 5 mA (NC), 10 mA (SFC) — IEC 60601-1 3. utgave
 
 3. **Kapslingslekkasjestrøm**
    - Mål på hver tilgjengelig metalldel

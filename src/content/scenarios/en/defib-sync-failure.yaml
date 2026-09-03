@@ -41,12 +41,12 @@ steps:
     question: "You look at the display: the ECG shows atrial flutter with a rate of ~150 bpm. There are NO sync markers visible on the trace. The lead selector is set to Lead III, and the R-wave amplitude is very small (< 0.3 mV). What's the issue and immediate fix?"
     hint: "The SYNC algorithm needs a sufficiently tall R-wave to lock onto. Atrial flutter often has sawtooth waves that can confuse R-wave detection."
     choices:
-      - text: "Switch to a lead with a taller R-wave — try Lead II or modify the gain, and recheck for sync markers"
+      - text: "Switch to a lead with a taller R-wave — select Lead II and confirm that sync markers appear on every R-wave"
         correct: true
         feedback: "Correct — Lead II typically has the tallest R-wave. In atrial flutter, the sawtooth F-waves can be larger than the R-waves in some leads, confusing the sync algorithm. Switching leads often solves the problem immediately."
       - text: "Increase the ECG gain setting to amplify the signal"
         correct: false
-        feedback: "Increasing gain amplifies everything — including the flutter waves and noise. The device's sync algorithm works on the actual signal, not the display scaling. Lead selection is the primary fix."
+        feedback: "Increasing gain amplifies everything — including the flutter waves and the noise — so it cannot rescue a lead in which the F-waves are taller than the R-waves. ECG SIZE is worth adjusting once you are on a lead with a usable R-wave: the LIFEPAK operating instructions tell you to adjust ECG SIZE if sync markers do not appear. But lead selection is the primary fix here."
       - text: "Apply new electrodes for better signal quality"
         correct: false
         feedback: "Electrode quality affects signal noise, not which lead has the tallest R-wave. The issue is lead selection, not electrode contact."

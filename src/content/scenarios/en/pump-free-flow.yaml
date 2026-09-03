@@ -10,12 +10,12 @@ briefing:
   location: Conference Room, Clinical Engineering
   facility: Stavanger University Hospital
   time: "Tuesday 09:00"
-  message: "We had a serious incident last night on Ward 5C. A patient received an uncontrolled bolus of morphine — estimated 8 mg over 2–3 minutes instead of 2 mg/h. The patient required naloxone and was transferred to ICU. The nurse reported she opened the pump door to change the syringe, and when she reloaded and closed the door, the fluid ran through by gravity before the pump engaged. We need a full investigation before this morning's safety huddle at 11:00."
+  message: "We had a serious incident last night on Ward 5C. A patient received an uncontrolled bolus of morphine — estimated 8 mg over 2–3 minutes instead of 2 mg/h. The patient required naloxone and was transferred to ICU. The nurse reported she opened the pump door to change the infusion bag and administration set, and when she reloaded the set and closed the door, the fluid ran through by gravity before the pump engaged. We need a full investigation before this morning's safety huddle at 11:00."
   urgency: high
   context:
     - "Patient received ~8 mg morphine in 2–3 minutes (intended: 2 mg/h)"
     - "Naloxone administered, patient transferred to ICU, now stable"
-    - "Nurse opened pump door to change syringe/set"
+    - "Nurse opened pump door to change infusion bag and administration set"
     - "Fluid ran by gravity before pump re-engaged"
     - "Device serial: SP-20941, B. Braun Infusomat Space"
     - "Administration set: B. Braun IV standard set with anti-siphon valve"
@@ -66,12 +66,13 @@ steps:
           status: fail
           error: "Gap visible between clamp faces"
         - setting: "Door open — gravity flow rate through set"
-          delivered: "42 mL/min (uncontrolled)"
+          delivered: "3.4 mL/min (uncontrolled)"
           status: fail
           spec: "0 mL/min (fully occluded)"
-        - setting: "Door closed, pump OFF — gravity flow"
-          delivered: "0 mL/min"
-          status: pass
+        - setting: "Door closed, pump stopped, not yet started — gravity flow"
+          delivered: "3.2 mL/min (uncontrolled)"
+          status: fail
+          spec: "0 mL/min (clamp must hold until the pump starts)"
         - setting: "Door latch mechanism inspection"
           delivered: "Clamp spring corroded, reduced tension"
           status: fail
@@ -82,7 +83,7 @@ steps:
           spec: "1.9–2.1 mL/h (±5%)"
   - type: multiple-choice
     id: root-cause
-    question: "The anti-free-flow clamp doesn't fully occlude the tubing when the door is open due to a corroded spring. Once the door is closed and the pump runs, flow is accurate. What's your root cause analysis?"
+    question: "The anti-free-flow clamp doesn't fully occlude the tubing — neither with the door open nor with the door closed and the pump not yet started — because of a corroded spring. Once the pump is actually running, flow is accurate. What's your root cause analysis?"
     choices:
       - text: "Root cause: corroded anti-free-flow clamp spring (device failure). Contributing factors: nurse did not close roller clamp (process gap), no independent check before restarting infusion (system gap)"
         correct: true
@@ -114,8 +115,8 @@ steps:
         feedback: "Warning labels are the weakest form of risk control. The hierarchy of controls prioritises engineering controls (fix the clamp) over administrative controls (labels, training)."
 learning_points:
   - text: "Free-flow prevention in infusion pumps relies on defence-in-depth: the pump's anti-free-flow clamp (engineering control), the roller clamp (user action), and post-change verification (process control). When investigating an incident, assess all barriers."
-  - text: "IEC 60601-2-24 §201.12.4.3 requires that means shall be provided to prevent uncontrolled flow of infusion fluid. This is a mandatory safety feature — a failed anti-free-flow mechanism is a serious compliance violation."
-    source: "IEC 60601-2-24 §201.12.4.3"
+  - text: "IEC 60601-2-24:2012 requires means to prevent unintended free flow of infusion fluid when the administration set is loaded or removed and when the pump door is opened. Take the clause number from the current edition of the standard itself before you quote it in an incident report — and note that a failed anti-free-flow mechanism on a pump already in service is an incident and a maintenance failure, not automatically a breach of the pump's certification."
+    source: "IEC 60601-2-24:2012 — Particular requirements for the basic safety and essential performance of infusion pumps and controllers"
     source_type: standard
   - text: "Free-flow incidents are consistently among the top 10 health technology hazards identified by ECRI Institute. They are almost always multi-causal — a device failure combined with a process gap."
     source: "ECRI Institute — Top 10 Health Technology Hazards"

@@ -26,7 +26,7 @@ steps:
     choices:
       - text: "ESU-ens høyfrekvente strøm kobler seg inn i EKG-ledningene via kapasitiv og radiativ kobling, og overvelder monitorens inngangforsterkere med artefakt"
         correct: true
-        feedback: "Riktig — ESU-en utstråler et sterkt elektromagnetisk felt og injiserer også høyfrekvent strøm gjennom pasientens kropp. EKG-ledninger fungerer som antenner og fanger opp denne energien. Monitorens inngangsfiltre er designet for å avvise noe HF-interferens, men høyeffekts ESU-aktivering kan overvelde dem. SpO₂ påvirkes fordi HF-strømmen modulerer den optiske banen."
+        feedback: "Riktig — ESU-en utstråler et sterkt elektromagnetisk felt og injiserer også høyfrekvent strøm gjennom pasientens kropp. EKG-ledninger fungerer som antenner og fanger opp denne energien. Monitorens inngangsfiltre er designet for å avvise noe HF-interferens, men høyeffekts ESU-aktivering kan overvelde dem. SpO₂ påvirkes fordi HF-energi kobler seg inn i sensorkabelen og detektorforsterkeren og overdøver det svake pulsatile signalet, slik at monitoren forkaster det og avlesningen faller ut."
       - text: "ESU-en er defekt og genererer overdreven elektromagnetisk stråling"
         correct: false
         feedback: "Noe interferens er normalt og forventet med alle ESU-er. Spørsmålet er om interferensnivået er overdrevent, eller om avbøtende tiltak kan redusere det."
@@ -41,9 +41,9 @@ steps:
     question: "Du inspiserer oppsettet i operasjonsstuen. EKG-ledningene er buntet sammen med ESU-ens aktive elektrodekabel langs pasientens høyre side. Returelektroden er på venstre lår, og SpO₂-sensoren er på venstre pekefinger. Hvilke endringer kan redusere interferensen?"
     hint: "Tenk på strømbanen gjennom pasienten og hvordan du kan minimere kobling mellom ESU-kretsen og overvåkingskretsen."
     choices:
-      - text: "Separer EKG-ledningene fra ESU-kabelen (forskjellige sider av pasienten), plasser returelektroden slik at HF-strømbanen unngår overvåkingselektrodene, og flytt SpO₂ til samme side som returelektroden"
+      - text: "Separer EKG-ledningene fra ESU-kabelen (forskjellige sider av pasienten), plasser returelektroden slik at HF-strømbanen unngår overvåkingselektrodene, og hold SpO₂-sensoren og kabelen utenfor strømbanen fra aktiv elektrode til returelektrode og unna ESU-kabelen"
         correct: true
-        feedback: "Riktig — tre nøkkelprinsipper: (1) Fysisk separasjon av ESU- og overvåkingskabler reduserer radiativ kobling. (2) HF-strømmen flyter fra aktiv elektrode til returelektrode — plassering av returelektroden slik at denne banen ikke krysser EKG-elektrodene reduserer ledet interferens. (3) SpO₂ på samme side som returelektroden er i en lavere impedansbane og påvirkes mindre."
+        feedback: "Riktig — tre nøkkelprinsipper: (1) Fysisk separasjon av ESU- og overvåkingskabler reduserer radiativ kobling. (2) HF-strømmen flyter fra aktiv elektrode til returelektrode — plassering av returelektroden slik at denne banen ikke krysser EKG-elektrodene reduserer ledet interferens. (3) SpO₂-sensoren og kabelen hører hjemme utenfor strømbanen fra aktiv elektrode til returelektrode og unna ESU-kabelen; nærhet til returelektroden gir i seg selv ingen beskyttelse — signalutfallet skyldes HF-energi som plukkes opp av sensoren og kabelen."
       - text: "Bytt EKG-ledningene med skjermede kabler"
         correct: false
         feedback: "Skjermede EKG-kabler hjelper, men er sjelden tilgjengelige på operasjonsstuen. Kabelruting og elektrodeplassering er mer praktisk og ofte mer effektivt."

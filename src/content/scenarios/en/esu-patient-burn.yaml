@@ -68,15 +68,15 @@ steps:
           delivered: "No alarm — CQM indicator green"
           status: warning
           error: "Impedance below alarm threshold"
-        - setting: "CQM alarm threshold — 30% contact (120 Ω pad impedance)"
-          delivered: "CQM alarm at 135 Ω"
+        - setting: "CQM alarm threshold — pad impedance ramped up from 20 Ω until alarm (≈30% contact)"
+          delivered: "CQM alarm at 135 Ω, HF output inhibited"
           status: pass
           spec: "135 ± 10 Ω"
         - setting: "Simulated 60% contact (55 Ω pad impedance) — 80 W cut for 5 s"
-          delivered: "No alarm — but current density at pad exceeds safe limit"
-          status: fail
-          error: "CQM impedance below alarm, but contact area insufficient for safe current density"
-        - setting: "HF leakage current — active to return"
+          delivered: "No alarm — CQM indicator green; 78 W delivered into 200 Ω"
+          status: warning
+          error: "Impedance stays below the 135 Ω alarm threshold — CQM monitors impedance, not contact area, so the reduced contact area goes undetected"
+        - setting: "HF leakage current — active electrode to earth, 200 Ω"
           delivered: "42 mA"
           status: pass
           spec: "≤ 150 mA"
@@ -100,9 +100,9 @@ steps:
     id: corrective-action
     question: "What corrective actions do you recommend?"
     choices:
-      - text: "Immediate: visual pad inspection protocol after application (check for folds, wrinkles, full contact). Long-term: add pad application verification to the surgical safety checklist. File a manufacturer incident report (MIR) and regulatory report."
+      - text: "Immediate: visual pad inspection protocol after application (check for folds, wrinkles, full contact). Long-term: add pad application verification to the surgical safety checklist. Report the serious incident to Direktoratet for medisinske produkter (DMP) and notify Erbe."
         correct: true
-        feedback: "Correct — the corrective actions address the controllable factor (pad application quality) while acknowledging the CQM limitation. A visual inspection after pad application takes seconds and catches folds/wrinkles that CQM cannot detect. The MIR and regulatory report ensure the incident is tracked and the manufacturer is aware."
+        feedback: "Correct — the corrective actions address the controllable factor (pad application quality) while acknowledging the CQM limitation. A visual inspection after pad application takes seconds and catches folds/wrinkles that CQM cannot detect. As a health institution you report the serious incident to DMP and notify the manufacturer; Erbe is then the party that files the manufacturer incident report (MIR) under MDR Article 87."
       - text: "Replace all Erbe VIO generators with a competitor that has more sensitive REM monitoring"
         correct: false
         feedback: "All impedance-based REM systems have this same limitation. Switching brands doesn't address the root cause (pad application quality)."
@@ -120,7 +120,7 @@ learning_points:
   - text: "IEC 60601-2-2 §201.12.4.4 requires return electrode monitoring but acknowledges that impedance monitoring has limitations. The standard requires the system to alarm when impedance exceeds the threshold — it does not guarantee burn prevention in all scenarios."
     source: "IEC 60601-2-2 §201.12.4.4"
     source_type: standard
-  - text: "Patient harm incidents require formal investigation: evidence preservation, device testing, root cause analysis, corrective actions, and regulatory reporting (MIR/MDR). Clinical engineering's investigation report is primary evidence."
+  - text: "Patient harm incidents require formal investigation: evidence preservation, device testing, root cause analysis, corrective actions and incident reporting. In Norway the health institution reports a serious incident to Direktoratet for medisinske produkter (DMP) and notifies the manufacturer, which then files the manufacturer incident report (MIR) under MDR Article 87. Clinical engineering's investigation report is primary evidence."
     source_type: best-practice
   - text: "When investigating incidents, separate device failure from use-related causes. In this case, the device worked within specification — the safety gap was in the application process. Both types of causes need corrective action."
     source_type: best-practice

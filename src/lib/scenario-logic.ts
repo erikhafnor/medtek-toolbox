@@ -52,21 +52,30 @@ export function createScenarioState(steps: ScenarioStep[]): ScenarioState {
   };
 }
 
+/**
+ * Move to the next step without recording an answer. Lab-handoff steps take no
+ * answer, so they need this to hand control back to the student.
+ */
+export function advanceStep(state: ScenarioState): ScenarioState {
+  return {
+    ...state,
+    currentStepIndex: Math.min(state.currentStepIndex + 1, state.totalSteps),
+  };
+}
+
 export function selectChoice(
   state: ScenarioState,
   stepId: string,
   choiceIndex: number,
   isCorrect: boolean
 ): ScenarioState {
-  const nextIndex = Math.min(state.currentStepIndex + 1, state.totalSteps);
-  return {
+  return advanceStep({
     ...state,
     answers: {
       ...state.answers,
       [stepId]: { choiceIndex, correct: isCorrect },
     },
-    currentStepIndex: nextIndex,
-  };
+  });
 }
 
 export function getScore(state: ScenarioState): { correct: number; total: number } {

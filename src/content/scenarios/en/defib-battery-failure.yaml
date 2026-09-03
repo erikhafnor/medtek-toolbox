@@ -38,7 +38,7 @@ steps:
         feedback: "Premature — you need diagnostic data before escalating. This could be a battery, BMS, or charging issue."
   - type: multiple-choice
     id: investigation
-    question: "The event log shows: battery at 11.1V when device shut down (nominal 11.1V = ~20% capacity), but the fuel gauge reported 75%. The battery has 847 charge cycles. What does this discrepancy tell you?"
+    question: "The event log shows: battery at 9.6V when the device shut down (an 11.1V nominal 3-cell pack is at the end of its discharge around 9.0–9.6V), but the fuel gauge reported 75%. The battery has 847 charge cycles. What does this discrepancy tell you?"
     hint: "The fuel gauge chip estimates remaining capacity based on a learned model. What happens to that model over time?"
     choices:
       - text: "The fuel gauge chip has lost calibration — it overestimates remaining capacity because cell capacity has degraded"
@@ -49,7 +49,7 @@ steps:
         feedback: "If the charger were undercharging, the fuel gauge would show a lower state of charge, not higher — the discrepancy goes the wrong way."
       - text: "There is a software bug in the power management firmware"
         correct: false
-        feedback: "Possible but unlikely — the voltage-based shutdown at 11.1V is a hardware safety feature. The issue is with capacity estimation, not shutdown logic."
+        feedback: "Possible but unlikely — the voltage-based cut-off at 9.6V is a hardware safety feature. The issue is with capacity estimation, not shutdown logic."
       - text: "The battery connector has intermittent contact causing voltage drops"
         correct: false
         feedback: "Intermittent contact would cause sudden shutdowns at variable charge levels, not a consistent gauge-vs-reality mismatch."
@@ -62,7 +62,7 @@ steps:
         - setting: "Full charge voltage"
           delivered: "12.6V"
           status: pass
-          spec: "12.6V nominal"
+          spec: "12.6V at full charge (11.1V nominal pack)"
         - setting: "Charge cycles (from BMS)"
           delivered: "847 cycles"
           status: warning
@@ -88,7 +88,7 @@ steps:
         feedback: "Correct — at 170% of rated cycles, the lithium-ion cells have significantly reduced capacity. The fuel gauge's learned model is trained on the original capacity and hasn't tracked the degradation. Replace battery, and the new battery's fuel gauge will start with an accurate model."
       - text: "Defective BMS chip — replace the BMS board and keep the existing cells"
         correct: false
-        feedback: "The BMS is reporting voltage correctly (12.6V charge, 11.1V shutdown). The problem is that the cells can't hold their rated capacity anymore."
+        feedback: "The BMS is reporting voltage correctly (12.6V at full charge, 9.6V cut-off). The problem is that the cells can't hold their rated capacity anymore."
       - text: "Charger circuit degradation — the battery isn't being fully charged"
         correct: false
         feedback: "The battery reaches full charge voltage (12.6V), so the charger is working correctly. The issue is that full voltage no longer equals full capacity in aged cells."

@@ -10,7 +10,7 @@ equipment:
 standards:
   - "IEC 60601-2-27 (ECG monitoring equipment)"
   - "IEC 60601-2-49 (Multi-function patient monitoring)"
-  - "IEC 60601-2-30 (NIBP monitoring)"
+  - "IEC 80601-2-30 (Automated non-invasive sphygmomanometers)"
   - "IEC 62353 (Recurrent testing)"
 order: 5
 ---
@@ -40,7 +40,7 @@ A patient monitor acquires physiological signals through multiple channels simul
 | NIBP accuracy | ±3 mmHg (static) | Treatment decisions depend on accurate BP readings |
 | Heart rate accuracy | ±1% or ±1 bpm | Used for drug dosing and arrhythmia detection |
 | Alarm response time | ≤ 10 s for critical alarms | Delayed alarms compromise patient safety |
-| Patient leakage current (CF) | ≤ 10 µA normal, ≤ 50 µA SFC | ECG electrodes have direct cardiac risk pathway |
+| Patient leakage current (CF) | ≤ 10 µA normal, ≤ 50 µA single fault (IEC 60601-1) | ECG electrodes have direct cardiac risk pathway |
 
 ---
 
@@ -62,7 +62,7 @@ Perform at the interval specified by the manufacturer (typically annually, with 
 
 1. **Visual and mechanical inspection** — Check housing, display, mounting arm, power cord, battery compartment, and all cable connectors. Verify the touchscreen or controls respond correctly. Inspect ECG cables, SpO₂ sensors, NIBP cuffs, and temperature probes for damage.
 
-2. **Electrical safety testing** — Per IEC 62353: protective earth resistance (< 0.3 Ω for Class I), enclosure leakage current, and patient leakage current. ECG inputs are Type CF applied parts — apply CF limits (≤ 10 µA normal, ≤ 50 µA SFC).
+2. **Electrical safety testing** — Per IEC 62353: protective earth resistance (≤ 0.3 Ω for Class I, measured including the mains cord), equipment leakage current (≤ 500 µA for Class I), and applied part leakage current. ECG inputs are Type CF applied parts, so the IEC 62353 applied part leakage limit is ≤ 50 µA. Note that the ≤ 10 µA normal / ≤ 50 µA single-fault pair in the table above is the IEC 60601-1 Type CF patient leakage limit measured at type test — IEC 62353 does not test normal and single-fault conditions separately.
 
 3. **ECG accuracy** — Using a patient simulator (e.g., Fluke ProSim 8), verify: heart rate accuracy at 30, 60, 120, and 240 bpm; ECG waveform morphology; ST-segment detection; pacemaker spike detection and rejection; respiratory rate via impedance pneumography.
 
@@ -81,9 +81,9 @@ Perform at the interval specified by the manufacturer (typically annually, with 
 ## Related Standards
 
 - **IEC 60601-2-27:2011+AMD1:2018** — Particular requirements for ECG monitoring equipment. Governs bandwidth, CMRR, electrode polarisation, pacemaker pulse rejection, and defibrillation protection.
-- **IEC 60601-2-49:2018** — Particular requirements for multi-function patient monitoring. Covers integration of multiple measurement parameters.
-- **IEC 60601-2-30:2018** — Particular requirements for non-invasive blood pressure monitoring.
-- **IEC 60601-2-61:2017** — Particular requirements for pulse oximeters.
+- **IEC 60601-2-49:2011** — Particular requirements for multifunction patient monitoring equipment. Covers integration of multiple measurement parameters.
+- **IEC 80601-2-30:2018** — Particular requirements for automated non-invasive sphygmomanometers (NIBP). It superseded the withdrawn IEC 60601-2-30 when the subject moved into the 80601 series.
+- **ISO 80601-2-61:2017** — Particular requirements for pulse oximeter equipment. Published by ISO, not IEC — there is no IEC 60601-2-61.
 - **IEC 62353:2014** — Recurrent test and test after repair of medical electrical equipment.
 - **IEC 60601-1:2005+AMD2:2020** — General requirements for basic safety and essential performance.
 

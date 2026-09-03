@@ -30,7 +30,7 @@ A volumetric infusion pump uses a peristaltic mechanism (linear or rotary) to pr
 | Occlusion alarm pressure | 100–900 mmHg (adjustable) | High threshold delays detection of infiltration or disconnection |
 | Bolus on occlusion release | ≤ 0.5 mL (IEC 60601-2-24) | Uncontrolled bolus after clearing occlusion can deliver a toxic dose |
 | Air-in-line detection | ≤ 50 µL single bubble (typical) | Large air emboli risk cerebral or cardiac complications |
-| Free-flow prevention | Anti-siphon valve in set | Gravity-driven free-flow can deliver the entire bag in minutes |
+| Free-flow prevention | Anti-free-flow clamp in the pump door mechanism | Gravity-driven free-flow can deliver the entire bag in minutes; the anti-siphon valve in the set only prevents siphoning, not gravity flow through an open set |
 | Start-up time (trumpet curve) | Stabilises within ±5% in < 5 min | Delayed onset affects time-critical medications |
 
 ---
@@ -42,7 +42,7 @@ A volumetric infusion pump uses a peristaltic mechanism (linear or rotary) to pr
 | Frequent false occlusion alarms | Worn pump mechanism (finger/roller wear), incorrect set loading, kinked tubing | Test with IDA-5 at set pressure thresholds; inspect pump fingers for wear marks | Replace worn pump mechanism; retrain staff on set loading |
 | Flow rate inaccuracy (over- or under-infusion) | Pump mechanism wear, incorrect set type, calibration drift | Measure flow rate with IDA-5 at low (5 mL/h), medium (100 mL/h), and high (500 mL/h) rates | Recalibrate or replace pump mechanism; verify correct set type |
 | Air-in-line alarm with no visible air | Contaminated ultrasonic sensor, sensor misalignment, micro-bubbles in fluid | Clean sensor with lint-free wipe; test with IDA-5 air detection module; check IV fluid for dissolved gas | Clean or replace sensor; degas fluid; check for leaks upstream |
-| Free-flow event | Anti-siphon valve failure in administration set, door interlock bypassed | Test anti-siphon valve function; verify door interlock switch operation | Replace administration set; repair door interlock; report as safety incident |
+| Free-flow event | Anti-free-flow clamp failure (worn or corroded clamp spring), door interlock fault, roller clamp left open during a set change | With a fluid-filled set loaded, open the door and confirm the tubing is fully occluded; close the door without starting the pump and confirm zero gravity flow; verify door interlock switch operation | Repair or replace the anti-free-flow clamp mechanism; repair the door interlock; report as a safety incident |
 | Drug library errors / wrong concentration | Outdated drug library, manual override of guardrails | Verify library version against pharmacy-approved current version | Update drug library; review override logs with pharmacy |
 
 ---

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ScenarioStep as ScenarioStepType } from '../../lib/scenario-logic';
-  import { createScenarioState, selectChoice, getScore, isComplete } from '../../lib/scenario-logic';
+  import { createScenarioState, selectChoice, advanceStep, getScore, isComplete } from '../../lib/scenario-logic';
   import DifficultyBadge from './DifficultyBadge.svelte';
   import ProgressBar from './ProgressBar.svelte';
   import ScenarioStepCard from './ScenarioStep.svelte';
@@ -58,6 +58,7 @@
       score: 'Score',
       sources: 'Sources',
       stepLabel: 'Step',
+      continue: 'Readings noted — continue',
     },
     no: {
       briefing: 'Situasjonsbeskrivelse',
@@ -67,7 +68,7 @@
       complete: 'Scenario fullført',
       correctAnswers: 'riktige svar',
       caller: 'Innringer',
-      facility: 'Avdeling',
+      facility: 'Sykehus',
       time: 'Tidspunkt',
       urgencyHigh: 'Haster',
       urgencyMedium: 'Medium prioritet',
@@ -75,6 +76,7 @@
       score: 'Poengsum',
       sources: 'Kilder',
       stepLabel: 'Steg',
+      continue: 'Avlesninger notert — gå videre',
     },
   };
 
@@ -93,7 +95,13 @@
 
   // currentStep in progress: 0 = on briefing, 1+ = on step N-1
   // After briefing we're at progress step 1
-  const progressStep = $derived(Math.min(state.currentStepIndex + 1, stepLabels.length - 1));
+  // Runs one past the last label when the scenario is finished, so every dot
+  // reads as completed rather than leaving the last one stuck on "current".
+  const progressStep = $derived(Math.min(state.currentStepIndex + 1, stepLabels.length));
+
+  function handleAdvance() {
+    state = advanceStep(state);
+  }
 
   function handleSelect(stepIndex: number, choiceIndex: number) {
     const step = scenario.steps[stepIndex];
@@ -126,7 +134,7 @@
   <!-- Header -->
   <div class="rounded-2xl overflow-hidden bg-gradient-to-r from-slate-800 to-blue-700 text-white p-6">
     <div class="flex flex-wrap items-start gap-3 mb-3">
-      <DifficultyBadge level={scenario.level} />
+      <DifficultyBadge level={scenario.level} {locale} />
       <span class="text-blue-200 text-sm font-medium">{scenario.device}</span>
       <span class="ml-auto text-blue-200 text-sm">{scenario.estimated_time}</span>
     </div>
@@ -196,9 +204,12 @@
       <ScenarioStepCard
         {step}
         answer={state.answers[step.id]}
+        isCurrent={i === state.currentStepIndex}
         onSelect={(choiceIndex) => handleSelect(i, choiceIndex)}
+        onAdvance={handleAdvance}
         labHandoffLabel={lbl.labHandoff}
         hintLabel={lbl.hint}
+        continueLabel={lbl.continue}
       />
     {/if}
   {/each}

@@ -27,7 +27,7 @@ En defibrillator lagrer energi i en høyspent kondensator og lader den ut gjenno
 
 | Parameter | Typisk spesifikasjon | Klinisk betydning |
 |---|---|---|
-| Levert energi (voksen) | 120–200 J (bifasisk) | Må samsvare med valgt innstilling ±15 % per IEC 60601-2-4 |
+| Levert energi (voksen) | 120–200 J (bifasisk) | Må samsvare med valgt innstilling innenfor ±15 % eller ±4 J — det som er størst (IEC 60601-2-4) |
 | Ladetid (full lading) | ≤ 10 s fra nytt batteri | Forsinkelser > 15 s indikerer kondensator- eller batteriforringelse |
 | Synkroniseringsforsinkelse (SYNC-modus) | ≤ 60 ms etter R-bølgetopp | Lengre forsinkelser risikerer R-på-T-fenomenet |
 | Pasientlekkasjestrøm (CF) | ≤ 10 µA (normal), ≤ 50 µA (enkeltfeil) | Høy lekkasje indikerer feil i padskabel eller chassisisolasjon |
@@ -41,7 +41,7 @@ En defibrillator lagrer energi i en høyspent kondensator og lader den ut gjenno
 |---|---|---|---|
 | Enheten vil ikke lade til valgt energi | Forringet hovedkondensator; defekt ladekrets | Mål ladetid mot spesifikasjon; sammenlign levert vs. valgt energi på testeren | Bytt kondensator eller ladekort; eskalér til produsent |
 | Batteriet tømmes raskere enn oppgitt | Aldrende litium-ion-celler; overdreven standby-tid | Utfør full lade-/utladingssyklus; sammenlign driftstid med BMS-data | Bytt batteripakke; oppdater fastvare hvis BMS-problem |
-| EKG-spor viser 50/60 Hz støy | Brukket elektrodekabel; dårlig hudforberedelse; differansemodusinterferens | Bytt ledningskabel; test med simulator; kontroller jordkontinuitet | Bytt kabel; forbedre hudforberedelse; verifiser nettspenningsisolasjon |
+| EKG-spor viser 50/60 Hz støy | Brukket elektrodekabel; dårlig hudforberedelse; fellesmodusstøy (common mode) | Bytt ledningskabel; test med simulator; kontroller jordkontinuitet | Bytt kabel; forbedre hudforberedelse; verifiser nettspenningsisolasjon |
 | SYNC-modus markerer ikke R-bølgen | Lavamplitude EKG-signal; feil avledning valgt; filterinnstillinger | Øk forsterkning; velg avledning med høyest R-bølge; kontroller notchfilter | Juster signalbehandlingsinnstillinger; ved vedvarende feil, mistenk EKG-forsterkersvikt |
 | «Kontroller pads»-varsel med pads tilkoblet | Korrosjon på padskontakt; kabelkontinuitetssvikt; utløpte pads | Mål padimpedans med tester (bør være 25–180 Ω); inspiser kontaktpinner | Rengjør eller bytt kontakt; bytt padskabelsele |
 
@@ -49,23 +49,23 @@ En defibrillator lagrer energi i en høyspent kondensator og lader den ut gjenno
 
 ## Forebyggende vedlikehold
 
-Utfør ved intervallet spesifisert av produsenten og fasilitetsens PM-program (vanligvis årlig, eller etter et definert antall sjokk).
+Utfør ved intervallet spesifisert av produsenten og virksomhetens PM-program (vanligvis årlig, eller etter et definert antall sjokk).
 
 1. **Visuell og mekanisk inspeksjon** — Kontroller huset for sprekker, kontaktpinner for korrosjon, kabelkapper for kutt, og pads/padler for slitasje. Verifiser at alle etiketter er lesbare.
 
 2. **Batterikapasitetstest** — Bruk enhetens innebygde selvtest eller en lasttester for å bekrefte at batteriet leverer minst 80 % av merkekapasiteten. Registrer tilstandssunnhet (SoH) fra BMS hvis tilgjengelig.
 
-3. **Test av nøyaktighet i energilevering** — Bruk en kalibrert defibrillatortester (f.eks. Fluke Impulse 7000DP) ved 50 Ω-belastning, og verifiser levert energi ved 50 J, 100 J, 150 J og maksimale joule. Hvert resultat må være innenfor ±15 % av valgt energi per IEC 60601-2-4 §201.7.9.3.
+3. **Test av nøyaktighet i energilevering** — Bruk en kalibrert defibrillatortester (f.eks. Fluke Impulse 7000DP) ved 50 Ω-belastning, og verifiser levert energi ved 50 J, 100 J, 150 J og maksimale joule. Hvert resultat skal ligge innenfor ±15 % av valgt energi, eller ±4 J — det som er størst (IEC 60601-2-4, nøyaktighet for levert energi). Ved lave innstillinger er det ±4 J-leddet som er styrende.
 
 4. **Ladetidstest** — Fra fullt batteri, ta tid på lading til maksimal energi. Nye enheter skal lade på ≤ 8 s (LIFEPAK 15-spec); merk hvis > 10 s.
 
-5. **Test av elektrisk sikkerhet** — Per IEC 62353, mål jord-/jordforbindelseresistans (< 0,3 Ω på CF-klassifisert utstyr), berøringsstrøm og pasientlekkasjestrøm. Defibrillatorer er Type CF (hjerteflytende) — bruk CF-grensene.
+5. **Test av elektrisk sikkerhet** — Per IEC 62353, mål beskyttelsesjordresistans (< 0,3 Ω), men bare på klasse I-utstyr — grensen følger beskyttelsesklassen, ikke typen anvendt del, og testen er derfor ikke aktuell for internt drevet eller klasse II-utstyr. Mål deretter berøringsstrøm og pasientlekkasjestrøm. Defibrillatorer har anvendte deler av Type CF (kardial flytende), så IEC 62353-grensen for lekkasjestrøm i anvendt del er ≤ 50 µA. Merk at paret ≤ 10 µA normaltilstand / ≤ 50 µA enkeltfeil i tabellen over er IEC 60601-1 sin pasientlekkasjegrense for Type CF ved typeprøving — IEC 62353 måler ikke normaltilstand og enkeltfeil hver for seg.
 
 ---
 
 ## Relaterte standarder
 
-- **IEC 60601-2-4:2010+AMD1:2020** — Særskilte krav til defibrillatorer. Spesifiserer nøyaktighet i energilevering, ladetid, synkronisering og bølgeformkrav.
+- **IEC 60601-2-4:2010+AMD1:2018** — Særskilte krav til defibrillatorer. Spesifiserer nøyaktighet i energilevering, ladetid, synkronisering og bølgeformkrav.
 - **IEC 60601-2-27:2011+AMD1:2018** — Særskilte krav til EKG-overvåkingsutstyr. Regulerer båndbredde, CMRR, elektrodepolarisering og pacemaker-pulsavvisning.
 - **IEC 62353:2014** — Periodisk test og test etter reparasjon av medisinsk elektrisk utstyr. Definerer forenklede sikkerhetstestmetoder for testing i drift.
 - **IEC 60601-1:2005+AMD2:2020** — Generelle krav til grunnleggende sikkerhet og essensiell ytelse (moderstandarden).

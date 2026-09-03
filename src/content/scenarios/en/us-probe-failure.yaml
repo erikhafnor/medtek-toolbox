@@ -84,7 +84,7 @@ steps:
         feedback: "Correct — the clinical need is urgent (DVT scan), so arrange a loaner. The L3-12 needs professional cable repair — the fractured conductors and elevated leakage current mean it's not safe for patient use even if temporarily functional. Inspect other high-use probes because cable fatigue at the strain relief is a fleet-wide risk."
       - text: "Tape the cable in a straight position as a temporary fix for the weekend"
         correct: false
-        feedback: "A probe with compromised insulation (85 µA leakage, close to the 100 µA limit) is not safe for patient use regardless of cable position. The leakage current alone disqualifies it."
+        feedback: "Taping the cable does not repair a fractured conductor — the break is intermittent and will fail again mid-scan. Note that 85 µA is still inside the ≤ 100 µA normal-condition limit, so the leakage reading on its own does not condemn the probe. What condemns it is the confirmed mechanical fault, together with a leakage value nearly four times that of the healthy C1-6 (22 µA) on the same system, which means the shielding and insulation around the break can no longer be relied on. A device with a known, unrepaired fault does not go back on a patient."
       - text: "Order a new L3-12 probe and use only the curvilinear probe until it arrives"
         correct: false
         feedback: "A new probe costs €8,000–15,000 and takes weeks to deliver. Cable repair is much cheaper (€1,000–3,000) and faster (days). The clinical need is tonight — borrow from radiology."

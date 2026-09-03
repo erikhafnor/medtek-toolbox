@@ -12,7 +12,7 @@ prerequisites:
   - "Lecture notes on IEC 60601-1 and IEC 62353"
   - "Reference: IEC 60601-1 Essentials (on this site)"
   - "Reference: Leakage Current Measurement Guide (on this site)"
-duration: "2 hours 45 minutes"
+duration: "3 hours"
 ---
 
 ## Learning Objectives
@@ -46,7 +46,7 @@ By the end of this lab you will be able to:
 4. Collect three devices for testing (provided by the lab supervisor):
    - **Device A:** Class I device with Type BF applied parts (e.g., patient monitor)
    - **Device B:** Class I device with Type CF applied parts (e.g., defibrillator or syringe pump with cardiac-rated accessories)
-   - **Device C:** Class II device (e.g., battery-powered pulse oximeter)
+   - **Device C:** Class II device — mains-powered, with a two-pin (unearthed) plug and the double-insulation symbol (e.g., a mains-powered pulse oximeter, or a device fed from a double-insulated external power supply). Do **not** pick a purely battery-powered device: internally powered equipment is a separate IEC 60601-1 category, is neither Class I nor Class II, and cannot be connected to the ESA615 DUT socket for the leakage measurements in Parts 3 and 4.
 
 ---
 
@@ -68,8 +68,8 @@ For each of the three devices, identify and record in your lab notebook:
 | Fuse rating | | | |
 
 **Hints:**
-- Class I devices have a three-pin mains plug (L, N, PE). Class II devices have a two-pin plug or the ⬜ symbol.
-- The applied part type is usually marked on the device label with the appropriate symbol (B, BF, or CF in a box/triangle).
+- Class I devices have a three-pin mains plug (L, N, PE). Class II devices have a two-pin plug and carry the double-insulation symbol — a small square inside a larger square (IEC 60417-5172).
+- The applied part type is marked with an IEC 60417 pictogram, not with letters: a human figure for **Type B** (5840), a human figure inside a box for **Type BF** (5333), and a heart inside a box for **Type CF** (5335). A defibrillation-proof applied part adds a defibrillator paddle symbol beside the pictogram.
 - If the applied part type is not immediately visible, check the device's technical specifications or service manual.
 
 ---
@@ -105,7 +105,7 @@ For all three devices:
    - Record the highest reading.
 4. Measure in **Single Fault Condition — Open PE** (Class I devices only):
    - The ESA615 simulates an open PE. Record the reading.
-5. **Acceptance criteria:**
+5. **Acceptance criteria** — these are the **IEC 60601-1** enclosure leakage limits for normal condition (NC) and single fault condition (SFC):
 
 | Condition | Limit |
 |---|---|
@@ -124,9 +124,9 @@ For each device with applied parts:
 2. Select **Patient Leakage** test.
 3. Measure in Normal Condition.
 4. Measure in Single Fault Condition (open PE for Class I).
-5. Record results and compare against the correct limits for the applied part type:
+5. Record results and compare against the correct limits for the applied part type. These are the **IEC 60601-1** patient leakage limits for normal condition (NC) and single fault condition (SFC):
 
-| Applied Part Type | Normal | Single Fault |
+| Applied Part Type | Normal condition (NC) | Single fault condition (SFC) |
 |---|---|---|
 | Type B | ≤ 100 µA | ≤ 500 µA |
 | Type BF | ≤ 100 µA | ≤ 500 µA |
@@ -134,11 +134,13 @@ For each device with applied parts:
 
 **Important:** Note the ten-fold difference in limits between BF and CF. This reflects the additional cardiac risk when applied parts may provide a direct electrical pathway to the heart.
 
+**Which standard are you reading?** The NC/SFC pairs in Parts 3 and 4 are IEC 60601-1 limits. IEC 62353 does not test NC and SFC separately: it consolidates them into a single *equipment leakage current* (≤ 500 µA for Class I, ≤ 100 µA for Class II, by the direct or differential method) and a single *applied part leakage current* (≤ 50 µA for Type CF). Check which standard the ESA615 is set to before you judge a reading against this table.
+
 ---
 
-### Part 5 — Results Analysis and Reporting (30 min)
+### Part 5 — Results Analysis and Oral Presentation (30 min)
 
-Complete the following summary table for all three devices:
+Complete the following summary table for all three devices. You will present it to the lab engineer in the lab, so be ready to justify every pass/fail verdict from your own readings:
 
 | Test | Device A (Class I, BF) | Device B (Class I, CF) | Device C (Class II) |
 |---|---|---|---|
@@ -161,18 +163,19 @@ For any measurement that approaches or exceeds a limit, describe what action you
 
 3. Why are Type CF leakage current limits ten times stricter than Type BF limits? Explain the physiological basis.
 
-4. You are testing an infusion pump and measure patient leakage current of 8 µA in normal condition. The pump has Type BF applied parts. Does this pass? Now assume the same pump is used with a central venous catheter that provides a direct path to the heart. Does your assessment change?
+4. You are testing an infusion pump and measure patient leakage current of 45 µA in normal condition. The pump has Type BF applied parts. Does this pass? Now assume the same pump is used with a central venous catheter that provides a direct path to the heart. Does your assessment change, and what would you do about a device whose applied part classification does not match how the ward is actually using it?
 
 5. A clinical engineer performs electrical safety testing on a ventilator after replacing the power supply. Which IEC 62353 tests are mandatory after this specific repair, and why?
 
 ---
 
-## Lab Report Requirements
+## Approval
 
-Submit a typed lab report by the date specified in the course schedule. The report must include:
+You are approved in the lab once you can show and explain the following to the lab engineer:
 
-- A title page with your name, student number, course code, and date
-- The completed classification table (Part 1) and results summary table (Part 5)
-- All individual measurement readings with pass/fail status
-- Written answers to the five review questions (Part 6)
-- A brief conclusion (200–300 words) discussing the importance of electrical safety testing in clinical engineering and what you learned about the relationship between device classification and safety limits
+- Your completed classification table from Part 1 and the results summary table from Part 5, including every individual PE resistance, enclosure leakage and patient leakage reading you took
+- How you operated the ESA615 in Parts 2–4, and why each device was judged against the limits it was — including why Device B is held to the Type CF limits and why Device C is exempt from the PE resistance test
+- Your pass/fail verdict for each device, and the action you would take as a clinical engineer for any reading that approaches or exceeds a limit (Part 5)
+- Your answers to the five review questions in Part 6
+
+There is no written hand-in.

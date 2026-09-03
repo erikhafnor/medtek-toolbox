@@ -4,10 +4,10 @@ course: "MTE210"
 shortTitle: "HL7 & DICOM"
 description: "HL7-meldinger, DICOM-bildeoverføring og nettverksintegrasjon av medisinsk utstyr"
 equipment:
-  - "HL7-testmiljø (Mirth Connect eller HAPI FHIR-server)"
-  - "DICOM-visar (Horos/OsiriX eller RadiAnt)"
+  - "HAPI Testpanel (testmiljø for HL7 v2.x, på lab-PC-en)"
+  - "DCM4CHE RIS/PACS (undervisningsarkivet for bilder)"
+  - "OHIF-viewer (DICOM-viewer, på lab-PC-en)"
   - "Nettverksanalyseverktøy (Wireshark)"
-  - "Pasientmonitor med HL7-eksport (Philips IntelliVue)"
   - "Laboratoriearbeidsstasjoner med Ethernet-tilkoblinger"
 prerequisites:
   - "Forelesningsnotater om helseinformatikk og interoperabilitetsstandarder"
@@ -23,7 +23,7 @@ Etter fullført laboratorieoppgave skal du kunne:
 - Forklare rollen til HL7 og DICOM i sykehusets informasjonssystemer
 - Lese og tolke en HL7 v2.x ADT-melding (Admit-Discharge-Transfer)
 - Identifisere nøkkelsegmentene i en HL7 ORU-melding (Observation Result) fra en pasientmonitor
-- Bruke en DICOM-visar til å undersøke DICOM-metadata (pasient-ID, studieinformasjon, modalitet)
+- Bruke en DICOM-viewer til å undersøke DICOM-metadata (pasient-ID, studieinformasjon, modalitet)
 - Fange opp og analysere HL7-nettverkstrafikk ved hjelp av Wireshark
 - Beskrive rollen til klinisk ingeniørarbeid i nettverksintegrasjon og cybersikkerhet for medisinsk utstyr
 
@@ -59,10 +59,10 @@ IHE tilbyr implementeringsprofiler som spesifiserer nøyaktig hvordan HL7 og DIC
 MSH|^~\&|ADT_SYSTEM|HOSP|MONITOR_SYS|ICU|20260325120000||ADT^A01|MSG00001|P|2.5
 EVN|A01|20260325120000
 PID|1||PAT12345^^^HOSP^MR||HANSEN^ANNA^M||19520415|F|||BREIGATA 12^^STAVANGER^^4006^NO
-PV1|1|I|ICU^BED-03^^HOSP||||DR001^NILSEN^OLE|||MED||||||||V12345|||||||||||||||||||||||||20260325120000
+PV1|1|I|ICU^BED-03^^HOSP||||DR001^NILSEN^OLE|||MED|||||||||V12345|||||||||||||||||||||||||20260325120000
 ```
 
-Dekod hvert segment og felt i laboratoriejournalen din:
+Dekod hvert segment og felt i labboken din:
 - **MSH:** Identifiser sendende/mottakende systemer, meldingstype, versjon
 - **PID:** Identifiser pasientnavn, ID, fødselsdato, kjønn, adresse
 - **PV1:** Identifiser pasientklasse, lokasjon (avdeling/seng), behandlende lege, besøksnummer
@@ -73,11 +73,11 @@ Dekod hvert segment og felt i laboratoriejournalen din:
 MSH|^~\&|MONITOR|ICU|HIS|HOSP|20260325121500||ORU^R01|MSG00042|P|2.5
 PID|1||PAT12345^^^HOSP^MR||HANSEN^ANNA^M
 OBR|1||ORD001|VITALS|||20260325121500
-OBX|1|NM|HR^Heart Rate^LN||78|bpm|60-100||||F
-OBX|2|NM|SPO2^SpO2^LN||96|%|90-100||||F
-OBX|3|NM|NIBP_SYS^Systolic BP^LN||134|mmHg|90-140||||F
-OBX|4|NM|NIBP_DIA^Diastolic BP^LN||82|mmHg|60-90||||F
-OBX|5|NM|TEMP^Temperature^LN||37.2|Cel|36.0-38.0||||F
+OBX|1|NM|8867-4^Heart rate^LN||78|bpm|60-100||||F
+OBX|2|NM|59408-5^Oxygen saturation in Arterial blood by Pulse oximetry^LN||96|%|90-100||||F
+OBX|3|NM|8480-6^Systolic blood pressure^LN||134|mmHg|90-140||||F
+OBX|4|NM|8462-4^Diastolic blood pressure^LN||82|mmHg|60-90||||F
+OBX|5|NM|8310-5^Body temperature^LN||37.2|Cel|36.0-38.0||||F
 ```
 
 Dekod:
@@ -94,14 +94,14 @@ Dekod:
 
 **2.1** Åpne Wireshark på laboratoriearbeidsstasjonen din og start opptak på Ethernet-grensesnittet.
 
-**2.2** Labveileder vil utløse en serie HL7-meldinger mellom test-HL7-serveren og en klientapplikasjon.
+**2.2** Labveilederen utløser en serie HL7-meldinger mellom test-HL7-serveren og en klientapplikasjon. Klienten kjører på **din egen arbeidsstasjon**, slik at meldingene passerer grensesnittet du gjør opptak på. (På et svitsjet nettverk ser en arbeidsstasjon bare trafikk som er adressert til den selv — skal du fange trafikk mellom to andre maskiner, må labveilederen først slå på portspeiling på lab-svitsjen, ellers blir opptaket tomt.)
 
 **2.3** I Wireshark, filtrer for HL7-trafikk:
 - Filtrer på HL7-porten (typisk TCP-port 2575): `tcp.port == 2575`
 - Finn HL7-meldingene i pakkelisten
 - Velg en pakke og undersøk HL7-nyttelasten i pakkedetaljvinduet
 
-**2.4** Svar i laboratoriejournalen:
+**2.4** Svar i labboken:
 - Hvilken transportprotokoll bruker HL7 v2.x? (TCP eller UDP?)
 - Er HL7-meldingen kryptert under overføring? Hva er sikkerhetsimplikasjonene?
 - Hvordan kan en klinisk ingeniør verifisere at en pasientmonitor sender korrekte HL7-data til sentralovervåkningen?
@@ -110,7 +110,7 @@ Dekod:
 
 ### Del 3 — Utforskning av DICOM-bilder (45 min)
 
-**3.1** Åpne DICOM-visaren (Horos, OsiriX eller RadiAnt) på laboratoriearbeidsstasjonen.
+**3.1** Åpne OHIF-vieweren — labens DICOM-viewer, den samme som brukes i ultralydoppgaven — på laboratoriearbeidsstasjonen.
 
 **3.2** Last inn det medfølgende DICOM-eksempeldatasettet (et sett med anonymiserte medisinske bilder fra undervisningsarkivet).
 
@@ -127,7 +127,7 @@ Dekod:
 | Pixel Spacing (0028,0030) | |
 | Window Center/Width (0028,1050/1051) | |
 
-**3.4** Endre vindus-/nivåinnstillingene i visaren. Observer hvordan det viste bildet endrer seg. Forklar i laboratoriejournalen hva Window Center og Window Width styrer, og hvorfor de er klinisk viktige.
+**3.4** Endre vindus-/nivåinnstillingene i vieweren. Observer hvordan det viste bildet endrer seg. Forklar i labboken hva Window Center og Window Width styrer, og hvorfor de er klinisk viktige.
 
 **3.5** Svar: Hvis du mottok en DICOM-studie der pasient-ID i DICOM-headeren ikke samsvarte med pasient-ID i sykehusets system (RIS/PACS), hva ville den kliniske risikoen være, og hvilke tiltak ville du iverksatt?
 
@@ -147,18 +147,19 @@ Dette er en diskusjonsbasert del. Arbeid i laboratoriegruppen, diskuter og noter
 - Umiddelbare tiltak (pasientsikkerhet vs. undersøkelse)
 - Hvem du varsler
 - Hvordan du undersøker
-- Hva IEC 80001-1 sier om risikostyring for nettverkstilkoblet medisinsk utstyr
+- Hva **IEC 80001-1:2021** (*Anvendelse av risikostyring for IT-nettverk som inkorporerer medisinsk utstyr — Del 1: Pasientsikkerhet, effektivitet og informasjonssikkerhet ved innføring og bruk av tilkoblet medisinsk utstyr eller tilkoblet helseprogramvare*) sier om risikostyring for nettverkstilkoblet medisinsk utstyr — kontroller at du leser 2021-utgaven, som erstattet og omstrukturerte 2010-utgaven (med tittelen *Roles, responsibilities and activities*), for eldre forelesningsmateriell viser fortsatt til den tilbaketrukne utgaven
 
 **4.3** Diskuter spenningen mellom tilgjengelighet for medisinsk utstyr (utstyret må fungere 24/7) og cybersikkerhet (utstyret bør oppdateres og patches). Hvordan ville du håndtert en situasjon der en kritisk respirator kjører et operativsystem som ikke lenger støttes med sikkerhetsoppdateringer?
 
 ---
 
-## Krav til laboratorierapporten
+## Godkjenning
 
-Lever en maskinskrevet laboratorierapport innen datoen angitt i emneplanen. Rapporten må inneholde:
+Du blir godkjent i laben når du kan vise og forklare følgende for labingeniøren:
 
-- Dekodede HL7-meldinger fra del 1 med forklaringer
-- Skjermbilder fra Wireshark som viser HL7-trafikk (del 2)
-- Tabell med DICOM-headerdata fra del 3
-- Skriftlige diskusjonssvar fra del 4
-- En kort konklusjon (200–300 ord) om klinisk ingeniørarbeid sin rolle i integrasjon av sykehusets systemer
+- De dekodede HL7-meldingene fra del 1 — segmentene og feltene i ADT-meldingen (1.1), de vitale tegnene, referanseområdene og resultatstatusen i ORU-meldingen (1.2), og svaret ditt på 1.3
+- Wireshark-opptaket ditt av HL7-trafikken (2.1–2.2), visningsfilteret du brukte for å finne den (2.3), og svarene dine på 2.4
+- DICOM-headertabellen du fylte ut for hver bildeserie (3.3), hva som skjedde med bildet da du endret Window Center og Window Width (3.4), og svaret ditt på 3.5 om pasient-ID som ikke stemmer overens
+- Svarene gruppen kom fram til på diskusjonsspørsmålene i del 4 (4.1–4.3)
+
+Ingen skriftlig innlevering.

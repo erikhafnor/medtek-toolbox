@@ -93,14 +93,14 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
     weekPast: 'Passed',
     opensOn: 'Opens {date}',
     lockedNote:
-      'These labs open for booking on {date}, once the first three are done. You can already see when they run.',
+      'These labs open for booking on {date}, once the first labs are under way. You can already see when they run.',
     weeklyPlan: 'Weekly plan',
     weeklyPlanHint: 'Which labs are set up each week.',
     session: 'Session',
     day: 'Day',
     seatsHeld: '{taken} of {total} seats taken',
     privacy:
-      'Your name and email are stored only to run the lab sign-up, and are visible to course staff. Other students see your first name on the schedule. Bookings are deleted {retention} days after the last lab day; a record that the lab was approved is kept.',
+      'Your name and email are stored only to run the lab sign-up, and are visible to course staff. Other students see your first name on the schedule. Course staff delete bookings once the semester is over — at the earliest {retention} days after the last lab day — while the record that the lab was approved is kept. Ask course staff if you want your booking deleted sooner.',
     findMine: 'Booked on another device?',
     findMineHint:
       'Your bookings are remembered in the browser you booked from. Enter your email to see them anywhere.',
@@ -176,14 +176,14 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
     weekPast: 'Passert',
     opensOn: 'Åpner {date}',
     lockedNote:
-      'Disse labbene åpner for booking {date}, når de tre første er unnagjort. Du ser allerede når de går.',
+      'Disse labbene åpner for booking {date}, når de første labbene er i gang. Du ser allerede når de går.',
     weeklyPlan: 'Ukeplan',
     weeklyPlanHint: 'Hvilke labber som er satt opp hver uke.',
     session: 'Økt',
     day: 'Dag',
     seatsHeld: '{taken} av {total} plasser tatt',
     privacy:
-      'Navn og e-post lagres kun for å drifte labpåmeldingen, og er synlig for emneansvarlig. Medstudenter ser fornavnet ditt i timeplanen. Bookinger slettes {retention} dager etter siste labdag; registrering av at labben er godkjent beholdes.',
+      'Navn og e-post lagres kun for å drifte labpåmeldingen, og er synlig for emneansvarlig og labingeniør. Medstudenter ser fornavnet ditt i timeplanen. Bookinger slettes av emneansvarlig når semesteret er over — tidligst {retention} dager etter siste labdag — mens registreringen av at labben er godkjent beholdes. Ta kontakt med emneansvarlig hvis du vil ha bookingen din slettet tidligere.',
     findMine: 'Booket på en annen enhet?',
     findMineHint:
       'Bookingene dine huskes i nettleseren du booket fra. Skriv inn e-posten din for å se dem hvor som helst.',

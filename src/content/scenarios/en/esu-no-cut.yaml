@@ -42,15 +42,15 @@ steps:
     question: "You check the Erbe VIO display: the REM indicator shows a yellow warning triangle, but no audible alarm was heard in the noisy OR. You inspect the return electrode pad — it's a split-pad electrode applied to the right thigh. The upper half of the pad has peeled away from the skin due to perspiration. What's the issue?"
     hint: "REM (Return Electrode Monitoring) measures the impedance between the two halves of a split pad. What happens when contact area decreases?"
     choices:
-      - text: "The reduced contact area increases current density at the pad site, and the REM system has detected the high impedance and reduced output power"
+      - text: "The reduced contact area increases current density at the pad site, and the REM system has detected the high impedance and inhibited HF output"
         correct: true
-        feedback: "Correct — the Erbe VIO's REM system (called CQM — Contact Quality Monitoring) continuously measures impedance between the two halves of the split pad. When half the pad peels off, the impedance rises and the system reduces or disables output to prevent a return electrode burn. The visual warning was displayed but the audible alarm wasn't heard."
+        feedback: "Correct — the Erbe VIO's REM system (called CQM — Contact Quality Monitoring) continuously measures impedance between the two halves of the split pad. When half the pad peels off, the impedance rises and the system inhibits HF output to prevent a return electrode burn — it alarms and blocks output rather than throttling the power. The visual warning was displayed but the audible alarm wasn't heard."
       - text: "The pad has expired and the gel has degraded"
         correct: false
         feedback: "The gel may contribute, but the primary issue is mechanical — the pad has physically peeled off due to perspiration. Even a new pad can fail if skin prep is inadequate."
       - text: "The pad type is incompatible with this generator"
         correct: false
-        feedback: "Pad incompatibility would prevent activation entirely. The system activated but reduced output because it detected the high impedance."
+        feedback: "Pad incompatibility would prevent activation entirely. Here the generator accepted the pad and activated, but CQM inhibited the output because it detected the high impedance."
       - text: "Perspiration has created a short circuit between the pad halves"
         correct: false
         feedback: "A short between pad halves would lower impedance, not raise it. The issue is loss of skin contact on one half."

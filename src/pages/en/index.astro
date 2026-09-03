@@ -9,8 +9,8 @@ const locale = 'en';
 const devices = [
   { title: 'Defibrillator', href: '/en/devices/defibrillator/', icon: '⚡', color: '#e53e3e' },
   { title: 'Ventilator', href: '/en/devices/ventilator/', icon: '🫁', color: '#3182ce' },
-  { title: 'Infusion', href: '/en/devices/infusion/', icon: '💉', color: '#38a169' },
-  { title: 'ECG', href: '/en/devices/ecg/', icon: '🫀', color: '#d69e2e' },
+  { title: 'Infusion Pumps', href: '/en/devices/infusion-pump/', icon: '💉', color: '#38a169' },
+  { title: 'Patient Monitors & ECG', href: '/en/devices/patient-monitor/', icon: '🫀', color: '#d69e2e' },
   { title: 'Electrosurgery', href: '/en/devices/electrosurgery/', icon: '🔪', color: '#805ad5' },
   { title: 'Ultrasound', href: '/en/devices/ultrasound/', icon: '🔊', color: '#319795' },
 ];
@@ -47,12 +47,15 @@ const devices = [
       ))}
     </div>
 
-    <!-- Latest scenarios section -->
+    <!-- Scenarios section -->
     <div class="w-full max-w-2xl">
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">Latest scenarios</h2>
-      <div class="rounded-xl border border-gray-200 bg-gray-50 px-6 py-8 text-center text-gray-400 text-sm">
-        No scenarios yet — check back soon.
-      </div>
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">Scenarios</h2>
+      <a
+        href="/en/scenarios/"
+        class="block rounded-xl border border-gray-200 bg-gray-50 px-6 py-8 text-center text-sm text-gray-500 transition-colors hover:border-blue-400 hover:text-blue-700"
+      >
+        Browse all troubleshooting scenarios →
+      </a>
     </div>
   </div>
 </BaseLayout>
