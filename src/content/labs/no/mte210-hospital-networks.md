@@ -6,9 +6,8 @@ description: "Standardisert arbeidsflyt for pasientundersøkelser gjennom et sim
 equipment:
   - "HAPI TestPanel (HIS) på lab-PC"
   - "DCM4CHE RIS/PACS (pacs.ux.uis.no)"
-  - "DVTk Modality Emulator (modalitet)"
-  - "OHIF DICOM-viewer (pacsv.ux.uis.no)"
-  - "DICOM-undersøkelse lastet ned fra dicomlibrary.com"
+  - "GE LOGIQ S8 (modalitet)"
+  - "Kyoto Kagaku N-365 ultralydfantom"
 prerequisites:
   - "Forelesningsnotater om «Healthcare IT»"
 duration: "2 timer 45 minutter"
@@ -34,10 +33,9 @@ All programvaren står ferdig installert på lab-PC-en. Kontroller at du har til
 |---|---|---|
 | HAPI TestPanel | Pasientadministrativt system (HIS) | Lokalt på lab-PC |
 | DCM4CHE | Radiologisk informasjonssystem (RIS) og bildearkiv (PACS) | pacs.ux.uis.no |
-| DVTk Modality Emulator | Modalitet (det billeddannende utstyret) | Lokalt på lab-PC |
-| OHIF-viewer | Arbeidsstasjon for granskning (DICOM-viewer) | pacsv.ux.uis.no |
+| GE LOGIQ S8 | Modalitet — det billeddannende utstyret | I laben, ferdig koblet mot PACS |
 
-Du trenger også en DICOM-undersøkelse å sende. Last ned en fritt tilgjengelig undersøkelse fra [dicomlibrary.com](https://www.dicomlibrary.com) før du begynner på Del 5.
+Ultralydapparatet er allerede satt opp mot RIS og PACS. Dere skal ikke konfigurere det, men dere skal se på hvordan det er satt opp i Del 5.
 
 ---
 
@@ -49,10 +47,9 @@ I denne labøvingen introduseres dere til standarden som brukes innen pasientdat
 
 - **HAPI TestPanel** — Hospital Information System (**HIS**)
 - **DCM4CHE** — radiologisk informasjonssystem (**RIS**) og «Picture Archiving and Communication System» (**PACS**)
-- **DVTk SCU Emulator** — **modalitet**
-- **OHIF-viewer** — arbeidsstasjon (**DICOM**-viewer)
+- **GE LOGIQ S8** — **modalitet**: det billeddannende utstyret som henter arbeidslisten og produserer bildene
 
-Videre i labøvingen skal dere følge arbeidsflyten mellom disse fire. Diagrammet over Scheduled Workflow finner dere på [IHE-wikien](https://wiki.ihe.net/index.php/Scheduled_Workflow) — se på det før dere går videre, og finn igjen de fire komponentene våre i det.
+Videre i labøvingen skal dere følge arbeidsflyten mellom disse tre. Diagrammet over Scheduled Workflow finner dere på [IHE-wikien](https://wiki.ihe.net/index.php/Scheduled_Workflow) — se på det før dere går videre, og finn igjen de fire komponentene våre i det.
 
 ---
 
@@ -124,33 +121,39 @@ ZIP|HV-R0MD1CKX6|HV-R0MD1CKX6|1.2.752.48.4.1.2.665.20240808.378290079.1720738818
 
 **4.2** Finner dere ikke pasienten, gå tilbake til Del 3 og kontroller at meldingen faktisk ble akseptert (AA-svaret) og at feltene dere endret fortsatt er gyldige.
 
-**4.3** Start deretter programmet **DVTk Modality Emulator**, som emulerer en modalitet.
+**4.3** Gå deretter til **GE LOGIQ S8**-apparatet i laben.
 
 ---
 
-### Del 5 — Konfigurer modaliteten og send bilder
+### Del 5 — Utfør undersøkelsen på GE LOGIQ S8
 
-Ethvert billeddannende medisinsk utstyr må settes opp og konfigureres mot RIS og PACS. Dette er en av de mange oppgavene til en medisinsk teknisk ingeniør på sykehus. I stedet for å bruke ekte medisinsk utstyr skal dere bruke et program som emulerer det.
+Ethvert billeddannende medisinsk utstyr må settes opp og konfigureres mot RIS og PACS. Dette er en av de mange oppgavene til en medisinsk teknisk ingeniør på sykehus. Apparatet i laben er allerede konfigurert, men dere skal se hvordan det er gjort før dere bruker det.
 
-**5.1** Inne i DVTk Modality Emulator skal dere konfigurere AE-tittel, IP og portinnstillinger for RIS-systemet og PACS/Workstation Systems med følgende:
+**5.1** Finn fram til DICOM-oppsettet på LOGIQ S8 og noter hvordan apparatet er konfigurert mot arkivet: **AE-tittel**, **IP-adresse** og **port** for PACS, og apparatets egen AE-tittel. Sammenlign med det dere fant i PACS-webgrensesnittet i Del 2. Bruk brukermanualen for LOGIQ S8 hvis dere ikke finner menyvalgene.
 
-| Innstilling | Verdi |
-|---|---|
-| IP-adresse | `152.94.160.77` |
-| Remote Port | `11112` |
-| AE Title | `DCM4CHEE` |
+**5.2** Hent opp **arbeidslisten (Modality Worklist)** på apparatet og søk opp pasienten dere selv la inn. Finner dere den ikke, sjekk at bestillingen faktisk ligger i MWL-en (Del 4) og at apparatet spør mot riktig AE-tittel.
 
-**5.2** For å verifisere at innstillingene er riktige, send **ping** til RIS og **DICOM Echo** til PACS. Echo (C-ECHO) er DICOM-ens svar på ping: den bekrefter at de to systemene snakker DICOM med hverandre, ikke bare at nettverket er oppe.
+**5.3** **Velg pasienten fra arbeidslisten** — ikke tast inn pasientdata manuelt. Dette er hele poenget med Scheduled Workflow: pasient-ID, navn og Study Instance UID følger med fra bestillingen, slik at bildene havner på riktig pasient og riktig undersøkelse uten at noen skriver dem inn på nytt. Manuell inntasting på modaliteten er en av de vanligste kildene til feilkoblede bilder i klinisk drift.
 
-**5.3** Fortsatt i DVTk Modality Emulator: gjør en forespørsel om pasientliste (**MWL**) mot RIS, velg pasienten dere selv skrev inn, og send en valgfri DICOM-undersøkelse til PACS.
+**5.4** Påfør ultralydgel på **Kyoto Kagaku N-365-fantomet**, velg en probe og utfør en kort undersøkelse. Lagre minst tre bilder. Det er ikke bildekvaliteten som er poenget her, men at bildene blir knyttet til riktig bestilling.
+
+> Skanner dere hverandre i stedet for fantomet, gjelder de samme reglene som i ultralydlabben i MTE200: det er frivillig, samtykket kan trekkes tilbake når som helst, og målingene er ikke gyldige helsedata.
+
+**5.5** Avslutt undersøkelsen på apparatet (**End Exam**) slik at bildene sendes til PACS.
 
 ---
 
-### Del 6 — Verifiser i arbeidsstasjonen
+### Del 6 — Verifiser i PACS
 
-For å verifisere at arbeidsflyten er komplett skal dere bruke DICOM-vieweren (**OHIF viewer**), som dere finner i nettleseren på **pacsv.ux.uis.no**. Dette er klinikernes arbeidsverktøy for å granske medisinske undersøkelser, og den viser undersøkelsene som ligger i PACS-et på medtek-lab (DCM4CHE).
+For å verifisere at arbeidsflyten er komplett skal dere finne igjen deres egen undersøkelse i **DCM4CHE PACS** på **pacs.ux.uis.no**.
 
-Finn fram til deres egen pasient og åpne undersøkelsen. Da har dataene gått hele veien HIS → RIS/PACS → modalitet → PACS → arbeidsstasjon.
+**6.1** Logg inn i PACS-webgrensesnittet og søk opp undersøkelsen, for eksempel på pasient-ID-en eller navnet dere la inn i Del 3.
+
+**6.2** Kontroller at bildene ligger på **riktig pasient** — samme pasient-ID, navn og fødselsdato som i HL7-meldingen deres, og ikke på noen annen gruppes pasient.
+
+**6.3** Kontroller at **Study Instance UID** på undersøkelsen er den samme som dere satte i ZDS-1 og ZIP-3 i Del 3. Stemmer den, har bestillingen fra HIS og bildene fra modaliteten funnet hverandre, og dataene har gått hele veien HIS → RIS/PACS → modalitet → PACS.
+
+**6.4** Finner dere bildene under en annen pasient, eller som en egen undersøkelse uten tilknytning til bestillingen, gå tilbake og finn ut hvor koblingen røk. Det er som regel enten manuell inntasting på apparatet i stedet for valg fra arbeidslisten (Del 5.3), eller at UID-ene ikke var konsistente i HL7-meldingen (Del 3.2).
 
 ---
 
@@ -160,7 +163,8 @@ Du blir godkjent i laben når du kan vise og forklare følgende for labingeniør
 
 - HL7-forbindelsen fra Del 2, og AA-svaret fra PACS som viser at meldingen ble godtatt
 - Din egen redigerte HL7-melding fra Del 3, og hvilke felter du endret — særlig hvorfor rekvisisjonsnummeret og Study Instance UID må være konsistente på tvers av ORC, ZDS og ZIP
-- Bestillingen din i arbeidslisten (Del 4) og modalitetsoppsettet fra Del 5, inkludert hva DICOM Echo bekrefter som en ping ikke gjør
-- Din egen pasient og undersøkelse åpnet i OHIF-vieweren (Del 6), og hvilken vei dataene har gått gjennom de fire komponentene
+- Bestillingen din i arbeidslisten både i PACS (Del 4) og på LOGIQ S8 (Del 5.2), og hvordan apparatet er konfigurert mot arkivet (Del 5.1)
+- Undersøkelsen du utførte på apparatet (Del 5.4), og hvorfor pasienten skal velges fra arbeidslisten framfor å tastes inn manuelt
+- Din egen pasient og undersøkelse funnet igjen i PACS (Del 6), med Study Instance UID som stemmer med det du satte i Del 3 — og hvilken vei dataene har gått gjennom de tre komponentene
 
 Ingen skriftlig innlevering.
