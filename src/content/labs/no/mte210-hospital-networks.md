@@ -1,155 +1,156 @@
 ---
-title: "Laboratorieoppgave i sykehusnettverk og integrasjon av medisinsk utstyr"
+title: "Laboratorieoppgave i HL7 og DICOM"
 course: "MTE210"
 shortTitle: "HL7 & DICOM"
-description: "HL7-meldinger, DICOM-bildeoverføring og nettverksintegrasjon av medisinsk utstyr"
+description: "Standardisert arbeidsflyt for pasientundersøkelser gjennom et simulert klinisk IT-system, etter IHE Scheduled Workflow"
 equipment:
-  - "HAPI Testpanel (testmiljø for HL7 v2.x, på lab-PC-en)"
-  - "DCM4CHE RIS/PACS (undervisningsarkivet for bilder)"
-  - "OHIF-viewer (DICOM-viewer, på lab-PC-en)"
-  - "Nettverksanalyseverktøy (Wireshark)"
-  - "Laboratoriearbeidsstasjoner med Ethernet-tilkoblinger"
+  - "HAPI TestPanel (HIS) på lab-PC"
+  - "DCM4CHE RIS/PACS (pacs.ux.uis.no)"
+  - "DVTk Modality Emulator (modalitet)"
+  - "OHIF DICOM-viewer (pacsv.ux.uis.no)"
+  - "DICOM-undersøkelse lastet ned fra dicomlibrary.com"
 prerequisites:
-  - "Forelesningsnotater om helseinformatikk og interoperabilitetsstandarder"
-  - "Grunnleggende nettverkskunnskap (TCP/IP, porter, klient-server-modell)"
-  - "Introduksjon til HL7 og DICOM fra forelesninger i emnet"
+  - "Forelesningsnotater om «Healthcare IT»"
 duration: "2 timer 45 minutter"
 ---
 
-## Læringsmål
+## Formål
 
-Etter fullført laboratorieoppgave skal du kunne:
-
-- Forklare rollen til HL7 og DICOM i sykehusets informasjonssystemer
-- Lese og tolke en HL7 v2.x ADT-melding (Admit-Discharge-Transfer)
-- Identifisere nøkkelsegmentene i en HL7 ORU-melding (Observation Result) fra en pasientmonitor
-- Bruke en DICOM-viewer til å undersøke DICOM-metadata (pasient-ID, studieinformasjon, modalitet)
-- Fange opp og analysere HL7-nettverkstrafikk ved hjelp av Wireshark
-- Beskrive rollen til klinisk ingeniørarbeid i nettverksintegrasjon og cybersikkerhet for medisinsk utstyr
+Kunne utføre standardisert arbeidsflyt for pasientundersøkelser fra billeddannende modaliteter (ultralyd, røntgen, MR, CT osv.) i et simulert klinisk IT-system etter «Integrating the Healthcare Enterprise»-standarden (IHE).
 
 ---
 
-## Bakgrunn
+## Sikkerhetsmerknader
 
-### HL7 (Health Level Seven)
-
-HL7 er den mest brukte meldingsstandarden for utveksling av kliniske data mellom sykehusets informasjonssystemer. Versjon 2.x bruker pipetegn-separerte tekstmeldinger sendt over TCP/IP. Vanlige meldingstyper inkluderer:
-
-- **ADT** (Admit-Discharge-Transfer) — Pasientdemografi og lokasjon
-- **ORU** (Observation Result Unsolicited) — Laboratorieresultater, vitale tegn fra monitorer
-- **ORM** (Order Message) — Bestillinger fra klinikere til laboratorium/radiologi
-
-### DICOM (Digital Imaging and Communications in Medicine)
-
-DICOM er standarden for lagring, overføring og visning av medisinske bilder (røntgen, CT, MR, ultralyd). En DICOM-fil inneholder både bildedata og strukturerte metadata (pasient-ID, studiedato, modalitet, opptaksparametere).
-
-### IHE (Integrating the Healthcare Enterprise)
-
-IHE tilbyr implementeringsprofiler som spesifiserer nøyaktig hvordan HL7 og DICOM skal brukes sammen for å løse spesifikke kliniske arbeidsflyter (f.eks. bestilling-til-bilde-arbeidsflyt, pasientidentifikasjon).
+> **Vis aktsomhet ved håndtering av administratorverktøyet i DCM4CHE PACS.** Du arbeider i et delt undervisningsarkiv — sletting og omkonfigurering rammer alle gruppene.
 
 ---
 
-## Prosedyre
+## Oppsett av utstyr
 
-### Del 1 — Lesing av HL7-meldinger (45 min)
+All programvaren står ferdig installert på lab-PC-en. Kontroller at du har tilgang til:
 
-**1.1** Undersøk følgende HL7 v2.x ADT-melding (utdelt i labhefte eller vist på skjerm):
+| Programvare | Rolle i arbeidsflyten | Adresse |
+|---|---|---|
+| HAPI TestPanel | Pasientadministrativt system (HIS) | Lokalt på lab-PC |
+| DCM4CHE | Radiologisk informasjonssystem (RIS) og bildearkiv (PACS) | pacs.ux.uis.no |
+| DVTk Modality Emulator | Modalitet (det billeddannende utstyret) | Lokalt på lab-PC |
+| OHIF-viewer | Arbeidsstasjon for granskning (DICOM-viewer) | pacsv.ux.uis.no |
 
-```
-MSH|^~\&|ADT_SYSTEM|HOSP|MONITOR_SYS|ICU|20260325120000||ADT^A01|MSG00001|P|2.5
-EVN|A01|20260325120000
-PID|1||PAT12345^^^HOSP^MR||HANSEN^ANNA^M||19520415|F|||BREIGATA 12^^STAVANGER^^4006^NO
-PV1|1|I|ICU^BED-03^^HOSP||||DR001^NILSEN^OLE|||MED|||||||||V12345|||||||||||||||||||||||||20260325120000
-```
-
-Dekod hvert segment og felt i labboken din:
-- **MSH:** Identifiser sendende/mottakende systemer, meldingstype, versjon
-- **PID:** Identifiser pasientnavn, ID, fødselsdato, kjønn, adresse
-- **PV1:** Identifiser pasientklasse, lokasjon (avdeling/seng), behandlende lege, besøksnummer
-
-**1.2** Undersøk følgende ORU-melding (vitale tegn fra en pasientmonitor):
-
-```
-MSH|^~\&|MONITOR|ICU|HIS|HOSP|20260325121500||ORU^R01|MSG00042|P|2.5
-PID|1||PAT12345^^^HOSP^MR||HANSEN^ANNA^M
-OBR|1||ORD001|VITALS|||20260325121500
-OBX|1|NM|8867-4^Heart rate^LN||78|bpm|60-100||||F
-OBX|2|NM|59408-5^Oxygen saturation in Arterial blood by Pulse oximetry^LN||96|%|90-100||||F
-OBX|3|NM|8480-6^Systolic blood pressure^LN||134|mmHg|90-140||||F
-OBX|4|NM|8462-4^Diastolic blood pressure^LN||82|mmHg|60-90||||F
-OBX|5|NM|8310-5^Body temperature^LN||37.2|Cel|36.0-38.0||||F
-```
-
-Dekod:
-- Hvilke vitale tegn er rapportert, og hva er verdiene?
-- Hva er referanseområdene?
-- Hvilken pasient tilhører disse målingene?
-- Hva betyr "F"-flagget i OBX-segmentene?
-
-**1.3** Svar: Hvis SpO₂-avlesningen var 88 % i stedet for 96 %, hvilket felt ville endret seg? Ville HL7-meldingsstrukturen endret seg, eller bare verdien?
+Du trenger også en DICOM-undersøkelse å sende. Last ned en fritt tilgjengelig undersøkelse fra [dicomlibrary.com](https://www.dicomlibrary.com) før du begynner på Del 5.
 
 ---
 
-### Del 2 — Analyse av HL7-nettverkstrafikk (45 min)
+## Arbeidsforskrift
 
-**2.1** Åpne Wireshark på laboratoriearbeidsstasjonen din og start opptak på Ethernet-grensesnittet.
+### Del 1 — Det simulerte helse-IT-systemet
 
-**2.2** Labveilederen utløser en serie HL7-meldinger mellom test-HL7-serveren og en klientapplikasjon. Klienten kjører på **din egen arbeidsstasjon**, slik at meldingene passerer grensesnittet du gjør opptak på. (På et svitsjet nettverk ser en arbeidsstasjon bare trafikk som er adressert til den selv — skal du fange trafikk mellom to andre maskiner, må labveilederen først slå på portspeiling på lab-svitsjen, ellers blir opptaket tomt.)
+I denne labøvingen introduseres dere til standarden som brukes innen pasientdataflyt i helsesektoren, **Scheduled Workflow (SWF)**. På UiS medtek-lab har vi følgende komponenter som til sammen utgjør et simulert helse-IT-system:
 
-**2.3** I Wireshark, filtrer for HL7-trafikk:
-- Filtrer på HL7-porten (typisk TCP-port 2575): `tcp.port == 2575`
-- Finn HL7-meldingene i pakkelisten
-- Velg en pakke og undersøk HL7-nyttelasten i pakkedetaljvinduet
+- **HAPI TestPanel** — Hospital Information System (**HIS**)
+- **DCM4CHE** — radiologisk informasjonssystem (**RIS**) og «Picture Archiving and Communication System» (**PACS**)
+- **DVTk SCU Emulator** — **modalitet**
+- **OHIF-viewer** — arbeidsstasjon (**DICOM**-viewer)
 
-**2.4** Svar i labboken:
-- Hvilken transportprotokoll bruker HL7 v2.x? (TCP eller UDP?)
-- Er HL7-meldingen kryptert under overføring? Hva er sikkerhetsimplikasjonene?
-- Hvordan kan en klinisk ingeniør verifisere at en pasientmonitor sender korrekte HL7-data til sentralovervåkningen?
+Videre i labøvingen skal dere følge arbeidsflyten mellom disse fire. Diagrammet over Scheduled Workflow finner dere på [IHE-wikien](https://wiki.ihe.net/index.php/Scheduled_Workflow) — se på det før dere går videre, og finn igjen de fire komponentene våre i det.
 
 ---
 
-### Del 3 — Utforskning av DICOM-bilder (45 min)
+### Del 2 — Koble HIS til PACS
 
-**3.1** Åpne OHIF-vieweren — labens DICOM-viewer, den samme som brukes i ultralydoppgaven — på laboratoriearbeidsstasjonen.
+**2.1** Åpne **HIS** (HAPI TestPanel) på lab-PC-en.
 
-**3.2** Last inn det medfølgende DICOM-eksempeldatasettet (et sett med anonymiserte medisinske bilder fra undervisningsarkivet).
+**2.2** Konfigurer opp en HL7-forbindelse mellom HAPI TestPanel og DCM4CHE PACS ved å trykke på **«+»**-symbolet ved «sending connections».
 
-**3.3** For hver bildeserie, undersøk DICOM-headeren og registrer:
+**2.3** Finn hvilken port som skal brukes. Den finner dere i PACS-webgrensesnittet under *Configurations → HL7 Applications*.
 
-| Felt | Verdi |
+**2.4** Legg inn **152.94.160.77** som host — dette er IP-adressen til PACS.
+
+**2.5** Test forbindelsen ved å klikke **start**, og se om dere mottar en **«AA»**-melding tilbake fra PACS. AA står for *Application Accept*: PACS-et bekrefter at det tok imot og godtok meldingen.
+
+---
+
+### Del 3 — Bestill en undersøkelse med HL7
+
+Dere skal nå skrive inn en testpasient i systemet ved hjelp av HL7-standarden.
+
+Kort om segmentene i meldingen dere skal bruke:
+
+| Segment | Innhold |
 |---|---|
-| Patient Name (0010,0010) | |
-| Patient ID (0010,0020) | |
-| Study Date (0008,0020) | |
-| Modality (0008,0060) | |
-| Manufacturer (0008,0070) | |
-| Institution Name (0008,0080) | |
-| Pixel Spacing (0028,0030) | |
-| Window Center/Width (0028,1050/1051) | |
+| **MSH** | Meldingshodeinformasjon, som sender og mottaker |
+| **PID** | Pasientidentifikasjonsinformasjon |
+| **ORC** | Felles ordreinformasjon — blant annet rekvisisjonsnummeret |
+| **OBR** | Informasjon om den bestilte undersøkelsen |
+| **ZDS** | Study Instance UID, som knytter bestillingen til bildene som kommer senere |
+| **ZIP** | Helse Vest sitt eget segment for bestillingsidentifikatorer |
 
-**3.4** Endre vindus-/nivåinnstillingene i vieweren. Observer hvordan det viste bildet endrer seg. Forklar i labboken hva Window Center og Window Width styrer, og hvorfor de er klinisk viktige.
+**3.1** HL7-meldingen vi bruker som basis er hentet fra Helse Vest sitt HIS. Kopier meldingen under og lim den inn i tekstfeltet i HAPI TestPanel.
 
-**3.5** Svar: Hvis du mottok en DICOM-studie der pasient-ID i DICOM-headeren ikke samsvarte med pasient-ID i sykehusets system (RIS/PACS), hva ville den kliniske risikoen være, og hvilke tiltak ville du iverksatt?
+```text
+MSH|^~\&|ADHOCBOOKING_VIA_XTRAY|SENDING_FACILITY|XTRAY|RECEIVING_FACILITY|20240808130111||ORM^O01|K3LGVMMKRKCZHJ20|P|2.3
+PID|||14019800513||Danser^Folke (Testpasienten)||19980114|M
+ORC|NW||HV-R0MD1CKX6||SC
+OBR||||SFY0HK^Ekkokardiografi^^SFY0HK^Ekkokardiografi^XTRAY^^1.0~SFY0HK Ekkokardiografi|||20240808130111||||||||^^^HJERTE|114273^Kardiologisk Avdeling (Stavanger/Egersund)^^^^^^^RESHID^DEPARTMENT||ULINT1USUS^US^Ultralydapparat intensivavdelingen 2M^RESURSID&DIPS||30^IKKE SENSITIV^HV^NORMAL^^CONFIDENTIALITY CODE||||US||||||||||||||^^^^30^KLINISK^HV TILGANGSKATEGORI
+ZDS|1.2.752.48.4.1.2.665.20240808.378290079.17207388184^XTRAY^Application^DICOM
+NTE||XTRAY ADHOC|Custom segment ZIP based on the Imaging Procedure Control Segment (IPC) from v2.5
+ZIP|HV-R0MD1CKX6|HV-R0MD1CKX6|1.2.752.48.4.1.2.665.20240808.378290079.17207388184|HV-R0MD1CKX6
+```
+
+**3.2** For å gjøre meldingen unik må noen felter endres av dere. Hver gruppe skal ha sin egen pasient og sin egen undersøkelse, ellers kolliderer dere i PACS-et. Gjør følgende endringer:
+
+| Felt | Står nå | Endre til |
+|---|---|---|
+| MSH-7 | `20240808130111` | Dagens dato |
+| PID-3 | `14019800513` | En pseudo-pasient-ID |
+| PID-5 | `Danser^Folke (Testpasienten)` | Et pseudo-navn |
+| PID-7 | `19980114` | Fødselsdato som matcher pasient-ID-en |
+| PID-8 | `M` | Ett av alternativene for patient sex: F, M, O, U, A, N |
+| ORC-3 | `HV-R0MD1CKX6` | Erstatt de siste 3 bokstavene med 3 andre bokstaver |
+| OBR-7 | `20240808130111` | Dagens dato |
+| ZDS-1 | `1.2.752…17207388184` | Erstatt de 2 siste sifrene med 2 andre siffer |
+| ZIP-3 | `1.2.752…17207388184` | Samme 2 siffer som dere valgte i ZDS-1 |
+| ZIP-1, 2 og 4 | `HV-R0MD1CKX6` | Samme 3 bokstaver som dere la inn i ORC-3 |
+
+> **Merk:** ORC-3 og ZIP-1/2/4 er rekvisisjonsnummeret og må være identiske. ZDS-1 og ZIP-3 er Study Instance UID og må også være identiske — det er denne UID-en modaliteten senere bruker for å koble bildene til riktig bestilling. Får dere dem ikke til å stemme overens, havner bildene i PACS uten å bli knyttet til bestillingen.
+
+**3.3** Når endringene er gjort, send meldingen til PACS ved å trykke **«Send»** øverst i menylinjen.
 
 ---
 
-### Del 4 — Integrasjonsutfordringer og cybersikkerhet (30 min)
+### Del 4 — Finn bestillingen i arbeidslisten
 
-Dette er en diskusjonsbasert del. Arbeid i laboratoriegruppen, diskuter og noter svarene deres:
+**4.1** Gå inn i nettleseren på PACS-et og se om dere finner den bestilte pasienten under *Navigation → MWL*. Husk å velge **WORKLIST** i nedtrekksmenyen, og klikk på **SUBMIT** for å spørre om pasientlisten.
 
-**4.1** En ny pasientmonitor skal installeres på intensivavdelingen. List opp stegene en klinisk ingeniør ville gjennomført for å integrere den med sykehusets sentrale overvåkingssystem og den elektroniske pasientjournalen (EPJ), inkludert:
-- Nettverkskonfigurasjon (IP, VLAN, brannmurregler)
-- HL7-grensesnittkonfigurasjon (meldingstyper, mottakende system)
-- Testing og validering før idriftsettelse
-- Løpende overvåking
+**4.2** Finner dere ikke pasienten, gå tilbake til Del 3 og kontroller at meldingen faktisk ble akseptert (AA-svaret) og at feltene dere endret fortsatt er gyldige.
 
-**4.2** Sykehusets IT-sikkerhetsteam rapporterer at en pasientmonitor på nettverket er oppdaget i kommunikasjon med en uventet ekstern IP-adresse. Som klinisk ingeniør, hva er din respons? Vurder:
-- Umiddelbare tiltak (pasientsikkerhet vs. undersøkelse)
-- Hvem du varsler
-- Hvordan du undersøker
-- Hva **IEC 80001-1:2021** (*Anvendelse av risikostyring for IT-nettverk som inkorporerer medisinsk utstyr — Del 1: Pasientsikkerhet, effektivitet og informasjonssikkerhet ved innføring og bruk av tilkoblet medisinsk utstyr eller tilkoblet helseprogramvare*) sier om risikostyring for nettverkstilkoblet medisinsk utstyr — kontroller at du leser 2021-utgaven, som erstattet og omstrukturerte 2010-utgaven (med tittelen *Roles, responsibilities and activities*), for eldre forelesningsmateriell viser fortsatt til den tilbaketrukne utgaven
+**4.3** Start deretter programmet **DVTk Modality Emulator**, som emulerer en modalitet.
 
-**4.3** Diskuter spenningen mellom tilgjengelighet for medisinsk utstyr (utstyret må fungere 24/7) og cybersikkerhet (utstyret bør oppdateres og patches). Hvordan ville du håndtert en situasjon der en kritisk respirator kjører et operativsystem som ikke lenger støttes med sikkerhetsoppdateringer?
+---
+
+### Del 5 — Konfigurer modaliteten og send bilder
+
+Ethvert billeddannende medisinsk utstyr må settes opp og konfigureres mot RIS og PACS. Dette er en av de mange oppgavene til en medisinsk teknisk ingeniør på sykehus. I stedet for å bruke ekte medisinsk utstyr skal dere bruke et program som emulerer det.
+
+**5.1** Inne i DVTk Modality Emulator skal dere konfigurere AE-tittel, IP og portinnstillinger for RIS-systemet og PACS/Workstation Systems med følgende:
+
+| Innstilling | Verdi |
+|---|---|
+| IP-adresse | `152.94.160.77` |
+| Remote Port | `11112` |
+| AE Title | `DCM4CHEE` |
+
+**5.2** For å verifisere at innstillingene er riktige, send **ping** til RIS og **DICOM Echo** til PACS. Echo (C-ECHO) er DICOM-ens svar på ping: den bekrefter at de to systemene snakker DICOM med hverandre, ikke bare at nettverket er oppe.
+
+**5.3** Fortsatt i DVTk Modality Emulator: gjør en forespørsel om pasientliste (**MWL**) mot RIS, velg pasienten dere selv skrev inn, og send en valgfri DICOM-undersøkelse til PACS.
+
+---
+
+### Del 6 — Verifiser i arbeidsstasjonen
+
+For å verifisere at arbeidsflyten er komplett skal dere bruke DICOM-vieweren (**OHIF viewer**), som dere finner i nettleseren på **pacsv.ux.uis.no**. Dette er klinikernes arbeidsverktøy for å granske medisinske undersøkelser, og den viser undersøkelsene som ligger i PACS-et på medtek-lab (DCM4CHE).
+
+Finn fram til deres egen pasient og åpne undersøkelsen. Da har dataene gått hele veien HIS → RIS/PACS → modalitet → PACS → arbeidsstasjon.
 
 ---
 
@@ -157,9 +158,9 @@ Dette er en diskusjonsbasert del. Arbeid i laboratoriegruppen, diskuter og noter
 
 Du blir godkjent i laben når du kan vise og forklare følgende for labingeniøren:
 
-- De dekodede HL7-meldingene fra del 1 — segmentene og feltene i ADT-meldingen (1.1), de vitale tegnene, referanseområdene og resultatstatusen i ORU-meldingen (1.2), og svaret ditt på 1.3
-- Wireshark-opptaket ditt av HL7-trafikken (2.1–2.2), visningsfilteret du brukte for å finne den (2.3), og svarene dine på 2.4
-- DICOM-headertabellen du fylte ut for hver bildeserie (3.3), hva som skjedde med bildet da du endret Window Center og Window Width (3.4), og svaret ditt på 3.5 om pasient-ID som ikke stemmer overens
-- Svarene gruppen kom fram til på diskusjonsspørsmålene i del 4 (4.1–4.3)
+- HL7-forbindelsen fra Del 2, og AA-svaret fra PACS som viser at meldingen ble godtatt
+- Din egen redigerte HL7-melding fra Del 3, og hvilke felter du endret — særlig hvorfor rekvisisjonsnummeret og Study Instance UID må være konsistente på tvers av ORC, ZDS og ZIP
+- Bestillingen din i arbeidslisten (Del 4) og modalitetsoppsettet fra Del 5, inkludert hva DICOM Echo bekrefter som en ping ikke gjør
+- Din egen pasient og undersøkelse åpnet i OHIF-vieweren (Del 6), og hvilken vei dataene har gått gjennom de fire komponentene
 
 Ingen skriftlig innlevering.
