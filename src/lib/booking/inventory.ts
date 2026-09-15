@@ -27,6 +27,7 @@ export const DEVICES: Device[] = [
 
   // Medical devices and other test equipment — estimated counts
   { key: 'lifepak15', label: 'LIFEPAK 15 Defibrillator/Monitor', labelNo: 'LIFEPAK 15 defibrillator/monitor', quantity: 2 },
+  { key: 'lifepak20e', label: 'LIFEPAK 20e Defibrillator/Monitor', labelNo: 'LIFEPAK 20e defibrillator/monitor', quantity: 1 },
   { key: 'keysight-scope', label: 'Keysight InfiniiVision Oscilloscope', labelNo: 'Keysight InfiniiVision oscilloskop', quantity: 2 },
   { key: 'olympus-ues40', label: 'Olympus UES-40 Electrosurgical Unit', labelNo: 'Olympus UES-40 diatermiapparat', quantity: 1 },
   { key: 'rapidvac', label: 'RapidVac Smoke Evacuator', labelNo: 'RapidVac røykavsug', quantity: 1 },
@@ -57,6 +58,7 @@ const EQUIPMENT_MATCHERS: Array<{ pattern: RegExp; device: string }> = [
   { pattern: /IDA-5/i, device: 'fluke-ida5' },
   { pattern: /VT900A/i, device: 'fluke-vt900a' },
   { pattern: /LIFEPAK\s*15/i, device: 'lifepak15' },
+  { pattern: /LIFEPAK\s*20/i, device: 'lifepak20e' },
   { pattern: /oscilloscope|oscilloskop/i, device: 'keysight-scope' },
   { pattern: /UES-40/i, device: 'olympus-ues40' },
   { pattern: /RapidVac/i, device: 'rapidvac' },
