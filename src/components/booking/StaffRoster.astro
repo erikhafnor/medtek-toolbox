@@ -37,6 +37,9 @@ const L = no
       total: 'Totalt',
       cancel: 'Avbestill',
       cancelConfirm: 'Avbestille plassen til {name}?',
+      cancelPast: 'Slett',
+      cancelPastConfirm:
+        'Slette bookingen til {name} på en passert labdag? Godkjenninger beholdes.',
       retention:
         'Bookinger slettes {days} dager etter siste labdag. Kan slettes fra {from}. Godkjenninger beholdes.',
       purge: 'Slett passerte bookinger',
@@ -71,6 +74,8 @@ const L = no
       total: 'Total',
       cancel: 'Cancel',
       cancelConfirm: 'Cancel the seat held by {name}?',
+      cancelPast: 'Delete',
+      cancelPastConfirm: "Delete {name}'s booking on a past lab day? Approvals are kept.",
       retention:
         'Bookings are deleted {days} days after the last lab day. Deletable from {from}. Approvals are kept.',
       purge: 'Delete past bookings',
@@ -423,10 +428,25 @@ const progress = COURSES.flatMap((course) =>
               <div class="mt-2 text-sm text-gray-600">
                 <p class="text-xs font-semibold tabular-nums text-gray-500">{session.time}</p>
                 {session.labs.map((lab) => (
-                  <p class="ml-1">
-                    {labShort(lab.labId)}:
-                    {lab.groups.flatMap((g) => g.students).map((s) => ` ${s.studentName}`).join(',')}
-                  </p>
+                  <div class="ml-1 mt-1">
+                    <p class="text-gray-500">{labShort(lab.labId)}:</p>
+                    <ul class="ml-2 space-y-0.5">
+                      {lab.groups.flatMap((g) => g.students).map((s) => (
+                        <li>
+                          {s.studentName}
+                          <button
+                            type="button"
+                            data-cancel-booking={s.id}
+                            data-student={s.studentName}
+                            data-confirm={L.cancelPastConfirm.replace('{name}', s.studentName)}
+                            class="ml-2 text-xs text-red-600 underline underline-offset-2 hover:text-red-700 print:hidden"
+                          >
+                            {L.cancelPast}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 ))}
               </div>
             ))}
@@ -442,7 +462,11 @@ const progress = COURSES.flatMap((course) =>
     document.querySelectorAll('[data-cancel-booking]').forEach((button) => {
       button.addEventListener('click', async () => {
         const name = button.getAttribute('data-student') ?? '';
-        if (!window.confirm(cancelPrompt.replace('{name}', name))) return;
+        // past lab days carry their own wording: deleting there also drops the
+        // record that the student was signed up, which is not what cancelling
+        // an upcoming seat means
+        const prompt = button.getAttribute('data-confirm') ?? cancelPrompt.replace('{name}', name);
+        if (!window.confirm(prompt)) return;
         button.disabled = true;
         const id = button.getAttribute('data-cancel-booking');
         const response = await fetch(`/api/staff/bookings/${id}`, { method: 'DELETE' });
