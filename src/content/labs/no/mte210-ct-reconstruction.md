@@ -63,13 +63,16 @@ Du arbeider med **to** volumer i denne delen: ditt eget fra CT-avbildningslabben
 
 | Felt | Verdi |
 |---|---|
-| Host | `pacs.ux.uis.no` |
-| Port | ⟨fylles inn av labansvarlig⟩ |
-| Called AE title | `DCM4CHEE` |
-| Calling AE title | ⟨fylles inn av labansvarlig⟩ |
-| Retrieve-protokoll | C-GET |
+| Name | `uis-pacs` |
+| Address | `152.94.160.77` |
+| Port | `11112` |
+| AETitle | `DCM4CHEE` |
+| Calling AETitle | `CTKSTORE` (Slicers standardverdi) |
+| CGET | **haket av** |
 
 Søk opp studien på **Patient ID `XR40-CT1`** eller **Accession `MTE210-CT1`**, merk serien og hent den. Du skal få én studie med én serie på **460 snitt**.
+
+> **Hvorfor CGET-haken må stå på.** DICOM har to måter å hente bilder på. Med **C-MOVE** sender arkivet ikke bildene tilbake i forbindelsen du åpnet — det slår opp AE-tittelen din i sin egen konfigurasjon og åpner en *ny* forbindelse til den maskinen. Det betyr at hver eneste lab-PC må være registrert i arkivet på forhånd, og at alle PC-er som deler AE-tittel havner på samme adresse. Med **C-GET** kommer bildene tilbake i forbindelsen Slicer allerede har åpnet; ingenting må registreres, og det virker likt fra hvilken som helst maskin. Dette er den samme forskjellen du møter igjen hver gang et modalitet skal hente arbeidslister eller bilder i et sykehusnett.
 
 > Legg merke til at du **ikke** trenger å sette voxelavstanden for denne serien. Din egen stabel er vanlige bildefiler uten skalainformasjon, mens DICOM-objektet bærer sin egen geometri i taggene `PixelSpacing` og `SliceThickness`. Dette er hele poenget med en bildestandard i et sykehusnett: mottakeren skal ikke måtte få vite utenom filen hvor stor en piksel er. Sammenlign med hvordan du måtte behandle din egen stabel i del 4.2.
 

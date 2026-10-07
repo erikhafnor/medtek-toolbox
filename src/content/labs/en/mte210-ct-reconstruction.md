@@ -63,13 +63,16 @@ You work with **two** volumes in this part: your own from the CT imaging lab, an
 
 | Field | Value |
 |---|---|
-| Host | `pacs.ux.uis.no` |
-| Port | ⟨to be filled in by the lab supervisor⟩ |
-| Called AE title | `DCM4CHEE` |
-| Calling AE title | ⟨to be filled in by the lab supervisor⟩ |
-| Retrieve protocol | C-GET |
+| Name | `uis-pacs` |
+| Address | `152.94.160.77` |
+| Port | `11112` |
+| AETitle | `DCM4CHEE` |
+| Calling AETitle | `CTKSTORE` (Slicer's default) |
+| CGET | **ticked** |
 
 Query on **Patient ID `XR40-CT1`** or **Accession `MTE210-CT1`**, select the series, and retrieve it. You should get one study with one series of **460 slices**.
+
+> **Why the CGET box has to be ticked.** DICOM has two ways of fetching images. With **C-MOVE** the archive does not send them back down the connection you opened — it looks your AE title up in its own configuration and opens a *new* connection to that machine. Which means every lab PC has to be registered in the archive in advance, and any PCs sharing an AE title all resolve to the same address. With **C-GET** the images come back down the connection Slicer already has open: nothing to register, and it behaves identically from any machine. This is the same distinction you meet whenever a modality fetches worklists or images in a hospital network.
 
 > Notice that you do **not** have to set the voxel spacing for this series. Your own stack is plain image files with no scale information, whereas the DICOM object carries its own geometry in the `PixelSpacing` and `SliceThickness` tags. This is the entire point of an imaging standard in a hospital network: the receiver should not have to be told out-of-band how big a pixel is. Compare with how you had to handle your own stack in Part 4.2.
 
