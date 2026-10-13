@@ -33,6 +33,19 @@ A volumetric infusion pump uses a peristaltic mechanism (linear or rotary) to pr
 | Free-flow prevention | Anti-free-flow clamp in the pump door mechanism | Gravity-driven free-flow can deliver the entire bag in minutes; the anti-siphon valve in the set only prevents siphoning, not gravity flow through an open set |
 | Start-up time (trumpet curve) | Stabilises within ±5% in < 5 min | Delayed onset affects time-critical medications |
 
+### Sensors on the B. Braun Infusomat Space
+
+| Sensor | Type | Where | What it's for |
+|---|---|---|---|
+| Upstream pressure sensor | Pressure/force sensor (strain gauge or piezoresistive) pressing on the outside of the tubing; it measures how much the tube wall bulges or collapses and never touches the fluid | Between the bag and the pumping mechanism | Detects an **upstream occlusion**: a closed roller clamp, a kinked line above the pump, or an empty or unvented container (the pump pulls a vacuum and the tube collapses) |
+| Downstream pressure sensor | Pressure/force sensor, same principle as the upstream sensor | After the pumping mechanism, on the patient side | Detects a **downstream occlusion** against the selected pressure level, drives the pressure display, and can flag a **disconnection** from a sudden pressure drop |
+| Air-in-line detector | Ultrasonic: a transmitter and receiver on opposite sides of the tube; liquid carries ultrasound well and air blocks it, so a bubble shows as a drop in signal | Downstream, before the line leaves the pump | Detects **air bubbles** heading for the patient, both single bubbles and air accumulating over time |
+| Door sensor | Magnetic (Hall-effect) switch or microswitch | Pump door and latch | Confirms the **door is closed and the set is loaded** before the pump will start; opening the door stops the pump and the anti-free-flow clamp shuts the line |
+| Drop sensor (optional accessory) | Optical: an infrared light beam across the drip chamber, broken by each falling drop | Clipped onto the drip chamber | Counts drops to detect an **empty container** or **free flow** |
+| Mechanism monitoring | Rotary encoder (optical or magnetic) | Motor and pumping mechanism | Checks that the mechanism actually moves as commanded, as part of the pump's self-monitoring |
+
+The air detector is ultrasonic rather than optical because light cannot reliably tell air from clear fluid in transparent tubing, while the difference in how ultrasound travels through liquid and air is large and dependable.
+
 ---
 
 ## Common Failure Modes

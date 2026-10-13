@@ -33,6 +33,19 @@ En volumetrisk infusjonspumpe bruker en peristaltisk mekanisme (lineær eller ro
 | Friflytsforebygging | Antifriflytsklemme i pumpens dørmekanisme | Gravitasjonsdrevet friflyt kan levere hele posen på minutter; antisifonventilen i settet forhindrer bare sifonering, ikke gravitasjonsflyt gjennom et åpent sett |
 | Oppstartstid (trompettkurve) | Stabiliserer innenfor ±5 % på < 5 min | Forsinket oppstart påvirker tidskritiske legemidler |
 
+### Sensorer i B. Braun Infusomat Space
+
+| Sensor | Type | Plassering | Hva den brukes til |
+|---|---|---|---|
+| Oppstrøms trykksensor | Trykk-/kraftsensor (strekklapp eller piezoresistiv) som ligger mot utsiden av slangen; den måler hvor mye slangeveggen buler ut eller klemmes sammen, og kommer aldri i kontakt med væsken | Mellom posen og pumpemekanismen | Oppdager **okklusjon oppstrøms**: lukket rulleklemme, knekk på slangen over pumpen, eller tom eller uventilert beholder (pumpen trekker vakuum og slangen klapper sammen) |
+| Nedstrøms trykksensor | Trykk-/kraftsensor, samme prinsipp som oppstrømssensoren | Etter pumpemekanismen, på pasientsiden | Oppdager **okklusjon nedstrøms** mot valgt trykknivå, styrer trykkvisningen, og kan varsle om **frakobling** ved et plutselig trykkfall |
+| Luft-i-slangen-detektor | Ultralyd: sender og mottaker på hver side av slangen; væske leder ultralyd godt og luft stopper den, så en boble gir et fall i signalet | Nedstrøms, før slangen går ut av pumpen | Oppdager **luftbobler** på vei mot pasienten, både enkeltbobler og luft som samler seg over tid |
+| Dørsensor | Magnetisk (Hall-effekt) bryter eller mikrobryter | Pumpedøren og låsen | Bekrefter at **døren er lukket og settet er lagt riktig inn** før pumpen kan starte; åpnes døren, stopper pumpen og antifriflytsklemmen stenger slangen |
+| Dråpesensor (valgfritt tilbehør) | Optisk: en infrarød lysstråle gjennom dråpekammeret som brytes av hver dråpe | Festet på dråpekammeret | Teller dråper for å oppdage **tom beholder** eller **friflyt** |
+| Overvåking av mekanismen | Rotasjonsenkoder (optisk eller magnetisk) | Motor og pumpemekanisme | Kontrollerer at mekanismen faktisk beveger seg som styrt, som del av pumpens egenovervåking |
+
+Luftdetektoren bruker ultralyd og ikke lys fordi lys ikke pålitelig skiller luft fra klar væske i gjennomsiktig slange, mens forskjellen i hvordan ultralyd går gjennom væske og luft er stor og stabil.
+
 ---
 
 ## Vanlige feilmoder
