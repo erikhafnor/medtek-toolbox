@@ -5,7 +5,7 @@
 // Nothing else in the codebase hardcodes a time, a date or a lab id.
 //
 // Two limits shape MTE200. Most analyzers are single-unit, so a lab runs one
-// group per slot. And there is one supervisor, so at most three labs are set up
+// group per slot. And there is one supervisor, so at most four labs are set up
 // on any one Tuesday (`maxLabsPerDay`) — which is why each lab lists the days it
 // actually runs instead of being open all semester.
 
@@ -43,6 +43,11 @@ export interface BookableLab {
    * `electivePicks` of them, not for the whole cohort.
    */
   elective?: boolean;
+  /**
+   * The lab's last day is a catch-up day rather than one the cohort needs, and
+   * the booking page says so.
+   */
+  lastDayIsSpare?: boolean;
 }
 
 export interface CourseBooking {
@@ -62,7 +67,10 @@ export interface CourseBooking {
   maxLabsPerDay?: number;
   /** Students on the course, so the build can prove every lab seats them all. */
   cohortSize?: number;
-  /** How many of the elective labs each student must take. */
+  /**
+   * How many of the elective labs each student must take. 0 makes them
+   * optional extras, which need no guaranteed seats.
+   */
   electivePicks?: number;
   labs: BookableLab[];
 }
@@ -73,9 +81,10 @@ export interface CourseBooking {
 // day in week 42 — the spare day exists so a group that misses a session, or
 // that ends up as a pair rather than a three, still has somewhere to go.
 //
-// Block 2 is elective: students choose two of its four labs. It rotates
-// three-at-a-time across weeks 43–47, which is why the four labs need only
-// enough seats for their share of the cohort rather than all of it.
+// Block 2 runs across weeks 43–47. Electrosurgery is compulsory, so it runs on
+// all five of those Tuesdays and seats the whole cohort; the other three labs
+// are optional extras. That puts four labs on 3 November — they share no
+// single-unit instrument, so they can run side by side.
 const BLOCK_1 = ['2026-09-08', '2026-09-15', '2026-09-22', '2026-09-29', '2026-10-13'];
 /**
  * Block 2 opens once the four core block 1 days are done, not once its spare
@@ -118,16 +127,16 @@ export const COURSES: CourseBooking[] = [
     firstDate: '2026-09-08', // ISO week 37
     lastDate: '2026-11-17', // ISO week 47
     closedWeeks: [41],
-    maxLabsPerDay: 3,
+    maxLabsPerDay: 4,
     cohortSize: 21,
-    electivePicks: 2,
+    electivePicks: 0, // the elective labs are optional extras
     labs: [
       // Block 1 — everyone takes these three first
-      { id: 'mte200-ecg-recording', groupsPerSlot: 1, seatsPerGroup: 3, dates: BLOCK_1 },
-      { id: 'mte200-defibrillator', groupsPerSlot: 1, seatsPerGroup: 3, dates: BLOCK_1 },
-      { id: 'mte200-infusion-pump', groupsPerSlot: 1, seatsPerGroup: 3, dates: BLOCK_1 },
+      { id: 'mte200-ecg-recording', groupsPerSlot: 1, seatsPerGroup: 3, dates: BLOCK_1, lastDayIsSpare: true },
+      { id: 'mte200-defibrillator', groupsPerSlot: 1, seatsPerGroup: 3, dates: BLOCK_1, lastDayIsSpare: true },
+      { id: 'mte200-infusion-pump', groupsPerSlot: 1, seatsPerGroup: 3, dates: BLOCK_1, lastDayIsSpare: true },
 
-      // Block 2 — elective, four labs rotating three-at-a-time across weeks 43–47
+      // Block 2 — electrosurgery is compulsory; the other three are optional
       {
         id: 'mte200-blood-pressure-spo2',
         groupsPerSlot: 1,
@@ -138,11 +147,10 @@ export const COURSES: CourseBooking[] = [
       },
       {
         id: 'mte200-electrosurgery',
-        groupsPerSlot: 1,
+        groupsPerSlot: 1, // one QA-ES III, so one group per slot
         seatsPerGroup: 3,
-        dates: ['2026-10-20', '2026-10-27', '2026-11-10', '2026-11-17'],
+        dates: ['2026-10-20', '2026-10-27', '2026-11-03', '2026-11-10', '2026-11-17'],
         opensOn: BLOCK_2_OPENS,
-        elective: true,
       },
       {
         id: 'mte200-ultrasound',
@@ -269,11 +277,12 @@ export function scheduledDates(course: CourseBooking, lab: BookableLab): string[
  * How many students must fit in a lab. Everyone takes a core lab, so it needs
  * the whole cohort. An elective is taken by roughly its share of the cohort —
  * `electivePicks` of `n` labs — so it needs that share, assuming take-up is
- * broadly even across the choices.
+ * broadly even across the choices. An optional extra needs no seats.
  */
 export function seatsNeededFor(course: CourseBooking, lab: BookableLab): number {
   const cohort = course.cohortSize ?? 0;
-  if (!lab.elective || !course.electivePicks) return cohort;
+  if (!lab.elective) return cohort;
+  if (!course.electivePicks) return 0;
   const electives = course.labs.filter((l) => l.elective).length || 1;
   return Math.ceil((cohort * course.electivePicks) / electives);
 }

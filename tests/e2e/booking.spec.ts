@@ -92,7 +92,7 @@ test.describe('booking page', () => {
 
     // the plan is visible, and says it is a choice…
     await expect(page.locator('[data-slot="1"]')).toHaveCount(4);
-    await expect(page.getByText('Elective — choose 2 of these 4 labs.')).toBeVisible();
+    await expect(page.getByText('Optional — an extra lab, not required.')).toBeVisible();
     await expect(page.getByText('These labs open for booking', { exact: false })).toBeVisible();
     // …but nothing can be claimed yet
     const seats = page.getByRole('button', { name: '+ Take seat' });

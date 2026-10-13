@@ -157,20 +157,19 @@
     const runs = new Set(labDates(selectedLabId));
     return courseWeeks.filter((week) => runs.has(week.date));
   });
-  /** Elective labs say so, since students take only some of them. */
-  const electiveInfo = $derived.by(() => {
-    if (!course?.electivePicks) return null;
-    const lab = course.labs.find((l) => l.id === selectedLabId);
-    if (!lab?.elective) return null;
-    return { picks: course.electivePicks, total: course.labs.filter((l) => l.elective).length };
-  });
-
-  /** A core lab whose schedule carries a spare day beyond what the cohort needs. */
-  const hasSpareDay = $derived.by(() => {
+  /**
+   * What the lab asks of each student. Only said when the course mixes kinds,
+   * since a course where everyone takes everything needs no note.
+   */
+  const labNote = $derived.by(() => {
     const lab = course?.labs.find((l) => l.id === selectedLabId);
-    if (!course?.cohortSize || !lab || lab.elective) return false;
-    const seats = labDates(selectedLabId).length * course.slots.length * lab.seatsPerGroup;
-    return seats - course.cohortSize >= course.slots.length * lab.seatsPerGroup;
+    if (!course || !lab || !course.labs.some((l) => l.elective)) return null;
+    if (lab.elective && course.electivePicks) {
+      const total = course.labs.filter((l) => l.elective).length;
+      return { text: fill(labels.electiveNote, { picks: course.electivePicks, total }), elective: true };
+    }
+    if (lab.elective) return { text: labels.optionalNote, elective: true };
+    return { text: lab.lastDayIsSpare ? labels.spareDayNote : labels.coreNote, elective: false };
   });
 
   /** Set while the lab is visible but not yet claimable. */
@@ -688,12 +687,12 @@
         <p class="text-xs text-gray-400">{semesterRange}</p>
       </div>
 
-      {#if electiveInfo}
+      {#if labNote?.elective}
         <p class="border-b border-gray-100 bg-violet-50/60 px-5 py-2 text-xs font-medium text-violet-800">
-          {fill(labels.electiveNote, electiveInfo)}
+          {labNote.text}
         </p>
-      {:else if hasSpareDay}
-        <p class="border-b border-gray-100 px-5 py-2 text-xs text-gray-500">{labels.spareDayNote}</p>
+      {:else if labNote}
+        <p class="border-b border-gray-100 px-5 py-2 text-xs text-gray-500">{labNote.text}</p>
       {/if}
       {#if opensOn}
         <p class="border-b border-gray-100 bg-amber-50 px-5 py-2 text-xs font-medium text-amber-800">
