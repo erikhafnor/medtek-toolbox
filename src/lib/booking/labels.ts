@@ -44,6 +44,8 @@ export interface BookingLabels {
   findMineCancelHint: string;
   runsOnDays: string;
   electiveNote: string;
+  optionalNote: string;
+  coreNote: string;
   spareDayNote: string;
   busyThisWeek: string;
   room: string;
@@ -112,6 +114,8 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
       'To cancel one, use the browser you booked from — or ask course staff.',
     runsOnDays: 'This lab runs on {count} lab days.',
     electiveNote: 'Elective — choose {picks} of these {total} labs.',
+    optionalNote: 'Optional — an extra lab, not required.',
+    coreNote: 'Everyone takes this lab.',
     spareDayNote: 'Everyone takes this lab. The last day is spare, for catching up.',
     busyThisWeek: 'You already have {lab} in this slot.',
     room: 'Room',
@@ -195,6 +199,8 @@ export const BOOKING_LABELS: Record<Locale, BookingLabels> = {
       'For å avbestille, bruk nettleseren du booket fra — eller kontakt emneansvarlig.',
     runsOnDays: 'Denne labben går {count} labdager.',
     electiveNote: 'Valgfri — velg {picks} av disse {total} labbene.',
+    optionalNote: 'Valgfri — en ekstra lab, ikke obligatorisk.',
+    coreNote: 'Alle tar denne labben.',
     spareDayNote: 'Alle tar denne labben. Siste dag er en reservedag for oppsamling.',
     busyThisWeek: 'Du har allerede {lab} i denne økta.',
     room: 'Rom',

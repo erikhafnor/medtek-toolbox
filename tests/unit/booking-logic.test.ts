@@ -408,7 +408,7 @@ describe('lab rotation', () => {
     }
   });
 
-  it('never schedules more than three labs on one day', () => {
+  it('never schedules more labs on one day than the course allows', () => {
     for (const course of COURSES) {
       if (course.maxLabsPerDay === undefined) continue;
       const perDay = new Map<string, string[]>();
@@ -441,19 +441,30 @@ describe('lab rotation', () => {
     const elective = mte200.labs.find((l) => l.id === 'mte200-ventilator')!;
     expect(seatsNeededFor(mte200, core)).toBe(21);
     // 21 students choosing 2 of 4 electives = 10.5 per lab, rounded up
-    expect(seatsNeededFor(mte200, elective)).toBe(11);
-    expect(labDates('mte200-ventilator').length * 2 * 3).toBeGreaterThanOrEqual(11);
+    expect(seatsNeededFor({ ...mte200, electivePicks: 2, labs: [...mte200.labs, { ...elective, id: 'x' }] }, elective)).toBe(11);
+    // optional extras need no guaranteed seats
+    expect(seatsNeededFor(mte200, elective)).toBe(0);
   });
 
-  it('marks exactly the four block 2 labs as elective', () => {
+  it('makes electrosurgery compulsory and the other three block 2 labs optional', () => {
     const mte200 = courseById('MTE200')!;
     expect(mte200.labs.filter((l) => l.elective).map((l) => l.id)).toEqual([
       'mte200-blood-pressure-spo2',
-      'mte200-electrosurgery',
       'mte200-ultrasound',
       'mte200-ventilator',
     ]);
-    expect(mte200.electivePicks).toBe(2);
+    expect(mte200.electivePicks).toBe(0);
+    const electrosurgery = mte200.labs.find((l) => l.id === 'mte200-electrosurgery')!;
+    expect(electrosurgery.elective).toBeFalsy();
+    expect(electrosurgery.groupsPerSlot).toBe(1);
+    // all five block 2 Tuesdays x 2 slots x 3 seats = 30 seats for 21 students
+    expect(labDates('mte200-electrosurgery')).toEqual([
+      '2026-10-20',
+      '2026-10-27',
+      '2026-11-03',
+      '2026-11-10',
+      '2026-11-17',
+    ]);
   });
 
   it('splits the seven MTE200 labs into a block of three and a block of four', () => {
