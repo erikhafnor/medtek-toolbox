@@ -7,6 +7,7 @@ equipment:
   - "PHYWE XR 4.0 benkebasert røntgen-/CT-enhet (XRstage rotasjonsbord + XRIS-detektor)"
   - "measureCT opptaks- og rekonstruksjonsprogramvare"
   - "Valnøtt som prøveobjekt (med et skjult tett objekt)"
+  - "Thermo Scientific RadEye G20-10 strålingsmåler for røntgen og gamma"
 prerequisites:
   - "Dokumentasjon for PHYWE XR 4.0 / measureCT"
   - "Forelesningsnotater om røntgen-/CT-fysikk og strålevern (ALARA)"
@@ -20,6 +21,7 @@ Etter denne laboratorieøvelsen skal du kunne:
 - Ta opp et fullstendig CT-datasett på den benkebaserte PHYWE XR 4.0-CT-en, og stille inn rørspenning (kV), rørstrøm (mA), eksponeringstid og antall projeksjoner
 - Forklare hvordan en roterende serie av røntgenprojeksjoner rekonstrueres til tverrsnittsbilder, og justere rotasjonssenteret for å oppnå en skarp rekonstruksjon
 - Anvende prinsipper for strålevern (ALARA, tid–avstand–skjerming, og avstandskvadratloven) og knytte parameterne for benkeskanningen til klinisk CT med tanke på dose og bildekvalitet
+- Måle doserate med en strålingsmåler innenfor og utenfor et skjermet røntgenkabinett, og knytte målingene til strålevern rundt kliniske CT- og røntgenrom
 
 ---
 
@@ -119,6 +121,39 @@ Det tette objektet inni valnøtten er en **menneskelig tann** — målet ditt fo
 
 ---
 
+### Del 4 — Måling av stråling med strålingsmåler (25 min)
+
+**Thermo Scientific RadEye G20-10** er en håndholdt strålingsmåler for røntgen- og gammastråling — den typen instrument en sykehusfysiker bruker for å kontrollere skjermingen av et nytt CT- eller røntgenrom. Den har en energikompensert Geiger–Müller-detektor og viser **omgivelsesdoseekvivalentraten**, H\*(10), i µSv/t. Produsenten oppgir flat energirespons fra 17 keV og et måleområde opp til 2 mSv/t.
+
+> **Plasser aldri måleren i den direkte strålen** mellom røret og detektoren. Den direkte strålen inne i kabinettet er langt sterkere enn målerens måleområde på 2 mSv/t, og en Geiger–Müller-teller i et så sterkt felt kan vise for *lavt* i stedet for å gå utenfor skalaen. Inne i kammeret måler du den **spredte** strålingen ved siden av strålen.
+
+**4.1 Bakgrunn.** Slå på RadEye-en godt unna XR 4.0 og la avlesningen stabilisere seg i omtrent ett minutt. Noter doseraten. Dette er naturlig bakgrunnsstråling — kosmisk stråling og radioaktivitet i grunnen og byggematerialene — typisk rundt 0,1 µSv/t innendørs.
+
+**4.2 Utenfor kabinettet.** Med kammerdøren lukket og røret på med skanneinnstillingene fra del 2.2 (35 kV, 1,0 mA), hold måleren inntil kabinettet: ved dørvinduet, langs dørpakningen, på sidene og toppen, og der operatøren sitter. Beveg måleren sakte og la avlesningen stabilisere seg ved hvert punkt. Noter den høyeste verdien og hvor du fant den. *Du kan gjøre dette mens CT-skanningen i del 2.4 kjører, siden røret da er på i flere minutter.*
+
+**4.3 Inne i kabinettet.** Slå av røntgenstrålingen og vent til varsellampen slukker. Ta valnøtten av rotasjonsbordet og plasser måleren på kammergulvet **ved siden av** rotasjonsbordet — utenfor strålegangen mellom rør og detektor — med displayet vendt mot dørvinduet. Lukk døren. Start lavt: still inn 35 kV og **0,1 mA**, slå på røntgenstrålingen i omtrent 30 sekunder, og les av doseraten gjennom vinduet. Gjenta ved 0,5 mA og 1,0 mA så lenge avlesningen holder seg innenfor målerens måleområde. Slå av røntgenstrålingen, vent til lampen slukker, og ta måleren ut.
+
+**4.4** Noter målingene:
+
+| Plassering | Rørinnstillinger | Doserate (µSv/t) |
+|---|---|---|
+| Bakgrunn, unna enheten | av | |
+| Utenfor kabinettet, høyeste punkt | 35 kV, 1,0 mA | |
+| Operatørens plass | 35 kV, 1,0 mA | |
+| Inne, ved siden av rotasjonsbordet | 35 kV, 0,1 mA | |
+| Inne, ved siden av rotasjonsbordet | 35 kV, 0,5 mA | |
+| Inne, ved siden av rotasjonsbordet | 35 kV, 1,0 mA | |
+
+**4.5** Diskuter og noter:
+
+- Hvor mange ganger høyere er doseraten inne i kammeret enn utenfor? Hva sier dette forholdet om skjermingen i kabinettet?
+- Hvordan endret doseraten seg med rørstrømmen? Sammenlign med det del 1.1 sier om mA.
+- Måleren viser H\*(10), ikke effektiv dose. Hva er forskjellen, og hvorfor kontrollerer vi et rom med en størrelse som H\*(10) i stedet for dosen en person faktisk får?
+- Rundt et klinisk CT- eller røntgenrom, hvor ville du brukt en strålingsmåler som denne, og hva ville du sett etter?
+- Klinisk CT bruker omtrent 80–140 kV, XR 4.0 bare 35 kV. Hvorfor er det viktig at en strålingsmåler er laget og kalibrert for fotonenergiene du måler?
+
+---
+
 ## Godkjenning
 
 Du blir godkjent i laben når du kan vise og forklare følgende for labingeniøren:
@@ -126,6 +161,7 @@ Du blir godkjent i laben når du kan vise og forklare følgende for labingeniør
 - Opptaksparameterne du brukte (del 2.2) og en live-projeksjon av valnøtten der du kan peke ut det skjulte, tette objektet og si hva det er (del 2.3)
 - Hvordan du justerte **rotasjonssenteret** (del 3.2) — vis et uskarpt og et skarpt testsnitt — og det rekonstruerte volumet der du identifiserer det skjulte objektet i alle tre snittretninger og anslår størrelsen i millimeter (del 3.4)
 - Svarene dine på spørsmålene om strålevern og CT-fysikk i del 1 (1.2 og 1.3), med egne ord
+- Målingene dine med strålingsmåleren fra del 4 — bakgrunn, utenfor og inne i kabinettet — og hva de forteller om skjerming, med koblingen til et klinisk CT- eller røntgenrom
 - Den eksporterte snittstabelen og voxelavstanden du noterte i del 3.3, som du trenger i neste lab
 
 Ingen skriftlig innlevering.

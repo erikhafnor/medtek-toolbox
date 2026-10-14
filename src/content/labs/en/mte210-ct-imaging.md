@@ -7,6 +7,7 @@ equipment:
   - "PHYWE XR 4.0 benchtop X-ray / CT unit (XRstage rotation stage + XRIS detector)"
   - "measureCT acquisition & reconstruction software"
   - "Walnut specimen (with a hidden dense object)"
+  - "Thermo Scientific RadEye G20-10 X-ray and gamma survey meter"
 prerequisites:
   - "PHYWE XR 4.0 / measureCT documentation"
   - "Lecture notes on X-ray/CT physics and radiation protection (ALARA)"
@@ -20,6 +21,7 @@ By the end of this lab you will be able to:
 - Acquire a complete CT dataset on the PHYWE XR 4.0 benchtop CT, setting tube voltage (kV), tube current (mA), exposure time, and the number of projections
 - Explain how a rotating series of X-ray projections is reconstructed into cross-sectional slices, and adjust the centre of rotation to obtain a sharp reconstruction
 - Apply radiation protection principles (ALARA, time–distance–shielding, the inverse-square law) and relate the benchtop scan parameters to clinical CT dose and image quality
+- Measure dose rate with a survey meter inside and outside a shielded X-ray cabinet, and relate the readings to radiation protection around clinical CT and X-ray rooms
 
 ---
 
@@ -119,6 +121,39 @@ The dense object inside the walnut is a **human tooth** — your target for segm
 
 ---
 
+### Part 4 — Measuring Radiation with a Survey Meter (25 min)
+
+The **Thermo Scientific RadEye G20-10** is a handheld X-ray and gamma survey meter — the kind of instrument a hospital physicist uses to check the shielding of a new CT or X-ray room. It has an energy-compensated Geiger–Müller detector and displays the **ambient dose equivalent rate**, H\*(10), in µSv/h. The manufacturer specifies a flat energy response from 17 keV and a measuring range up to 2 mSv/h.
+
+> **Never place the meter in the direct beam** between the tube and the detector. The direct beam inside the cabinet is far stronger than the meter's 2 mSv/h range, and a Geiger–Müller counter in a field that strong can read falsely *low* rather than going off-scale. Inside the chamber you measure the **scattered** radiation beside the beam.
+
+**4.1 Background.** Switch the RadEye on well away from the XR 4.0 and let the reading settle for about a minute. Note the dose rate. This is natural background — cosmic radiation and radioactivity in the ground and building materials — typically around 0.1 µSv/h indoors.
+
+**4.2 Outside the cabinet.** With the chamber door closed and the tube on at the scan settings from Part 2.2 (35 kV, 1.0 mA), hold the meter against the cabinet: at the door window, along the door seal, on the sides and top, and where the operator sits. Move slowly and let the reading settle at each point. Note the highest value and where you found it. *You can do this while the CT scan in Part 2.4 runs, since the tube is on for several minutes.*
+
+**4.3 Inside the cabinet.** Switch the X-rays off and wait for the warning lamp to go out. Take the walnut off the stage and place the meter on the chamber floor **beside** the rotation stage — out of the path between tube and detector — with its display facing the door window. Close the door. Start low: set 35 kV and **0.1 mA**, switch the X-rays on for about 30 seconds, and read the dose rate through the window. Repeat at 0.5 mA and 1.0 mA as long as the reading stays within the meter's range. Switch the X-rays off, wait for the lamp to go out, and take the meter out.
+
+**4.4** Record your readings:
+
+| Location | Tube settings | Dose rate (µSv/h) |
+|---|---|---|
+| Background, away from the unit | off | |
+| Outside the cabinet, highest point | 35 kV, 1.0 mA | |
+| Operator position | 35 kV, 1.0 mA | |
+| Inside, beside the stage | 35 kV, 0.1 mA | |
+| Inside, beside the stage | 35 kV, 0.5 mA | |
+| Inside, beside the stage | 35 kV, 1.0 mA | |
+
+**4.5** Discuss and note:
+
+- How many times higher is the dose rate inside the chamber than outside it? What does that ratio say about the cabinet's shielding?
+- How did the dose rate change with tube current? Compare with what Part 1.1 says about mA.
+- The meter shows H\*(10), not effective dose. What is the difference, and why do we check a room with a quantity like H\*(10) rather than the dose a person actually receives?
+- Around a clinical CT or X-ray room, where would you use a survey meter like this, and what would you be looking for?
+- Clinical CT runs at about 80–140 kV, the XR 4.0 at only 35 kV. Why does it matter that a survey meter is designed and calibrated for the photon energies you are measuring?
+
+---
+
 ## Approval
 
 You are approved in the lab once you can show and explain the following to the lab engineer:
@@ -126,6 +161,7 @@ You are approved in the lab once you can show and explain the following to the l
 - The acquisition parameters you used (Part 2.2) and a live projection of the walnut in which you can point out the hidden dense object and say what it is (Part 2.3)
 - How you tuned the **centre of rotation** (Part 3.2) — show a blurred and a sharp test slice — and the reconstructed volume with the hidden object identified in all three slice directions and its size in millimetres (Part 3.4)
 - Your answers to the radiation protection and CT physics questions in Part 1 (1.2 and 1.3), in your own words
+- Your survey meter readings from Part 4 — background, outside and inside the cabinet — and what they tell you about shielding, with the link to a clinical CT or X-ray room
 - The exported slice stack and the voxel spacing you noted in Part 3.3, which you need in the next lab
 
 There is no written hand-in.

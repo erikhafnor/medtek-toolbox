@@ -40,6 +40,7 @@ export const DEVICES: Device[] = [
   { key: 'phywe-xr4', label: 'PHYWE XR 4.0 Benchtop X-ray/CT Unit', labelNo: 'PHYWE XR 4.0 røntgen/CT-benkenhet', quantity: 1 },
   { key: 'alaris-cc', label: 'CareFusion Alaris CC Syringe Pump', labelNo: 'CareFusion Alaris CC sprøytepumpe', quantity: 8 },
   { key: 'philips-intellivue', label: 'Philips IntelliVue Patient Monitor', labelNo: 'Philips IntelliVue pasientmonitor', quantity: 1 },
+  { key: 'radeye-g20', label: 'Thermo Scientific RadEye G20-10 Survey Meter', labelNo: 'Thermo Scientific RadEye G20-10 strålingsmåler', quantity: 1 },
 ];
 
 export const DEVICE_MAP: Record<string, Device> = Object.fromEntries(
@@ -73,6 +74,7 @@ const EQUIPMENT_MATCHERS: Array<{ pattern: RegExp; device: string }> = [
   { pattern: /PHYWE|XR\s*4\.0/i, device: 'phywe-xr4' },
   { pattern: /Alaris/i, device: 'alaris-cc' },
   { pattern: /IntelliVue/i, device: 'philips-intellivue' },
+  { pattern: /RadEye/i, device: 'radeye-g20' },
 ];
 
 /** Resolve a lab's equipment strings to the tracked devices it requires. */
