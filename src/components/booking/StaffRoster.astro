@@ -434,6 +434,18 @@ const progress = COURSES.flatMap((course) =>
                       {lab.groups.flatMap((g) => g.students).map((s) => (
                         <li>
                           {s.studentName}
+                          {/* approvals often come after the day, so a forgotten tick can still be made */}
+                          <label class="ml-2 inline-flex items-center gap-1 align-middle text-xs text-gray-600">
+                            <input
+                              type="checkbox"
+                              class="h-3.5 w-3.5 accent-emerald-600"
+                              checked={isApproved(lab.labId, s.studentEmail)}
+                              data-approve-lab={lab.labId}
+                              data-approve-email={s.studentEmail}
+                              data-approve-name={s.studentName}
+                            />
+                            {L.approve}
+                          </label>
                           <button
                             type="button"
                             data-cancel-booking={s.id}
