@@ -494,7 +494,11 @@ describe('lab rotation', () => {
   it('runs MTE210 block 1 first and overlaps block 2 from week 42', () => {
     // electrical safety takes one group a week, so it needs six Wednesdays
     expect(labDates(SAFETY)).toEqual([WED37, WED38, WED40, WED42, WED43, '2026-10-28']);
-    expect(labDates(NETWORKS)).toEqual([WED37, WED38, WED40]);
+    // HL7 & DICOM ran its three days in block 1, then came back as a catch-up
+    // for the students who still needed it, on every Wednesday left from week 44
+    expect(labDates(NETWORKS)).toEqual([
+      WED37, WED38, WED40, '2026-10-28', '2026-11-04', '2026-11-11', '2026-11-18',
+    ]);
     // CT imaging is the other single-instrument lab: it starts while block 1
     // is still finishing, because twelve back-to-back Wednesdays do not exist
     expect(labDates('mte210-ct-imaging')).toEqual([
