@@ -165,6 +165,16 @@ Med utgangspunkt i merkeskiltet, serie-/statusetiketten og bruksanvisningen, fyl
 | 13 | Hylle-/På-Av-/Valg-tastaturer | Brukerinngang | | |
 | 14 | Hovedhøyttaler + backup-høyttaler + piezo-summer | Hørbar alarm | | |
 
+**Bildeguide: det du ser når pumpen er åpen.** Bruk bildene til å kjenne igjen delene mens du fyller ut tabellen. Klikk på et bilde for å se det i full størrelse.
+
+[![Strømforsyningen sett fra komponentsiden, i aluminiumsbraketten: nettilkobling, EMC-filter, glattekondensator, effekttransistor, hovedtransformator, optokobler, utgangsfilter og 15 V-utgang er merket](/labs/syringe-pump-teardown/01-psu-component-side-no.jpg)](/labs/syringe-pump-teardown/01-psu-component-side-no.jpg)
+
+[![Strømforsyningen sett fra loddesiden: primærside, sekundærside, isolasjonsbarrieren, fresesporene og transformatorens pinner er merket](/labs/syringe-pump-teardown/02-psu-solder-side-no.jpg)](/labs/syringe-pump-teardown/02-psu-solder-side-no.jpg)
+
+[![Kontrollkortets forside og RS232-kortet: prosessor med fastvareetikett, minne, krystaller, spole, shuntmotstander, høyspentutgangen til baklyset, optokoblere og relé er merket](/labs/syringe-pump-teardown/03-control-board-front-no.jpg)](/labs/syringe-pump-teardown/03-control-board-front-no.jpg)
+
+[![Kontrollkortets bakside: reservecelle, «~900V»-advarselen, baklysomformerens transformator, spoler og kondensatorer, piezo-summer og ferrittkjerner er merket](/labs/syringe-pump-teardown/04-control-board-back-no.jpg)](/labs/syringe-pump-teardown/04-control-board-back-no.jpg)
+
 **Spørsmål å tenke over:** Hvilket enkelt kretskort bærer **både** hovedprosessoren og den uavhengige sikkerhetsprosessoren, og hvorfor tillater plassering på ett kort likevel uavhengig avstenging av motoren? Hvilke deler har produsenten gjort **ikke-reparerbare**, og hva forteller det om hvordan risiko styres allerede i designet (ISO 14971)?
 
 ---
@@ -206,6 +216,8 @@ Dette er den sentrale oppgaven. MDR-ens **GSPR (Vedlegg I)** sier *hva* som må 
 | 4.4.4 | Krypeavstand, nett **primær ↔ sekundær** på PSU/Power-kort | Skyvelære / linjal | Veiledende mål ≈ **8 mm** for 2× MOPP ved ~250 V (IEC 60601-1 §8.9, MOPP-tabell 13–16) | | |
 | 4.4.5 | Luftavstand, nett **primær ↔ sekundær** | Skyvelære / linjal | Veiledende mål ≈ **5 mm** for 2× MOPP ved ~250 V (§8.9) | | |
 | 4.4.6 | Kontinuitet for L og N fra nettinntak til PSU-inngang | DMM kontinuitet | Sammenhengende; ingen brudd | | |
+
+> **Hvor måler du 4.4.4–4.4.5?** Bildet av loddesiden på strømforsyningen i bildeguiden i §4.2 viser hvor isolasjonsbarrieren og fresesporene går.
 
 **Spørsmål å tenke over:** Din beskyttelsesjordingsavlesning — består den **IEC 60601-1 typetest**-grensen, **IEC 62353 periodisk test**-grensen, eller begge? Hvorfor er grensene forskjellige? (62353-grensen på 0,3 Ω gjelder banen *inkludert* nettkabelen.) Og hvorfor kan et DMM bare gi deg en pekepinn mot 60601-1-verdien? Hvordan gir en større krypeavstand et høyere *beskyttelsesmiddel* (MOOP vs MOPP)?
 
