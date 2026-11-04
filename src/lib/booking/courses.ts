@@ -101,6 +101,10 @@ const BLOCK_2_OPENS = '2026-09-30';
 // block 2 is twelve, and the window to mid-November holds nine, so the blocks
 // overlap: CT imaging starts in week 42 while electrical safety finishes.
 // Strict back-to-back blocks would run to 9 December.
+//
+// HL7 & DICOM ran its three block 1 days, then returned from week 44 as a
+// catch-up for the four students who still needed it. That puts four labs on
+// each of the last three Wednesdays, so MTE210 allows four a day like MTE200.
 const MTE210_WEEKS = [
   '2026-09-09', // wk 37
   '2026-09-16', // wk 38
@@ -177,7 +181,7 @@ export const COURSES: CourseBooking[] = [
     firstDate: '2026-09-09', // ISO week 37
     lastDate: '2026-11-18', // ISO week 47
     closedWeeks: [39, 41],
-    maxLabsPerDay: 3,
+    maxLabsPerDay: 4,
     cohortSize: 18,
     labs: [
       // Block 1 — the two labs everyone starts with
@@ -191,7 +195,8 @@ export const COURSES: CourseBooking[] = [
         id: 'mte210-hospital-networks',
         groupsPerSlot: 3, // workstations, not a single instrument
         seatsPerGroup: 3,
-        dates: MTE210_WEEKS.slice(0, 3),
+        // block 1, then every Wednesday from week 44 as a catch-up
+        dates: [...MTE210_WEEKS.slice(0, 3), ...MTE210_WEEKS.slice(5)],
       },
 
       // Block 2 — opens once block 1's opening run is done

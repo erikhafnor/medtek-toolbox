@@ -107,8 +107,9 @@ test.describe('booking page', () => {
   test('shows MTE210 Wednesdays with weeks 39 and 41 closed', async ({ page }) => {
     await page.goto('/en/booking/?lab=mte210-hospital-networks');
     await expect(page.getByText('Week 39 and 41 closed for booking.')).toBeVisible();
-    // three groups at once on lab PCs, so it clears 18 students in three days
-    await expect(page.locator('[data-slot="1"]')).toHaveCount(3);
+    // three groups at once on lab PCs, so it clears 18 students in three days;
+    // the four catch-up Wednesdays from week 44 make seven
+    await expect(page.locator('[data-slot="1"]')).toHaveCount(7);
     await expect(page.getByText('3 groups × up to 3 students per slot')).toBeVisible();
     // the two closed weeks are called out in the plan
     await expect(
